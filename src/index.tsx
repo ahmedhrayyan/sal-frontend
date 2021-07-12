@@ -4,6 +4,9 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+// Import & configure dotenv package
+require('dotenv').config()
+
 ReactDOM.render(
   <React.StrictMode>
     <App />
