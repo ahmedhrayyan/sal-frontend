@@ -1,6 +1,7 @@
 import { Box, Center, useDisclosure } from "@chakra-ui/react";
 import { FunctionComponent } from "react";
 import UserAvatar from "./userAvatar";
+import AddForm from "./addForm";
 
 interface QuestionProps {}
 
@@ -23,6 +24,7 @@ const QuestionForm: FunctionComponent = () => {
           pb="8"
         >
           <UserAvatar name="John Doe" title="Software Dev" />
+          <AddForm hasImageFeature isQuestion isOpen={isOpen} onClose={onClose} />
         </Box>
       </Center>
     </>
