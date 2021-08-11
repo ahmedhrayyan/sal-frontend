@@ -24,7 +24,7 @@ const QuestionForm: FunctionComponent = () => {
           pb="8"
         >
           <UserAvatar name="John Doe" title="Software Dev" />
-          <AddForm hasImageFeature isQuestion isOpen={isOpen} onClose={onClose} />
+          <AddForm isQuestion isOpen={isOpen} onClose={onClose} />
         </Box>
       </Center>
     </>
