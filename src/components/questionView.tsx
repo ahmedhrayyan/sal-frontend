@@ -44,7 +44,9 @@ const QuestionView: FunctionComponent<QuestionViewProps> = () => {
           color="blue.500"
           variant="ghost"
           aria-label="Edit Question"
-          icon={<BsThreeDotsVertical size="20" />}
+          icon={<BsThreeDotsVertical size="20" 
+          onMouseDown={(e) => e.preventDefault()} // remove focus after click
+          />}
         />
       </HStack>
       <Text mb="4">
