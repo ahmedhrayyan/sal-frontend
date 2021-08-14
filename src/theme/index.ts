@@ -5,8 +5,17 @@ import { extendTheme, ThemeOverride } from "@chakra-ui/react";
 import Container from "./components/container";
 
 const overrides: ThemeOverride = {
-	direction: "ltr",
-	colors: {
+  styles: {
+    global: {
+      body: {
+        bg: "gray.50",
+        fontFamily: "proxima-soft, sans-serif",
+
+      }
+    }
+  },
+  direction: "ltr",
+  colors: {
     gray: {
       50: "#F5F5F5", //bg color
     },
@@ -14,9 +23,9 @@ const overrides: ThemeOverride = {
       500: "#0078D4", //primary
     },
   },
-	components: {
-		Container,
-	},
+  components: {
+    Container,
+  },
 };
 
 export default extendTheme(overrides);
