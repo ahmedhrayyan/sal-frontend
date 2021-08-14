@@ -1,4 +1,4 @@
-import { FunctionComponent } from "react";
+import { FunctionComponent, FormEvent } from "react";
 import {
 	Stack,
 	Button,
@@ -24,17 +24,25 @@ import UserAvatar from "./userAvatar";
 import { AnswerNotes, QuestionNotes } from "./notes";
 
 interface AddFormProps {
-	isOpen: boolean;
-	onClose: () => void;
-	isQuestion?: boolean;
-	hasImageFeature?: boolean;
+  isQuestion?: boolean;
+  hasImageFeature?: boolean;
+  isOpen: boolean;
+  textareaValue: string;
+  onChangeHandler(e: FormEvent<HTMLTextAreaElement>): void;
+  onAddHandler(): void;
+  onClose(): void;
+  onCancelHandler(): void;
 }
 
 const AddForm: FunctionComponent<AddFormProps> = ({
-	isOpen,
-	onClose,
-	isQuestion,
-	hasImageFeature,
+  isQuestion,
+  hasImageFeature,
+  isOpen,
+  textareaValue,
+  onChangeHandler,
+  onAddHandler,
+  onClose,
+  onCancelHandler,
 }) => {
 	const respSize = useBreakpointValue({ base: "xs", md: "sm" });
 	return (
@@ -56,21 +64,23 @@ const AddForm: FunctionComponent<AddFormProps> = ({
 				<ModalBody>
 					<Stack pt={[2, 4, 6]} pb="4">
 						<Textarea
-							size={respSize}
-							as={ResizeTextarea}
-							maxHeight="70vh"
+							value={textareaValue}
+              size={respSize}
+              as={ResizeTextarea}
               minHeight="5vh"
+              maxHeight="70vh"
               mb="4"
               pt={[4, 8]}
-							resize="none"
-							variant="flushed"
-							placeholder={
-								isQuestion
-									? "What's your question, Hossam?"
-									: "Write Answer...."
-							}
-							autoFocus
-							transition="height none" //required to enable autosize
+              resize="none"
+              variant="flushed"
+              placeholder={
+                isQuestion
+                ? "What's your question, Hossam?"
+                : "Write Answer...."
+              }
+              transition="height none" //required to enable autosize
+              autoFocus
+              onChange={onChangeHandler}
 						></Textarea>
 
 						<Flex w="100%">
@@ -99,8 +109,8 @@ const AddForm: FunctionComponent<AddFormProps> = ({
 								size={respSize}
 								variant="link"
 								mr={[2, 4, 6]}
-								onClick={onClose}
 								color="blue.500"
+								onClick={onCancelHandler}
 							>
 								Cancel
 							</Button>
@@ -111,6 +121,7 @@ const AddForm: FunctionComponent<AddFormProps> = ({
 								size={respSize}
 								_hover={{ bg: "blue.600" }}
 								_focus={{ bg: "blue.600" }}
+                onAdd={onAddHandler}
 							>
 								Add {isQuestion ? "Qustion" : "Answer"}
 							</Button>
