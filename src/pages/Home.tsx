@@ -7,7 +7,7 @@ interface HomeProps {}
 
 const Home: FunctionComponent = () => {
 	return (
-		<Center mt="12vh">
+		<Center mt="4vh">
 			<VStack w={["full", "90vw"]} maxW={"xl"} spacing="6">
 				<QuestionForm />
 				{/* <QuestionView />*/}
