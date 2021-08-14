@@ -37,6 +37,7 @@ const AnswerForm: FunctionComponent<AnswerFormProps> = () => {
           color="gray.500"
           rounded="full"
           w="full"
+          onMouseDown={(e) => e.preventDefault()} // remove focus after click
         >
           Write your answer
         </Button>

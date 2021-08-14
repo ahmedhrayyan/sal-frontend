@@ -35,7 +35,9 @@ const AnswerView: FunctionComponent<AnswerViewProps> = () => {
               variant="ghost"
               aria-label="Edit Answer"
               size="sm"
-              icon={<BsThreeDotsVertical size="16" />}
+              icon={<BsThreeDotsVertical size="16" 
+              onMouseDown={(e) => e.preventDefault()} // remove focus after click
+              />}
             />
           </HStack>
           <Text fontSize={respSize}>
@@ -54,6 +56,7 @@ const AnswerView: FunctionComponent<AnswerViewProps> = () => {
               leftIcon={<BiUpvote size={respButton} />}
               mr="-px"
               pl="2"
+              onMouseDown={(e) => e.preventDefault()} // remove focus after click
             >
               <Text mb="-1" as="span" ml="-1" fontSize={respSize}>
                 9
