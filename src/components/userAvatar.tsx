@@ -20,18 +20,18 @@ const UserAvatar: FunctionComponent<UserAvatarProps> = ({
   imgSrc=""
 }) => {
   return (
-    <HStack spacing={[2, 2, 3]}>
+    <HStack spacing="2" >
       <Avatar
         src={imgSrc}
         alt="User Avatar"
-        name="Hossam Okasha"
-        boxSize={[10, 14]}
+        name={name}
+        boxSize="10"
       />
-      <Stack spacing={-1} fontSize={{ base: "xs", md: "sm", lg: "md" }} pb="1">
-        <Text fontWeight={600} fontSize="1em">
+      <Stack spacing={-1} fontSize={["xs", "sm"]} >
+        <Text fontWeight={600} >
           {name}
         </Text>
-        <Text color="gray.500" fontSize={hasTitle ? ".75em" : "1em"}>
+        <Text color="gray.500" >
           {hasTitle
             ? title
             : (`What's your question, ${name.split(" ")[0]}?`)}
