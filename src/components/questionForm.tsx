@@ -1,12 +1,22 @@
-import { Box, Center, useDisclosure } from "@chakra-ui/react";
-import { FunctionComponent } from "react";
+import { Box, useDisclosure } from "@chakra-ui/react";
+import { FunctionComponent, FormEvent, useState } from "react";
 import UserAvatar from "./userAvatar";
 import AddForm from "./addForm";
 
 interface QuestionProps {}
 
 const QuestionForm: FunctionComponent = () => {
-	const { isOpen, onOpen, onClose } = useDisclosure();
+	const [textareaValue, setTextareaValue] = useState("");
+	const { isOpen, onOpen, onClose } = useDisclosure(); // Modal
+
+	const onChangeHandler = (e: FormEvent<HTMLTextAreaElement>): void => {
+		setTextareaValue(e.currentTarget.value);
+	};
+
+	const onCancelHandler = () => {
+		onClose();
+		setTextareaValue("");
+	};
 
 	return (
 		<Box
@@ -21,7 +31,15 @@ const QuestionForm: FunctionComponent = () => {
 		>
 			{/* TODO: pass props dynamically later */}
 			<UserAvatar name="John Doe" title="Software Dev" />
-			<AddForm isQuestion isOpen={isOpen} onClose={onClose} />
+			<AddForm
+				textareaValue={textareaValue}
+				onChangeHandler={onChangeHandler}
+				isQuestion
+				isOpen={isOpen}
+				onClose={onClose}
+				onAddHandler={() => {}}
+				onCancelHandler={onCancelHandler}
+			/>
 		</Box>
 	);
 };
