@@ -14,16 +14,16 @@ const QUEST_NOTES = [
   "Keep your question short and to the point.",
   "Double-check grammar and spelling.",
 ];
-const respSize = { base: "xs", md: "sm", lg: "md" };
+const respSize = { base: "xs", md: "sm" };
 
 export const QuestionNotes = () => (
-  <Stack bg="gray.50" rounded="xl" p={[2, 4, 6]}>
+  <Stack bg="gray.50" rounded="xl" p={[2, 4]}>
     <Heading color="blue.500" as="h5" size="sm" fontSize={respSize}>
       Tips on getting good answers quickly
     </Heading>
     <List color="gray.500" px={2}>
-      {QUEST_NOTES.map((note) => (
-        <ListItem fontSize={respSize}>
+      {QUEST_NOTES.map((note, index) => (
+        <ListItem fontSize={respSize} key={index}>
           <ListIcon as={BsInfoCircleFill} color="blue.500" />
           {note}
         </ListItem>
@@ -38,7 +38,7 @@ export const AnswerNotes = () => (
     rounded="xl"
     p="3"
     bg="gray.50"
-    fontSize={respSize}
+    fontSize={["xs", "sm", "md"]}
     alignSelf="start"
   >
     <Text as={"span"} color={"blue.500"} fontSize={respSize}>
