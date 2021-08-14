@@ -1,4 +1,4 @@
-import { FunctionComponent, FormEvent } from "react";
+import { FunctionComponent, FormEvent, FocusEventHandler } from "react";
 import {
 	Stack,
 	Button,
@@ -24,27 +24,35 @@ import UserAvatar from "./userAvatar";
 import { AnswerNotes, QuestionNotes } from "./notes";
 
 interface AddFormProps {
-  isQuestion?: boolean;
-  hasImageFeature?: boolean;
-  isOpen: boolean;
-  textareaValue: string;
-  onChangeHandler(e: FormEvent<HTMLTextAreaElement>): void;
-  onAddHandler(): void;
-  onClose(): void;
-  onCancelHandler(): void;
+	isQuestion?: boolean;
+	hasImageFeature?: boolean;
+	isOpen: boolean;
+	textareaValue: string;
+	onChangeHandler(e: FormEvent<HTMLTextAreaElement>): void;
+	onAddHandler(): void;
+	onClose(): void;
+	onCancelHandler(): void;
 }
 
 const AddForm: FunctionComponent<AddFormProps> = ({
-  isQuestion,
-  hasImageFeature,
-  isOpen,
-  textareaValue,
-  onChangeHandler,
-  onAddHandler,
-  onClose,
-  onCancelHandler,
+	isQuestion,
+	hasImageFeature,
+	isOpen,
+	textareaValue,
+	onChangeHandler,
+	onAddHandler,
+	onClose,
+	onCancelHandler,
 }) => {
 	const respSize = useBreakpointValue({ base: "xs", md: "sm" });
+
+	// move focus after the last char
+	// ref: https://gist.github.com/piyonishi/409ecbd07f7b86b7da205ad61210a275
+	const moveCaretToEnd: FocusEventHandler<HTMLTextAreaElement> = (e) => {
+		let temp_value = e.target.value;
+		e.target.value = "";
+		e.target.value = temp_value;
+	};
 	return (
 		<Modal
 			isOpen={isOpen}
@@ -65,22 +73,23 @@ const AddForm: FunctionComponent<AddFormProps> = ({
 					<Stack pt={[2, 4, 6]} pb="4">
 						<Textarea
 							value={textareaValue}
-              size={respSize}
-              as={ResizeTextarea}
-              minHeight="5vh"
-              maxHeight="70vh"
-              mb="4"
-              pt={[4, 8]}
-              resize="none"
-              variant="flushed"
-              placeholder={
-                isQuestion
-                ? "What's your question, Hossam?"
-                : "Write Answer...."
-              }
-              transition="height none" //required to enable autosize
-              autoFocus
-              onChange={onChangeHandler}
+							size={respSize}
+							as={ResizeTextarea}
+							minHeight="5vh"
+							maxHeight="70vh"
+							mb="4"
+							pt={[4, 8]}
+							resize="none"
+							variant="flushed"
+							placeholder={
+								isQuestion
+									? "What's your question, Hossam?"
+									: "Write Answer...."
+							}
+							transition="height none" //required to enable autosize
+							autoFocus
+							onChange={onChangeHandler}
+              onFocus={moveCaretToEnd}
 						></Textarea>
 
 						<Flex w="100%">
@@ -92,7 +101,7 @@ const AddForm: FunctionComponent<AddFormProps> = ({
 									htmlFor="img-upload"
 									_hover={{ cursor: "pointer" }}
 								>
-									<Icon as={BsCardImage} boxSize={[4, 6]} pb="0"  />
+									<Icon as={BsCardImage} boxSize={[4, 6]} pb="0" />
 									<Text color="inherit" fontSize={respSize} variant="link">
 										Add Image
 									</Text>
@@ -121,7 +130,7 @@ const AddForm: FunctionComponent<AddFormProps> = ({
 								size={respSize}
 								_hover={{ bg: "blue.600" }}
 								_focus={{ bg: "blue.600" }}
-                onAdd={onAddHandler}
+								onAdd={onAddHandler}
 							>
 								Add {isQuestion ? "Qustion" : "Answer"}
 							</Button>
