@@ -6,29 +6,24 @@ import AddForm from "./addForm";
 interface QuestionProps {}
 
 const QuestionForm: FunctionComponent = () => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+	const { isOpen, onOpen, onClose } = useDisclosure();
 
-  return (
-    <>
-      <Center>
-        <Box
-          w={["full", "90vw"]}
-          maxW={"xl"}
-          bg={"whiteAlpha.900"}
-          boxShadow={["sm", "md"]}
-          rounded={["none", "xl"]}
-          _hover={{ cursor: "pointer" }}
-          onClick={onOpen}
-          p="6"
-          pt="4"
-          pb="8"
-        >
-          <UserAvatar name="John Doe" title="Software Dev" />
-          <AddForm isQuestion isOpen={isOpen} onClose={onClose} />
-        </Box>
-      </Center>
-    </>
-  );
+	return (
+		<Box
+			w="full"
+			bg={"whiteAlpha.900"}
+			boxShadow={["sm", "md"]}
+			rounded={["none", "xl"]}
+			_hover={{ cursor: "pointer" }}
+			onClick={onOpen}
+			p="6"
+			pt="4"
+		>
+			{/* TODO: pass props dynamically later */}
+			<UserAvatar name="John Doe" title="Software Dev" />
+			<AddForm isQuestion isOpen={isOpen} onClose={onClose} />
+		</Box>
+	);
 };
 
 export default QuestionForm;
