@@ -3,6 +3,7 @@
 
 import { extendTheme, ThemeOverride } from "@chakra-ui/react";
 import Container from "./components/container";
+import Button from "./components/button";
 
 const overrides: ThemeOverride = {
   styles: {
@@ -25,6 +26,7 @@ const overrides: ThemeOverride = {
   },
   components: {
     Container,
+    Button
   },
 };
 
