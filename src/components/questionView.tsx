@@ -1,5 +1,6 @@
 import {
   Box,
+  Stack,
   Button,
   HStack,
   Text,
@@ -30,15 +31,15 @@ const QuestionView: FunctionComponent<QuestionViewProps> = ({
 }) => {
   const [showAnswers, setShowAnswers] = useState(false);
   return (
-    <Box
-      w="full"
+    <Stack
+      w = "full"
       bg={"whiteAlpha.900"}
       boxShadow={["sm", "md"]}
       rounded={["none", "xl"]}
       p="6"
       py="4"
-      pb="2"
-      fontSize={respSize}
+      pb="2"  
+      fontSize={["sm", "md"]}
     >
       <HStack mr="-4" mb="4">
         <UserAvatar
@@ -56,13 +57,7 @@ const QuestionView: FunctionComponent<QuestionViewProps> = ({
           />}
         />
       </HStack>
-      <Text mb="4">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur non
-        tellus ac justo mattis mollis. Fusce nec erat at mi tristique gravida.
-        Curabitur tempor dui ac ipsum vehicula feugiat. Fusce lacinia tellus vel
-        rhoncus commodo. Vivamus efficitur odio ac finibus interdum. Praesent
-        hendrerit libero vitae nulla sodales hendrerit.
-      </Text>
+      <Box mb="4" dangerouslySetInnerHTML={{ __html: question.data.content }} />
 
       <HStack color="blue.500" spacing={[2, 4]} ml="-2">
         <ButtonGroup
@@ -117,7 +112,7 @@ const QuestionView: FunctionComponent<QuestionViewProps> = ({
           <AnswerView />
         </>
       )}
-    </Box>
+    </Stack >
   );
 };
 
