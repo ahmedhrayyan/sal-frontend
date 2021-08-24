@@ -18,7 +18,7 @@ import {
 	HStack,
 	Text,
 } from "@chakra-ui/react";
-import ResizeTextarea from "react-textarea-autosize";
+import AutoTextArea from "./textArea";
 import { BsCardImage } from "react-icons/bs";
 import UserAvatar from "./userAvatar";
 import { AnswerNotes, QuestionNotes } from "./notes";
@@ -46,13 +46,6 @@ const AddForm: FunctionComponent<AddFormProps> = ({
 }) => {
 	const respSize = useBreakpointValue({ base: "xs", md: "sm" });
 
-	// move focus after the last char
-	// ref: https://gist.github.com/piyonishi/409ecbd07f7b86b7da205ad61210a275
-	const moveCaretToEnd: FocusEventHandler<HTMLTextAreaElement> = (e) => {
-		let temp_value = e.target.value;
-		e.target.value = "";
-		e.target.value = temp_value;
-	};
 	return (
 		<Modal
 			isOpen={isOpen}
@@ -72,25 +65,24 @@ const AddForm: FunctionComponent<AddFormProps> = ({
 				<ModalBody>
 					<Stack pt={[2, 4, 6]} pb="4">
 						<Textarea
-							value={textareaValue}
-							size={respSize}
-							as={ResizeTextarea}
-							minHeight="5vh"
-							maxHeight="70vh"
-							mb="4"
-							pt={[4, 8]}
-							resize="none"
-							variant="flushed"
 							placeholder={
 								isQuestion
-									? "What's your question, Hossam?"
+									? `What's your question, Hossam?`
 									: "Write Answer...."
 							}
-							transition="height none" //required to enable autosize
+							as={AutoTextArea}
+							value={textareaValue}
+							onChange={(e) => {
+								onChangeHandler(e);
+							}}
+							variant="flushed"
+							overflow="hidden"
+							resize="none"
+							minHeight="0"
+							maxHeight="100vh"
 							autoFocus
-							onChange={onChangeHandler}
-              onFocus={moveCaretToEnd}
-						></Textarea>
+							fontSize={["xs", "md"]}
+						/>
 
 						<Flex w="100%">
 							{hasImageFeature && (
