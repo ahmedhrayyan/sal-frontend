@@ -2,20 +2,25 @@ import {
   Box,
   Button,
   HStack,
+  Icon,
   Text,
-  ButtonGroup,
-  Spacer,
-  IconButton,
-  useBreakpointValue,
-  Stack,
-  Avatar,
+  Flex,
   Menu,
   MenuButton,
   MenuList,
   MenuItem,
+  ButtonGroup,
+  Spacer,
+  IconButton,
+  Divider,
+  useBreakpointValue,
+  Stack,
+  Avatar,
+  VStack,
 } from "@chakra-ui/react";
 import { FunctionComponent } from "react";
 import { BiUpvote, BiDownvote } from "react-icons/bi";
+import { RiQuestionAnswerLine } from "react-icons/ri";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { formatKNumbers, formatTimeAgo } from "../helpers/index";
 
@@ -34,13 +39,15 @@ const AnswerView: FunctionComponent<AnswerViewProps> = ({
   const isTheCurrentUser = answer.user.id === currentUser.id;
   return (
     <HStack my="4" alignItems="start">
-      <Avatar name="Ahmed Hamed" boxSize={[8, 9]} />
+      <Avatar name={answer.user.full_name} boxSize={[8, 9]} />
       <Box w="full">
         <Box bg="gray.50" p="3" rounded="xl">
           <HStack mr="-3" mb="1">
             <Stack spacing={0} fontSize=".85em">
-              <Text fontWeight={600}>Ahmed Hamed</Text>
-              <Text color="gray.500">Software Engineer</Text>
+              <Text
+                fontWeight={600}
+              >{answer.user.full_name}</Text>
+              <Text color="gray.500">{answer.user.job}</Text>
             </Stack>
             <Spacer />
             <Menu placement="bottom-end">
@@ -66,7 +73,7 @@ const AnswerView: FunctionComponent<AnswerViewProps> = ({
           <Box mb="4" dangerouslySetInnerHTML={{ __html: answer.content }} />
         </Box>
         <HStack color="blue.500" spacing={[2, 4]} mt="4px">
-        <ButtonGroup
+          <ButtonGroup
             size="xs"
             variant="ghost"
             rounded={["none", "xl"]}
@@ -88,7 +95,7 @@ const AnswerView: FunctionComponent<AnswerViewProps> = ({
             </Button>
           </ButtonGroup>
           <Text as="span" color="gray.500" fontSize={respSize}>
-            2 hours ago
+            {formatTimeAgo(new Date(answer.created_at))}
           </Text>
         </HStack>
       </Box>
