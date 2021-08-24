@@ -14,7 +14,8 @@ export default {
 
 const Template: ComponentStory<typeof AnswerView> = (args) => (
 	<Center>
-		<Box maxW="xl" w={"full"} bg="white" p={[2, 6]} pb="2">
+		<Box maxW="xl" w={"full"} bg="white" p={[2, 6]} boxShadow={["sm", "md"]}
+			rounded={["none", "xl"]}>
 			<AnswerView {...args} />
 		</Box>
 	</Center>
