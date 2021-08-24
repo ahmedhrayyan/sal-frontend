@@ -6,6 +6,10 @@ import reportWebVitals from './reportWebVitals';
 import { ChakraProvider } from '@chakra-ui/react';
 import theme from './theme';
 
+// to remove focus for non-keyboard interactions
+// ref: https://chakra-ui.com/docs/migration#css-reset
+import "focus-visible/dist/focus-visible";
+
 // Import & configure dotenv package
 require('dotenv').config()
 
