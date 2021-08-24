@@ -1,4 +1,3 @@
-import React from "react";
 import UserAvatar from "../../components/userAvatar";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 
