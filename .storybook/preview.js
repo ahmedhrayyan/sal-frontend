@@ -1,6 +1,8 @@
 import { ChakraProvider } from "@chakra-ui/react";
 import { withPerformance } from "storybook-addon-performance"
 import theme from "../src/theme";
+import { INITIAL_VIEWPORTS } from "@storybook/addon-viewport";
+
 
 export const parameters = {
   viewport: {
