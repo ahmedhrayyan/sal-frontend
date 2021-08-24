@@ -45,7 +45,6 @@ const QuestionView: FunctionComponent<QuestionViewProps> = ({
           name="Hossam Okasha"
           imgSrc="https://i.ibb.co/vYFBKQ4/11.jpg"
           title="software dev"
-          hasTitle
         />
         <Spacer />
         <IconButton
