@@ -6,6 +6,8 @@ export const parameters = {
   viewport: {
     viewports: INITIAL_VIEWPORTS,
   },
+  // remove storybook <body></body> padding
+  layout: "fullscreen",
 	actions: { argTypesRegex: "^on[A-Z].*" },
 	controls: {
 		matchers: {
