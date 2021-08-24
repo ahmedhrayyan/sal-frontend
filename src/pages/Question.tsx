@@ -1,7 +1,16 @@
 import { Button, Stack, Center } from "@chakra-ui/react";
 import QuestionView from "../components/questionView";
+import { FunctionComponent } from "react";
 
-const Question = () => {
+interface QuestionViewProps {
+  question: any; //no redux yet
+  authToken: string;
+  currentUser: any;
+}
+const Question: FunctionComponent<QuestionViewProps> = ({
+  question,
+  currentUser,
+}) => {
   return (
     <Center>
       <Stack
@@ -10,18 +19,14 @@ const Question = () => {
         spacing="2"
         alignItems="flex-start"
       >
-        <Button
-          bg={"blue.500"}
-          rounded={"full"}
-          color={"white"}
-          w={[20, 32]}
-          h={[7, 10]}
-          _hover={{ bg: "blue.600" }}
-          _focus={{ bg: "blue.600" }}
-        >
+        <Button w={[20, 32]} h={[7, 10]}>
           Back
         </Button>
-        <QuestionView />
+        <QuestionView
+          question={question}
+          currentUser={currentUser}
+          authToken=""
+        />
       </Stack>
     </Center>
   );
