@@ -2,7 +2,9 @@ import { ChakraProvider } from "@chakra-ui/react";
 import { withPerformance } from "storybook-addon-performance"
 import theme from "../src/theme";
 import { INITIAL_VIEWPORTS } from "@storybook/addon-viewport";
-
+// to remove focus for non-keyboard interactions
+// ref: https://chakra-ui.com/docs/migration#css-reset
+import "focus-visible/dist/focus-visible";
 
 export const parameters = {
   viewport: {
