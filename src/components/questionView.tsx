@@ -20,7 +20,7 @@ import UserAvatar from "./userAvatar";
 import AnswerView from "./answerView";
 import AnswerForm from "./answerForm";
 import { useState } from "react";
-import { formatKNumbers } from "../helpers/index";
+import { formatKNumbers, formatTimeAgo } from "../helpers/index";
 
 interface QuestionViewProps {
 	question: any; //no redux yet
@@ -77,50 +77,46 @@ const QuestionView: FunctionComponent<QuestionViewProps> = ({
 			<Box mb="4" dangerouslySetInnerHTML={{ __html: question.data.content }} />
 
 			<HStack color="blue.500" spacing={[2, 4]} ml="-2">
-				<ButtonGroup
-					size="md"
-					variant="ghost"
-					rounded={["none", "xl"]}
-					isAttached
-				>
-					<Button
-						onMouseDown={(e) => e.preventDefault()} // remove focus after click
-						leftIcon={<BiUpvote size="20" />}
-						mr="-px"
-						pl="2"
-					>
-						<Text mb="-1" as="span" ml="-1" fontSize={respSize}>
+        <ButtonGroup
+          size="md"
+          variant="ghost"
+          rounded={["none", "xl"]}
+          isAttached
+        >
+          <Button
+            color="blue.500"
+            leftIcon={<BiUpvote size="20" />}
+            mr="-px"
+            pl="2"
+          >
+            <Text mb="-1" as="span" ml="-1" fontSize={respSize}>
               {formatKNumbers(question.data.upVotes)}
             </Text>
           </Button>
-					<Button
-						onMouseDown={(e) => e.preventDefault()} // remove focus after click
-						leftIcon={<BiDownvote size="20" />}
-						pl="0"
-						color="gray.600"
-					>
-						<Text mb="-1" as="span" ml="-1" fontSize={respSize}>
+          <Button leftIcon={<BiDownvote size="20" />} pl="0" color="gray.600">
+            <Text mb="-1" as="span" ml="-1" fontSize={respSize}>
               {formatKNumbers(question.data.downVotes)}
             </Text>
-					</Button>
-				</ButtonGroup>
-				<Button
-					leftIcon={<RiQuestionAnswerLine size="20" />}
-					border="none"
-					color="blue.500"
-					variant="outline"
-					onClick={() => setShowAnswers(!showAnswers)}
-					onMouseDown={(e) => e.preventDefault()} // remove focus after click
-				>
-					<Text mb="-1" as="span" ml="-1" fontSize={respSize}>
-						3
-					</Text>
-				</Button>
-				<Spacer />
-				<Text as="span" color="gray.500" fontSize={respSize}>
-					2 hours ago
-				</Text>
-			</HStack>
+          </Button>
+        </ButtonGroup>
+        <Button
+          leftIcon={<RiQuestionAnswerLine size="20" />}
+          border="none"
+          color="blue.500"
+          variant="outline"
+          onClick={() => setShowAnswers(!showAnswers)}
+        >
+          {question.data.answers_count !== 0 && (
+            <Text mb="-1" as="span" ml="-1" fontSize={respSize}>
+              {question.data.answers_count}
+            </Text>
+          )}
+        </Button>
+        <Spacer />
+        <Text as="span" color="gray.500" fontSize={respSize}>
+          {formatTimeAgo(new Date(question.data.created_at))}
+        </Text>
+      </HStack>
 
 			{showAnswers && (
 				<>
