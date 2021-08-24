@@ -1,6 +1,6 @@
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import AddForm from "../../components/addForm";
-
+import getUser from "../mocks/user";
 
 export default {
   title: "Components/AddForm",
@@ -13,6 +13,7 @@ const Template: ComponentStory<typeof AddForm> = (args) => (
 
 export const Default = Template.bind({});
 Default.args = {
+  user: getUser(),
   isQuestion: true,
   isOpen: true,
   textareaValue: "",
