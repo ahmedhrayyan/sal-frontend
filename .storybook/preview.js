@@ -3,6 +3,9 @@ import { withPerformance } from "storybook-addon-performance"
 import theme from "../src/theme";
 
 export const parameters = {
+  viewport: {
+    viewports: INITIAL_VIEWPORTS,
+  },
 	actions: { argTypesRegex: "^on[A-Z].*" },
 	controls: {
 		matchers: {
