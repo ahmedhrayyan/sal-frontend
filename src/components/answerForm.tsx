@@ -9,9 +9,11 @@ import { FunctionComponent, FormEvent, useState } from "react";
 
 import AddForm from "./addForm";
 
-interface AnswerFormProps {}
+interface AnswerFormProps {
+  user: any;
+}
 
-const AnswerForm: FunctionComponent<AnswerFormProps> = () => {
+const AnswerForm: FunctionComponent<AnswerFormProps> = ({ user }) => {
   const { isOpen, onOpen, onClose } = useDisclosure(); // Modal
   const [textareaValue, setTextareaValue] = useState("");
 
@@ -20,26 +22,28 @@ const AnswerForm: FunctionComponent<AnswerFormProps> = () => {
   };
 
   const onCancelHandler = () => {
-    onClose();
     setTextareaValue("");
+    onClose();
   };
 
   return (
     <>
       <Divider />
       <HStack onClick={onOpen} mt="3">
-        <Avatar boxSize={[8, 9]} name="John Doe" />
+        <Avatar boxSize={[8, 9]} name={user.full_name} src={user.avatar} />
         <Button
           variant="outline"
           fontWeight="500"
           fontSize={["xs", "sm"]}
           justifyContent="start"
           color="gray.500"
-          rounded="full"
           w="full"
-          onMouseDown={(e) => e.preventDefault()} // remove focus after click
+          isTruncated
         >
-          Write your answer
+          {
+            // disable title change while opening the modal
+            (!isOpen ? textareaValue : false) || "Write your answer"
+          }
         </Button>
         <AddForm
           textareaValue={textareaValue}
@@ -49,6 +53,7 @@ const AnswerForm: FunctionComponent<AnswerFormProps> = () => {
           onClose={onClose}
           onAddHandler={() => {}}
           onCancelHandler={onCancelHandler}
+          user={user}
         />
       </HStack>
     </>
