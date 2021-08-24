@@ -42,8 +42,8 @@ const QuestionView: FunctionComponent<QuestionViewProps> = ({
 			bg={"whiteAlpha.900"}
 			boxShadow={["sm", "md"]}
 			rounded={["none", "xl"]}
-			p="6"
-			py="4"
+			p={[2, 6]}
+			py={[2, 4]}
 			pb="2"
 			fontSize={["sm", "md"]}
 		>
