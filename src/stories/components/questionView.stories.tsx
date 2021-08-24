@@ -43,8 +43,11 @@ ManyAnswers.args = {
   question: getQuestion({
     data: {
       ...getQuestion().data,
-      answers_count: 4,
+      answers_count: 7,
       answers: [
+        { ...getAnswer() },
+        { ...getAnswer() },
+        { ...getAnswer() },
         { ...getAnswer() },
         { ...getAnswer() },
         { ...getAnswer() },
