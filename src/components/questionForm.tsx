@@ -28,8 +28,8 @@ const QuestionForm: FunctionComponent<QuestionFormProps> = ({ user }) => {
         rounded={["none", "xl"]}
         _hover={{ cursor: "pointer" }}
         onClick={onOpen}
-        p="6"
-        pt="4"
+        p={[2, 6]}
+        pt={[2, 4]}
       >
         <UserAvatar
           name={user.full_name}
