@@ -26,14 +26,15 @@ import UserAvatar from "./userAvatar";
 import { AnswerNotes, QuestionNotes } from "./notes";
 
 interface AddFormProps {
-	isQuestion?: boolean;
-	hasImageFeature?: boolean;
-	isOpen: boolean;
-	textareaValue: string;
-	onChangeHandler(e: FormEvent<HTMLTextAreaElement>): void;
-	onAddHandler(data: any): void;
-	onClose(): void;
-	onCancelHandler(): void;
+  user: any; // change later
+  isQuestion?: boolean;
+  hasImageFeature?: boolean;
+  isOpen: boolean;
+  textareaValue: string;
+  onChangeHandler(e: FormEvent<HTMLTextAreaElement>): void;
+  onAddHandler(data: any): void;
+  onClose(): void;
+  onCancelHandler(): void;
 }
 
 type Inputs = {
@@ -42,6 +43,7 @@ type Inputs = {
 };
 
 const AddForm: FunctionComponent<AddFormProps> = ({
+	user,
 	isQuestion,
 	hasImageFeature,
 	isOpen,
@@ -52,18 +54,18 @@ const AddForm: FunctionComponent<AddFormProps> = ({
 	onCancelHandler,
 }) => {
 	const respSize = useBreakpointValue({ base: "xs", md: "sm" });
-	const {
-		control,
-		register,
-		handleSubmit,
-		formState: { errors },
-	} = useForm<Inputs>();
+  const {
+    control,
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<Inputs>();
 
-	const onSubmitHandler: SubmitHandler<Inputs> = (data) => {
-		onAddHandler(data);
-		console.log(data);
-	};
-
+  const onSubmitHandler: SubmitHandler<Inputs> = (data) => {
+    onAddHandler(data);
+    console.log(data);
+  };
+	
 	return (
 		<Modal
 			isOpen={isOpen}
@@ -75,9 +77,12 @@ const AddForm: FunctionComponent<AddFormProps> = ({
 		>
 			<ModalOverlay />
 			<ModalContent>
-				<ModalHeader pb="0">
-					{/*update to dynamic later*/}
-					<UserAvatar name="Joe Doe" hasTitle title="Software Dev" />{" "}
+			<ModalHeader>
+          <UserAvatar
+            name={user.full_name}
+            title={user.job}
+            imgSrc={user.avatar}
+          />
 				</ModalHeader>
 				<ModalCloseButton color="blue.500" fontSize={respSize} />
 				<ModalBody>
@@ -133,12 +138,12 @@ const AddForm: FunctionComponent<AddFormProps> = ({
 							)}
 							<Spacer />
 							<Button
-								size={respSize}
-								variant="link"
-								mr={[2, 4, 6]}
-								color="blue.500"
-								onClick={onCancelHandler}
-							>
+                size={respSize}
+                variant="link"
+                mr={[2, 4, 6]}
+                onClick={onCancelHandler}
+                boxShadow="none" // disable global box shadow for form buttons
+              >
 								Cancel
 							</Button>
 							<Button
