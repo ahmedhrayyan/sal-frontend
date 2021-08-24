@@ -1,16 +1,16 @@
 import {
-	Menu,
-	MenuButton,
-	MenuList,
-	MenuItem,
-	Box,
-	Button,
-	HStack,
-	Text,
-	ButtonGroup,
-	Spacer,
-	IconButton,
-	Stack,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  Box,
+  Button,
+  HStack,
+  Text,
+  ButtonGroup,
+  Spacer,
+  IconButton,
+  Stack,
 } from "@chakra-ui/react";
 import { FunctionComponent } from "react";
 import { BiUpvote, BiDownvote } from "react-icons/bi";
@@ -19,64 +19,85 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import UserAvatar from "./userAvatar";
 import AnswerView from "./answerView";
 import AnswerForm from "./answerForm";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { formatKNumbers, formatTimeAgo } from "../helpers/index";
 
 interface QuestionViewProps {
-	question: any; //no redux yet
-	currentUser: any;
-	authToken: string;
+  question: any; //no redux yet
+  currentUser: any;
+  authToken: string;
 }
-
 const respSize = { base: "xs", md: "sm" };
-const QuestionView: FunctionComponent<QuestionViewProps> = ({
-	question,
-	currentUser,
-	authToken,
-}) => {
-	const [showAnswers, setShowAnswers] = useState(false);
-	const isTheCurrentUser = question.data.user.id === currentUser.id;
-	return (
-		<Stack
-			w="full"
-			bg={"whiteAlpha.900"}
-			boxShadow={["sm", "md"]}
-			rounded={["none", "xl"]}
-			p={[2, 6]}
-			py={[2, 4]}
-			pb="2"
-			fontSize={["sm", "md"]}
-		>
-			<HStack mr="-4" mb="4">
-				<UserAvatar
-					name="Hossam Okasha"
-					imgSrc="https://i.ibb.co/vYFBKQ4/11.jpg"
-					title="software dev"
-				/>
-				<Spacer />
-				<Menu placement="bottom-end">
-					<MenuButton
-						as={IconButton}
-						icon={<BsThreeDotsVertical size="20" />}
-						color="blue.500"
-						variant="ghost"
-						aria-label="Edit Question"
-					/>
-					<MenuList>
-						<MenuItem>View question</MenuItem>
-						{isTheCurrentUser && (
-							<>
-								<MenuItem>Edit question</MenuItem>
-								<MenuItem>Delete question</MenuItem>
-							</>
-						)}
-						{isTheCurrentUser || <MenuItem>Report question</MenuItem>}
-					</MenuList>
-				</Menu>
-			</HStack>
-			<Box mb="4" dangerouslySetInnerHTML={{ __html: question.data.content }} />
+const ANSWERS_PER_PAGE = 2;
 
-			<HStack color="blue.500" spacing={[2, 4]} ml="-2">
+const QuestionView: FunctionComponent<QuestionViewProps> = ({
+  question,
+  currentUser,
+  authToken,
+}) => {
+  const [showAnswers, setShowAnswers] = useState(false);
+  const [currentAnswers, setCurrentAnswers] = useState<any[]>([]);
+  const [currentPage, setCurrentPage] = useState(0);
+
+  useEffect(() => {
+    if (question.data && question.data.answers.length > 0)
+      setCurrentAnswers([{ ...question.data.answers[0] }]);
+  }, []);
+
+  const handleLoadMore = () => {
+    const answers = question.data.answers;
+    // shallow copy is ok here
+    setCurrentAnswers(
+      answers.slice(
+        0,
+        currentPage * ANSWERS_PER_PAGE 
+      )
+    );
+    setCurrentPage((currentPage) => currentPage + 1);
+  };
+
+  const isTheCurrentUser = question.data.user.id === currentUser.id;
+  return (
+    <Stack
+      w = "full"
+      bg={"whiteAlpha.900"}
+      boxShadow={["sm", "md"]}
+      rounded={["none", "xl"]}
+      p="6"
+      py="4"
+      pb="2"  
+      fontSize={["sm", "md"]}
+    >
+      <HStack mr="-4" mb="4">
+        <UserAvatar
+          name={question.data.user.full_name}
+          imgSrc={question.data.user.avatar}
+          title={question.data.user.job}
+        />
+        <Spacer />
+        <Menu placement="bottom-end">
+          <MenuButton
+            as={IconButton}
+            icon={<BsThreeDotsVertical size="20" />}
+            color="blue.500"
+            variant="ghost"
+            aria-label="Edit Question"
+          />
+          <MenuList>
+            <MenuItem>View question</MenuItem>
+            {isTheCurrentUser && (
+              <>
+                <MenuItem>Edit question</MenuItem>
+                <MenuItem>Delete question</MenuItem>
+              </>
+            )}
+            {isTheCurrentUser || <MenuItem>Report question</MenuItem>}
+          </MenuList>
+        </Menu>
+      </HStack>
+      <Box mb="4" dangerouslySetInnerHTML={{ __html: question.data.content }} />
+
+      <HStack color="blue.500" spacing={[2, 4]} ml="-2">
         <ButtonGroup
           size="md"
           variant="ghost"
@@ -118,18 +139,28 @@ const QuestionView: FunctionComponent<QuestionViewProps> = ({
         </Text>
       </HStack>
 
-			{showAnswers && (
-				<>
-					<AnswerForm user={currentUser} />
-					<AnswerView
-						answer={question.data.answers[0]}
-						authToken={authToken}
-						currentUser={question.data.user}
-					/>
-				</>
-			)}
-		</Stack>
-	);
+      {showAnswers && (
+        <>
+          <AnswerForm user={currentUser} />
+
+          {currentAnswers.length > 0 &&
+            currentAnswers.map((answer) => (
+              <AnswerView
+                answer={answer}
+                authToken={authToken}
+                currentUser={answer.user}
+              />
+            ))}
+          {question.data.answers.length > 1 &&
+            question.data.answers.length !== currentAnswers.length && (
+              <Button onClick={handleLoadMore} variant="link" size="sm">
+                Load More
+              </Button>
+            )}
+        </>
+      )}
+    </Stack>
+  );
 };
 
 export default QuestionView;
