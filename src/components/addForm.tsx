@@ -1,4 +1,6 @@
 import { FunctionComponent, FormEvent, FocusEventHandler } from "react";
+import { useForm, Controller, SubmitHandler } from "react-hook-form";
+
 import {
 	Stack,
 	Button,
@@ -29,10 +31,15 @@ interface AddFormProps {
 	isOpen: boolean;
 	textareaValue: string;
 	onChangeHandler(e: FormEvent<HTMLTextAreaElement>): void;
-	onAddHandler(): void;
+	onAddHandler(data: any): void;
 	onClose(): void;
 	onCancelHandler(): void;
 }
+
+type Inputs = {
+	textarea: string;
+	image: any;
+};
 
 const AddForm: FunctionComponent<AddFormProps> = ({
 	isQuestion,
@@ -45,6 +52,17 @@ const AddForm: FunctionComponent<AddFormProps> = ({
 	onCancelHandler,
 }) => {
 	const respSize = useBreakpointValue({ base: "xs", md: "sm" });
+	const {
+		control,
+		register,
+		handleSubmit,
+		formState: { errors },
+	} = useForm<Inputs>();
+
+	const onSubmitHandler: SubmitHandler<Inputs> = (data) => {
+		onAddHandler(data);
+		console.log(data);
+	};
 
 	return (
 		<Modal
@@ -63,25 +81,32 @@ const AddForm: FunctionComponent<AddFormProps> = ({
 				</ModalHeader>
 				<ModalCloseButton color="blue.500" fontSize={respSize} />
 				<ModalBody>
-					<Stack pt={[2, 4, 6]} pb="4">
-						<Textarea
-							placeholder={
-								isQuestion
-									? `What's your question, Hossam?`
-									: "Write Answer...."
-							}
-							as={AutoTextArea}
-							value={textareaValue}
-							onChange={(e) => {
-								onChangeHandler(e);
-							}}
-							variant="flushed"
-							overflow="hidden"
-							resize="none"
-							minHeight="0"
-							maxHeight="100vh"
-							autoFocus
-							fontSize={["xs", "md"]}
+					<Stack as="form" onSubmit={handleSubmit(onSubmitHandler)}>
+						<Controller
+							name="textarea"
+							control={control}
+							render={({ field: { onChange } }) => (
+								<Textarea
+									placeholder={
+										isQuestion
+											? `What's your question, Hossam?`
+											: "Write Answer...."
+									}
+									as={AutoTextArea}
+									value={textareaValue}
+									onChange={(e) => {
+										onChangeHandler(e);
+										onChange(textareaValue);
+									}}
+									variant="flushed"
+									overflow="hidden"
+									resize="none"
+									minHeight="0"
+									maxHeight="100vh"
+									autoFocus
+									fontSize={["xs", "md"]}
+								/>
+							)}
 						/>
 
 						<Flex w="100%">
@@ -102,6 +127,7 @@ const AddForm: FunctionComponent<AddFormProps> = ({
 										d="none"
 										type="file"
 										accept="image/png, image/jpeg"
+										{...register("image")}
 									/>
 								</HStack>
 							)}
@@ -116,13 +142,9 @@ const AddForm: FunctionComponent<AddFormProps> = ({
 								Cancel
 							</Button>
 							<Button
-								bg={"blue.500"}
-								rounded={"full"}
-								color={"white"}
+								type="submit"
 								size={respSize}
-								_hover={{ bg: "blue.600" }}
-								_focus={{ bg: "blue.600" }}
-								onAdd={onAddHandler}
+								boxShadow="none" // disable global box shadow for form buttons
 							>
 								Add {isQuestion ? "Qustion" : "Answer"}
 							</Button>
