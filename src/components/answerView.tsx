@@ -14,10 +14,17 @@ import { FunctionComponent } from "react";
 import { BiUpvote, BiDownvote } from "react-icons/bi";
 import { BsThreeDotsVertical } from "react-icons/bs";
 
-// Todo: Update props
-interface AnswerViewProps {}
+interface AnswerViewProps {
+  answer: any; // update later
+  currentUser: any;
+  authToken: string;
+}
 const respSize = { base: "xs", md: "sm" };
-const AnswerView: FunctionComponent<AnswerViewProps> = () => {
+const AnswerView: FunctionComponent<AnswerViewProps> = ({
+  answer,
+  currentUser,
+  authToken,
+}) => {
   const respButton = useBreakpointValue([15, 20]);
   return (
     <HStack my="4" alignItems="start">
@@ -40,10 +47,7 @@ const AnswerView: FunctionComponent<AnswerViewProps> = () => {
               />}
             />
           </HStack>
-          <Text fontSize={respSize}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit donec
-            consectetur semper nunc in molestie.
-          </Text>
+          <Box mb="4" dangerouslySetInnerHTML={{ __html: answer.content }} />
         </Box>
         <HStack color="blue.500" spacing={[2, 4]} mt="4px">
           <ButtonGroup
