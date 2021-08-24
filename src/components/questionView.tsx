@@ -16,10 +16,18 @@ import AnswerView from "./answerView";
 import AnswerForm from "./answerForm";
 import { useState } from "react";
 
-// TODO: Update props
-interface QuestionViewProps {}
+interface QuestionViewProps {
+  question: any; //no redux yet
+  currentUser: any;
+  authToken: string;
+}
+
 const respSize = { base: "xs", md: "sm" };
-const QuestionView: FunctionComponent<QuestionViewProps> = () => {
+const QuestionView: FunctionComponent<QuestionViewProps> = ({
+  question,
+  currentUser,
+  authToken,
+}) => {
   const [showAnswers, setShowAnswers] = useState(false);
   return (
     <Box
@@ -105,7 +113,7 @@ const QuestionView: FunctionComponent<QuestionViewProps> = () => {
 
       {showAnswers && (
         <>
-          <AnswerForm />
+          <AnswerForm user={currentUser} />
           <AnswerView />
           <AnswerView />
         </>
