@@ -20,6 +20,7 @@ import UserAvatar from "./userAvatar";
 import AnswerView from "./answerView";
 import AnswerForm from "./answerForm";
 import { useState } from "react";
+import { formatKNumbers } from "../helpers/index";
 
 interface QuestionViewProps {
 	question: any; //no redux yet
@@ -89,9 +90,9 @@ const QuestionView: FunctionComponent<QuestionViewProps> = ({
 						pl="2"
 					>
 						<Text mb="-1" as="span" ml="-1" fontSize={respSize}>
-							1k
-						</Text>
-					</Button>
+              {formatKNumbers(question.data.upVotes)}
+            </Text>
+          </Button>
 					<Button
 						onMouseDown={(e) => e.preventDefault()} // remove focus after click
 						leftIcon={<BiDownvote size="20" />}
@@ -99,8 +100,8 @@ const QuestionView: FunctionComponent<QuestionViewProps> = ({
 						color="gray.600"
 					>
 						<Text mb="-1" as="span" ml="-1" fontSize={respSize}>
-							3
-						</Text>
+              {formatKNumbers(question.data.downVotes)}
+            </Text>
 					</Button>
 				</ButtonGroup>
 				<Button
