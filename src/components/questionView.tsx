@@ -148,7 +148,7 @@ const QuestionView: FunctionComponent<QuestionViewProps> = ({
               <AnswerView
                 answer={answer}
                 authToken={authToken}
-                currentUser={answer.user}
+                currentUser={currentUser}
               />
             ))}
           {question.data.answers.length > 1 &&
