@@ -17,6 +17,7 @@ import {
 import { FunctionComponent } from "react";
 import { BiUpvote, BiDownvote } from "react-icons/bi";
 import { BsThreeDotsVertical } from "react-icons/bs";
+import { formatKNumbers, formatTimeAgo } from "../helpers/index";
 
 interface AnswerViewProps {
   answer: any; // update later
@@ -65,30 +66,24 @@ const AnswerView: FunctionComponent<AnswerViewProps> = ({
           <Box mb="4" dangerouslySetInnerHTML={{ __html: answer.content }} />
         </Box>
         <HStack color="blue.500" spacing={[2, 4]} mt="4px">
-          <ButtonGroup
+        <ButtonGroup
             size="xs"
             variant="ghost"
             rounded={["none", "xl"]}
             isAttached
           >
-            <Button
-              leftIcon={<BiUpvote size={respButton} />}
-              mr="-px"
-              pl="2"
-              onMouseDown={(e) => e.preventDefault()} // remove focus after click
-            >
+            <Button leftIcon={<BiUpvote size={respButton} />} mr="-px" pl="2">
               <Text mb="-1" as="span" ml="-1" fontSize={respSize}>
-                9
+                {formatKNumbers(answer.upVotes)}
               </Text>
             </Button>
             <Button
               leftIcon={<BiDownvote size={respButton} />}
               pl="0"
               color="gray.600"
-              onMouseDown={(e) => e.preventDefault()} // remove focus after click
             >
               <Text mb="-1" as="span" ml="-1" fontSize={respSize}>
-                3
+                {formatKNumbers(answer.downVotes)}
               </Text>
             </Button>
           </ButtonGroup>
