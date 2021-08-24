@@ -9,6 +9,10 @@ import {
   useBreakpointValue,
   Stack,
   Avatar,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
 } from "@chakra-ui/react";
 import { FunctionComponent } from "react";
 import { BiUpvote, BiDownvote } from "react-icons/bi";
@@ -26,6 +30,7 @@ const AnswerView: FunctionComponent<AnswerViewProps> = ({
   authToken,
 }) => {
   const respButton = useBreakpointValue([15, 20]);
+  const isTheCurrentUser = answer.user.id === currentUser.id;
   return (
     <HStack my="4" alignItems="start">
       <Avatar name="Ahmed Hamed" boxSize={[8, 9]} />
@@ -37,15 +42,25 @@ const AnswerView: FunctionComponent<AnswerViewProps> = ({
               <Text color="gray.500">Software Engineer</Text>
             </Stack>
             <Spacer />
-            <IconButton
-              color="blue.500"
-              variant="ghost"
-              aria-label="Edit Answer"
-              size="sm"
-              icon={<BsThreeDotsVertical size="16" 
-              onMouseDown={(e) => e.preventDefault()} // remove focus after click
-              />}
-            />
+            <Menu placement="bottom-end">
+              <MenuButton
+                as={IconButton}
+                icon={<BsThreeDotsVertical size="20" />}
+                color="blue.500"
+                variant="ghost"
+                aria-label="Edit Answer"
+                size="sm"
+              />
+              <MenuList>
+                {isTheCurrentUser && (
+                  <>
+                    <MenuItem>Edit answer</MenuItem>
+                    <MenuItem>Delete answer</MenuItem>
+                  </>
+                )}
+                {isTheCurrentUser || <MenuItem>Report answer</MenuItem>}
+              </MenuList>
+            </Menu>
           </HStack>
           <Box mb="4" dangerouslySetInnerHTML={{ __html: answer.content }} />
         </Box>
