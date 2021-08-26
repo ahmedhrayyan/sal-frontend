@@ -1,29 +1,12 @@
-import React from "react";
-import logo from "./logo.svg";
-import "./App.css";
-import { Button } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
+import Home from "./pages/Home";
 
 function App() {
 	return (
-		<div className="App">
-			<header className="App-header">
-				<img src={logo} className="App-logo" alt="logo" />
-				<p>
-					Edit <code>src/App.tsx</code> and save to reload.
-				</p>
-				<Button
-					colorScheme="cyan"
-					as="a"
-					className="App-link"
-					href="https://reactjs.org"
-					target="_blank"
-					rel="noopener noreferrer"
-					mt="2"
-				>
-					Learn React
-				</Button>
-			</header>
-		</div>
+		<>
+			<Box width="100vw" height="8vh" bg="#0078D4" mb="6"></Box>
+			<Home />
+		</>
 	);
 }
 
