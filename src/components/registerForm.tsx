@@ -1,4 +1,4 @@
-import { useEffect, FunctionComponent } from "react";
+import { useEffect, FC } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 
 import { Button, VStack, FormControl, Input, HStack } from "@chakra-ui/react";
@@ -11,7 +11,7 @@ type Inputs = {
 	jobTitle: string;
 };
 
-const RegisterForm: FunctionComponent = () => {
+const RegisterForm: FC = () => {
 	const {
 		register,
 		handleSubmit,

@@ -1,4 +1,4 @@
-import { FunctionComponent } from "react";
+import { FC } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { Button, VStack, FormControl, Input } from "@chakra-ui/react";
 
@@ -7,7 +7,7 @@ type Inputs = {
 	password: string;
 };
 
-const LoginForm: FunctionComponent = () => {
+const LoginForm: FC = () => {
 	const {
 		register,
 		handleSubmit,
