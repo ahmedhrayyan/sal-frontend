@@ -13,6 +13,8 @@ import {
 } from "@chakra-ui/react";
 
 import { GoMarkGithub } from "react-icons/go";
+import LoginFrom from "../components/loginForm";
+import RegisterForm from "../components/registerForm";
 
 interface SalFormProps {
 	currentForm: string;
@@ -61,11 +63,7 @@ const SalForm: FunctionComponent<SalFormProps> = ({ currentForm }) => {
 							Sign Up
 						</Button>
 					</ButtonGroup>
-					{currentForm === "sign in" ? (
-						<Text>Login Form</Text>
-					) : (
-						<Text>Register Form</Text>
-					)}
+					{currentForm === "sign in" ? <LoginFrom /> : <RegisterForm />}
 					<Flex
 						maxW={["70%", "65%", "95%"]}
 						w="full"
