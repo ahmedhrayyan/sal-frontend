@@ -1,4 +1,4 @@
-import { FunctionComponent } from "react";
+import { FC } from "react";
 import formImage from "../images/ask_form.jpg";
 import logo from "../images/logo.svg";
 
@@ -16,11 +16,11 @@ import { GoMarkGithub } from "react-icons/go";
 import LoginFrom from "../components/loginForm";
 import RegisterForm from "../components/registerForm";
 
-interface SalFormProps {
+interface AuthenticationProps {
 	currentForm: string;
 }
 
-const SalForm: FunctionComponent<SalFormProps> = ({ currentForm }) => {
+const Authentication: FC<AuthenticationProps> = ({ currentForm }) => {
 	return (
 		<Stack
 			direction="row"
@@ -112,4 +112,4 @@ const SalForm: FunctionComponent<SalFormProps> = ({ currentForm }) => {
 	);
 };
 
-export default SalForm;
+export default Authentication;

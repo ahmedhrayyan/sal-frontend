@@ -1,12 +1,12 @@
 import { ComponentStory, ComponentMeta } from "@storybook/react";
-import Form from "../../pages/Form";
+import Authentication from "../../pages/Authentication";
 
 export default {
 	title: "Pages/Form",
-	component: Form,
-} as ComponentMeta<typeof Form>;
+	component: Authentication,
+} as ComponentMeta<typeof Authentication>;
 
-const Template: ComponentStory<typeof Form> = (args) => <Form {...args} />;
+const Template: ComponentStory<typeof Authentication> = (args) => <Authentication {...args} />;
 
 export const Login = Template.bind({});
 Login.args = {
