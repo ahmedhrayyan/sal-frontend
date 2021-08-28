@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { useState, FC } from "react";
 import formImage from "../images/ask_form.jpg";
 import logo from "../images/logo.svg";
 
@@ -16,11 +16,8 @@ import { GoMarkGithub } from "react-icons/go";
 import LoginFrom from "../components/loginForm";
 import RegisterForm from "../components/registerForm";
 
-interface AuthenticationProps {
-	currentForm: string;
-}
-
-const Authentication: FC<AuthenticationProps> = ({ currentForm }) => {
+const Authentication: FC = () => {
+	const [currentForm, setCurrentForm] = useState("sign in");
 	return (
 		<Stack
 			direction="row"
@@ -52,6 +49,7 @@ const Authentication: FC<AuthenticationProps> = ({ currentForm }) => {
 							pr={currentForm === "sign in" ? "1em" : "2em"}
 							boxShadow={["sm", "md"]}
 							zIndex={currentForm === "sign in" ? "1" : "auto"}
+							onClick={() => setCurrentForm("sign in")}
 						>
 							Sign In
 						</Button>
@@ -59,6 +57,7 @@ const Authentication: FC<AuthenticationProps> = ({ currentForm }) => {
 							variant={currentForm === "sign up" ? "solid" : "white"}
 							pl={currentForm === "sign up" ? "1em" : "2em"}
 							boxShadow={["sm", "md"]}
+							onClick={() => setCurrentForm("sign up")}
 						>
 							Sign Up
 						</Button>

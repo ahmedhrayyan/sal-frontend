@@ -6,14 +6,8 @@ export default {
 	component: Authentication,
 } as ComponentMeta<typeof Authentication>;
 
-const Template: ComponentStory<typeof Authentication> = (args) => <Authentication {...args} />;
+const Template: ComponentStory<typeof Authentication> = (args) => (
+	<Authentication {...args} />
+);
 
-export const Login = Template.bind({});
-Login.args = {
-	currentForm: "sign in",
-};
-
-export const Register = Template.bind({});
-Register.args = {
-	currentForm: "sign up",
-};
+export const Default = Template.bind({});
