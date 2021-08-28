@@ -11,7 +11,12 @@ const overrides: ThemeOverride = {
       body: {
         bg: "gray.50",
         fontFamily: "proxima-soft, sans-serif",
-
+        input: {
+          bg: "white !important",
+          borderRadius: "20em !important",
+          boxShadow: ["sm", "md"],
+        },
+        "form button": { boxShadow: ["sm", "md"] },
       }
     }
   },
