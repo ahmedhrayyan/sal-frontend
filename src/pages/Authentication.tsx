@@ -16,8 +16,13 @@ import { GoMarkGithub } from "react-icons/go";
 import LoginFrom from "../components/loginForm";
 import RegisterForm from "../components/registerForm";
 
+enum Forms {
+	"signIn",
+	"signUp",
+}
+
 const Authentication: FC = () => {
-	const [currentForm, setCurrentForm] = useState("sign in");
+	const [currentForm, setCurrentForm] = useState<Forms>(Forms.signIn);
 	return (
 		<Stack
 			direction="row"
@@ -32,7 +37,7 @@ const Authentication: FC = () => {
 		>
 			<Flex flex={1} justify={"center"} alignItems="center" p=".9em" w="full">
 				<VStack
-					spacing={currentForm === "sign in" ? "4" : "2"}
+					spacing={currentForm === Forms.signIn ? "4" : "2"}
 					w={["100vw", "100vw", "full"]}
 					maxW={{ md: "xs" }}
 				>
@@ -45,24 +50,24 @@ const Authentication: FC = () => {
 					/>
 					<ButtonGroup spacing="-7" pb="4">
 						<Button
-							variant={currentForm === "sign in" ? "solid" : "white"}
-							pr={currentForm === "sign in" ? "1em" : "2em"}
+							variant={currentForm === Forms.signIn ? "solid" : "white"}
+							pr={currentForm === Forms.signIn ? "1em" : "2em"}
 							boxShadow={["sm", "md"]}
-							zIndex={currentForm === "sign in" ? "1" : "auto"}
-							onClick={() => setCurrentForm("sign in")}
+							zIndex={currentForm === Forms.signIn ? "1" : "auto"}
+							onClick={() => setCurrentForm(Forms.signIn)}
 						>
 							Sign In
 						</Button>
 						<Button
-							variant={currentForm === "sign up" ? "solid" : "white"}
-							pl={currentForm === "sign up" ? "1em" : "2em"}
+							variant={currentForm === Forms.signUp ? "solid" : "white"}
+							pl={currentForm === Forms.signUp ? "1em" : "2em"}
 							boxShadow={["sm", "md"]}
-							onClick={() => setCurrentForm("sign up")}
+							onClick={() => setCurrentForm(Forms.signUp)}
 						>
 							Sign Up
 						</Button>
 					</ButtonGroup>
-					{currentForm === "sign in" ? <LoginFrom /> : <RegisterForm />}
+					{currentForm === Forms.signIn ? <LoginFrom /> : <RegisterForm />}
 					<Flex
 						maxW={["70%", "65%", "95%"]}
 						w="full"
@@ -93,7 +98,7 @@ const Authentication: FC = () => {
 						minHeight="10"
 						leftIcon={<GoMarkGithub />}
 					>
-						Sign {currentForm === "sign in" ? "in" : "up"} with GitHub
+						Sign {currentForm === Forms.signIn ? "in" : "up"} with GitHub
 					</Button>
 				</VStack>
 			</Flex>
