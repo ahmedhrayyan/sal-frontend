@@ -4,6 +4,7 @@
 import { extendTheme, ThemeOverride } from "@chakra-ui/react";
 import Container from "./components/container";
 import Button from "./components/button";
+import Input from "./components/input";
 
 const overrides: ThemeOverride = {
   styles: {
@@ -11,12 +12,6 @@ const overrides: ThemeOverride = {
       body: {
         bg: "gray.50",
         fontFamily: "proxima-soft, sans-serif",
-        input: {
-          bg: "white !important",
-          borderRadius: "20em !important",
-          boxShadow: ["sm", "md"],
-        },
-        "form button": { boxShadow: ["sm", "md"] },
       }
     }
   },
@@ -31,7 +26,8 @@ const overrides: ThemeOverride = {
   },
   components: {
     Container,
-    Button
+    Button,
+		Input
   },
 };
 
