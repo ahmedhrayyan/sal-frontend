@@ -9,17 +9,21 @@ import theme from "./theme";
 // ref: https://chakra-ui.com/docs/migration#css-reset
 import "focus-visible/dist/focus-visible";
 import { BrowserRouter as Router } from "react-router-dom";
+import { Provider } from "react-redux";
+import store from "./redux";
 
 // Import & configure dotenv package
 require("dotenv").config();
 
 ReactDOM.render(
 	<React.StrictMode>
-		<Router>
-			<ChakraProvider theme={theme}>
-				<App />
-			</ChakraProvider>
-		</Router>
+		<Provider store={store}>
+			<Router>
+				<ChakraProvider theme={theme}>
+					<App />
+				</ChakraProvider>
+			</Router>
+		</Provider>
 	</React.StrictMode>,
 	document.getElementById("root")
 );
