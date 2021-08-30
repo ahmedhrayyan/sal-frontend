@@ -30,5 +30,3 @@ export interface APIData<T = any> {
 	};
 	success: boolean;
 }
-
-export type APIDelete = { success: true; deleted_id: number };
