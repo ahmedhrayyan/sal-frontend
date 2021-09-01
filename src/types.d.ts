@@ -1,5 +1,18 @@
 type LoadingStatus = "idle" | "pending" | "storing" | "failed" | "succeeded";
 
+type LoginData = {
+	username: string;
+	password: string;
+};
+
+type RegisterData = {
+	first_name: string;
+	last_name: string;
+	email: string;
+	password: string;
+	username: string;
+};
+
 type Question = {
 	accepted_answer: null | number;
 	answers_count: number;

@@ -16,15 +16,36 @@ export const client = axios.create({
 
 client.interceptors.response.use(
 	(res) => res,
-	(err) => {
-		toast(err.message);
-		return Promise.reject(err);
+	({ response, request }) => {
+		let message: string =
+			request.status === 0
+				? "Check your internet connection."
+				: request.status === 500
+				? "Internal Server Error, Try again later."
+				: response.data.message;
+		// handle unauthorized requests
+		if (request.status === 401) {
+			// give the user a more clear message
+			message = "Please login to continue.";
+			// the 401 error indicate that the token stored in local storage (if any) is not valid
+			localStorage.removeItem("token");
+		}
+		// show feedback to user
+		toast({
+			title: "Error",
+			description: message,
+			status: "error",
+			duration: 5000,
+			isClosable: true,
+		});
+		// throw response status as the error message, useful when detecting 401 errors in authSlice
+		throw new Error(request.status);
 	}
 );
 
-// schemas
-export const userSchema = new schema.Entity<User>("users");
+/* schemas */
 
+export const userSchema = new schema.Entity<User>("users");
 export const qSchema = new schema.Entity<Question>("questions", {
 	user: userSchema,
 });
