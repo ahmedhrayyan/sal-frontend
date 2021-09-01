@@ -22,12 +22,11 @@ const questionsAdapter = createEntityAdapter<Question>();
 
 const slice = createSlice({
 	name: "questions",
-	initialState: {
-		...questionsAdapter.getInitialState(),
-		fetchedPages: [] as number[],
+	initialState: questionsAdapter.getInitialState({
 		total: 0,
+		fetchedPages: [] as number[],
 		status: "idle" as LoadingStatus,
-	},
+	}),
 	reducers: {
 		questionAdded: questionsAdapter.upsertOne,
 		questionRemoved: questionsAdapter.removeOne,
