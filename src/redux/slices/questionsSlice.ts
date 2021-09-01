@@ -3,21 +3,17 @@ import {
 	createEntityAdapter,
 	createSlice,
 } from "@reduxjs/toolkit";
-import { normalize } from "normalizr";
-import { AppDispatch } from "..";
-import questionsAPI from "../../apis/questions";
-import { questionEntity } from "../schemas";
+import { AppDispatch, RootState } from "..";
+import qApi from "../../apis/questions";
 
 export const handleLoadQuestions = createAsyncThunk(
 	"questions/load",
-	async (page: number = 1) => {
-		const res = await await questionsAPI.fetchPage(page);
-		const normalized = normalize(res.data, { data: [questionEntity] });
-		return normalized;
-	},
+	(page: number = 1) => qApi.fetchPage(page),
 	{
-		condition: (page = 1, { getState }: any) => {
-			if (getState().questions.fetchedPages.indexOf(page) > -1) return false;
+		condition: (page = 1, { getState }) => {
+			const { questions } = getState() as RootState;
+			// don not make the request if the page has beed fetched
+			if (questions.fetchedPages.indexOf(page) > -1) return false;
 		},
 	}
 );
@@ -38,12 +34,11 @@ const slice = createSlice({
 	},
 	extraReducers: (builder) => {
 		builder
-			.addCase(handleLoadQuestions.fulfilled, (state, action) => {
+			.addCase(handleLoadQuestions.fulfilled, (state, { payload }) => {
 				state.status = "succeeded";
-				state.total = action.payload.result.meta.total;
-				state.fetchedPages.push(action.payload.result.meta.current_page);
-				if (action.payload.entities.questions)
-					questionsAdapter.upsertMany(state, action.payload.entities.questions);
+				state.total = payload.result.meta.total;
+				state.fetchedPages.push(payload.result.meta.current_page);
+				questionsAdapter.upsertMany(state, payload.entities.questions);
 			})
 			.addCase(handleLoadQuestions.pending, (state) => {
 				state.status = "pending";
@@ -59,8 +54,8 @@ const { questionAdded, questionRemoved } = slice.actions;
 export function handleDeleteQuestion(question: Question) {
 	return (dispatch: AppDispatch) => {
 		dispatch(questionRemoved(question.id));
-
-		return questionsAPI.remove(question.id).catch(() => {
+		return qApi.remove(question.id).catch(() => {
+			// incase of any error in deleting, add the question back the redux store
 			dispatch(questionAdded(question));
 		});
 	};
