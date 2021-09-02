@@ -3,17 +3,14 @@ import {
 	createEntityAdapter,
 	createSlice,
 } from "@reduxjs/toolkit";
-import { AppDispatch, RootState } from "..";
 import qApi from "../../apis/questions";
 
 export const handleLoadQuestions = createAsyncThunk(
 	"questions/load",
-	(page: number = 1) => qApi.fetchPage(page),
+	qApi.fetchPage,
 	{
-		condition: (page = 1, { getState }) => {
-			const { questions } = getState() as RootState;
-			// don not make the request if the page has beed fetched
-			if (questions.fetchedPages.indexOf(page) > -1) return false;
+		condition(page, { getState }) {
+			return getState().questions.fetchedPages.indexOf(page) === -1;
 		},
 	}
 );
@@ -51,7 +48,7 @@ const slice = createSlice({
 const { questionAdded, questionRemoved } = slice.actions;
 
 export function handleDeleteQuestion(question: Question) {
-	return (dispatch: AppDispatch) => {
+	return (dispatch: any) => {
 		dispatch(questionRemoved(question.id));
 		return qApi.remove(question.id).catch(() => {
 			// incase of any error in deleting, add the question back the redux store

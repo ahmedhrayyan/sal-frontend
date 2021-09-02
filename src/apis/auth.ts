@@ -2,12 +2,16 @@ import { client } from ".";
 
 type ResponseData = { success: boolean; token: string };
 
-function login(data: LoginData) {
-	return client.post<ResponseData>("/login", data);
+async function login(data: LoginData) {
+	const res = await client.post<ResponseData>("/login", data);
+	localStorage.setItem("token", res.data.token);
+	return res;
 }
 
-function register(data: RegisterData) {
-	return client.post<ResponseData>("/register", data);
+async function register(data: RegisterData) {
+	const res = await client.post<ResponseData>("/register", data);
+	localStorage.setItem("token", res.data.token);
+	return res;
 }
 
 const authApi = {
