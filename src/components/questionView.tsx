@@ -20,7 +20,7 @@ import UserAvatar from "./userAvatar";
 import AnswerView from "./answerView";
 import AnswerForm from "./answerForm";
 import { useState, useEffect } from "react";
-import { formatKNumbers, formatTimeAgo } from "../helpers/index";
+import { formatKNumbers, formatTimeAgo } from "../utils/helpers";
 
 interface QuestionViewProps {
 	question: any; //no redux yet
