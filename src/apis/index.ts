@@ -14,6 +14,13 @@ export const client = axios.create({
 	baseURL: API_ROOT,
 });
 
+client.interceptors.request.use((config) => {
+	// add Authorization to each request if token exists
+	const token = localStorage.getItem("token");
+	if (token) config.headers.Authorization = `Bearer ${token}`;
+	return config;
+});
+
 client.interceptors.response.use(
 	(res) => res,
 	(error) => {
@@ -43,7 +50,7 @@ client.interceptors.response.use(
 		});
 
 		// reject with request status, useful in detecting 401 errors in authSlice
-		return Promise.reject(status)
+		return Promise.reject(status);
 	}
 );
 
