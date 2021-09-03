@@ -11,6 +11,10 @@ export const handleLoadQuestions = createAsyncThunk("q/all", qApi.fetchPage, {
 	},
 });
 
+export const handleShowQuestion = createAsyncThunk("q/show", qApi.show, {
+	condition: (id, { getState }) => getState().questions.ids.indexOf(id) === -1,
+});
+
 export const handleDeleteQuestion = createAsyncThunk(
 	"q/delete",
 	(q: Question) => qApi.remove(q.id)
@@ -24,7 +28,6 @@ const slice = createSlice({
 		total: 0,
 		fetchedPages: [] as number[],
 		status: "idle" as LoadingStatus,
-		isMutating: false, // when doing any db mutations like deleting or adding
 	}),
 	reducers: {
 		questionAdded: qAdapter.upsertOne,
@@ -38,11 +41,9 @@ const slice = createSlice({
 				state.fetchedPages.push(payload.result.meta.current_page);
 				qAdapter.upsertMany(state, payload.entities.questions);
 			})
-			.addCase(handleLoadQuestions.pending, (state) => {
-				state.status = "pending";
-			})
-			.addCase(handleLoadQuestions.rejected, (state) => {
-				state.status = "failed";
+			.addCase(handleShowQuestion.fulfilled, (state, { payload }) => {
+				state.status = "succeeded";
+				qAdapter.upsertMany(state, payload.entities.questions);
 			})
 			.addCase(handleDeleteQuestion.pending, (state, { meta }) => {
 				qAdapter.removeOne(state, meta.arg.id);
@@ -50,7 +51,19 @@ const slice = createSlice({
 			.addCase(handleDeleteQuestion.rejected, (state, { meta }) => {
 				// put the question back in redux state incase it could not be deleted from the backend
 				qAdapter.addOne(state, meta.arg);
-			});
+			})
+			.addMatcher(
+				(action) => /^q\/.*\/pending$/.test(action.type), // matching questions pending actions
+				(state, { type }) => {
+					state.status = /update|add/.test(type) ? "mutating" : "pending"; // assign mutating to status in mutating actions
+				}
+			)
+			.addMatcher(
+				(action) => /^q\/.*\/rejected$/.test(action.type), // matching questions rejected actions
+				(state) => {
+					state.status = "failed";
+				}
+			);
 	},
 });
 

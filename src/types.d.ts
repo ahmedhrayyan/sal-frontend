@@ -1,4 +1,5 @@
-type LoadingStatus = "idle" | "pending" | "failed" | "succeeded";
+// mutating below refers to any db mutations like deleting or adding
+type LoadingStatus = "idle" | "pending" | "mutating" | "failed" | "succeeded";
 
 type LoginData = {
 	username: string;
