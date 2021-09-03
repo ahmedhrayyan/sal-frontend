@@ -23,6 +23,7 @@ const slice = createSlice({
 		total: 0,
 		fetchedPages: [] as number[],
 		status: "idle" as LoadingStatus,
+		isMutating: false, // when doing any db mutations like deleting or adding
 	}),
 	reducers: {
 		questionAdded: questionsAdapter.upsertOne,

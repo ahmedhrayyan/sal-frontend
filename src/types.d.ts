@@ -1,4 +1,4 @@
-type LoadingStatus = "idle" | "pending" | "storing" | "failed" | "succeeded";
+type LoadingStatus = "idle" | "pending" | "failed" | "succeeded";
 
 type LoginData = {
 	username: string;
