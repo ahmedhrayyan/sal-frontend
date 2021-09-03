@@ -1,4 +1,17 @@
-type LoadingStatus =  "idle" | "pending" | "storing" | "failed" | "succeeded";
+type LoadingStatus = "idle" | "pending" | "failed" | "succeeded";
+
+type LoginData = {
+	username: string;
+	password: string;
+};
+
+type RegisterData = {
+	first_name: string;
+	last_name: string;
+	email: string;
+	password: string;
+	username: string;
+};
 
 type Question = {
 	accepted_answer: null | number;
@@ -23,3 +36,13 @@ type User = {
 	username: string;
 };
 
+type Entity<T> = Record<number, T>;
+type Result<T = any> = {
+	success: boolean;
+	data: T;
+	meta: {
+		current_page: number;
+		per_page: number;
+		total: number;
+	};
+};

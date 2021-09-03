@@ -22,7 +22,7 @@ import { FunctionComponent } from "react";
 import { BiUpvote, BiDownvote } from "react-icons/bi";
 import { RiQuestionAnswerLine } from "react-icons/ri";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { formatKNumbers, formatTimeAgo } from "../helpers/index";
+import { formatKNumbers, formatTimeAgo } from "../utils/helpers";
 
 interface AnswerViewProps {
   answer: any; // update later

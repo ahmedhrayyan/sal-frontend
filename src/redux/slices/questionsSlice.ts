@@ -3,67 +3,55 @@ import {
 	createEntityAdapter,
 	createSlice,
 } from "@reduxjs/toolkit";
-import { normalize } from "normalizr";
-import { AppDispatch } from "..";
-import questionsAPI from "../../apis/questions";
-import { questionEntity } from "../schemas";
+import qApi from "../../apis/questions";
 
-export const handleLoadQuestions = createAsyncThunk(
-	"questions/load",
-	async (page: number = 1) => {
-		const res = await await questionsAPI.fetchPage(page);
-		const normalized = normalize(res.data, { data: [questionEntity] });
-		return normalized;
+export const handleLoadQuestions = createAsyncThunk("q/all", qApi.fetchPage, {
+	condition(page, { getState }) {
+		return getState().questions.fetchedPages.indexOf(page) === -1;
 	},
-	{
-		condition: (page = 1, { getState }: any) => {
-			if (getState().questions.fetchedPages.indexOf(page) > -1) return false;
-		},
-	}
+});
+
+export const handleDeleteQuestion = createAsyncThunk(
+	"q/delete",
+	(q: Question) => qApi.remove(q.id)
 );
 
-const questionsAdapter = createEntityAdapter<Question>();
+const qAdapter = createEntityAdapter<Question>();
 
 const slice = createSlice({
 	name: "questions",
-	initialState: {
-		...questionsAdapter.getInitialState(),
-		fetchedPages: [] as number[],
+	initialState: qAdapter.getInitialState({
 		total: 0,
+		fetchedPages: [] as number[],
 		status: "idle" as LoadingStatus,
-	},
+		isMutating: false, // when doing any db mutations like deleting or adding
+	}),
 	reducers: {
-		questionAdded: questionsAdapter.upsertOne,
-		questionRemoved: questionsAdapter.removeOne,
+		questionAdded: qAdapter.upsertOne,
+		questionRemoved: qAdapter.removeOne,
 	},
 	extraReducers: (builder) => {
 		builder
-			.addCase(handleLoadQuestions.fulfilled, (state, action) => {
+			.addCase(handleLoadQuestions.fulfilled, (state, { payload }) => {
 				state.status = "succeeded";
-				state.total = action.payload.result.meta.total;
-				state.fetchedPages.push(action.payload.result.meta.current_page);
-				if (action.payload.entities.questions)
-					questionsAdapter.upsertMany(state, action.payload.entities.questions);
+				state.total = payload.result.meta.total;
+				state.fetchedPages.push(payload.result.meta.current_page);
+				qAdapter.upsertMany(state, payload.entities.questions);
 			})
 			.addCase(handleLoadQuestions.pending, (state) => {
 				state.status = "pending";
 			})
 			.addCase(handleLoadQuestions.rejected, (state) => {
 				state.status = "failed";
+			})
+			.addCase(handleDeleteQuestion.pending, (state, { meta }) => {
+				qAdapter.removeOne(state, meta.arg.id);
+			})
+			.addCase(handleDeleteQuestion.rejected, (state, { meta }) => {
+				// put the question back in redux state incase it could not be deleted from the backend
+				qAdapter.addOne(state, meta.arg);
 			});
 	},
 });
-
-const { questionAdded, questionRemoved } = slice.actions;
-
-export function handleDeleteQuestion(question: Question) {
-	return (dispatch: AppDispatch) => {
-		dispatch(questionRemoved(question.id));
-
-		return questionsAPI.remove(question.id).catch(() => {
-			dispatch(questionAdded(question));
-		});
-	};
-}
 
 export default slice.reducer;

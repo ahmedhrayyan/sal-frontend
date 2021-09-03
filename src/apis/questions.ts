@@ -1,16 +1,32 @@
-import { APIData, client } from ".";
+import { normalize } from "normalizr";
+import { client, qSchema } from ".";
 
-function fetchPage(page: number) {
-	return client.get<APIData<Question[]>>(`/questions?page=${page}`);
+// defining normalize return type manually as normalize has bad typescript support
+// all types used here are defined in ./src/types.d.ts file
+type Normalized<T = Result> = {
+	entities: { questions: Entity<Question>; users: Entity<User> };
+	result: T;
+};
+
+async function fetchPage(page: number) {
+	const { data } = await client.get(`/questions?page=${page}`);
+	return normalize(data, { data: [qSchema] }) as Normalized;
+}
+
+async function show(id: number) {
+	const { data } = await client.get(`/questions/${id}`);
+	// omit (remove) meta from Result as response here has no meta attribute
+	return normalize(data, { data: qSchema }) as Normalized<Omit<Result, "meta">>;
 }
 
 function remove(id: number) {
-	return client.delete(`/questions/${id}`)
+	return client.delete(`/questions/${id}`);
 }
 
-const questionsAPI = {
+const qApi = {
 	fetchPage,
-	remove
-}
+	show,
+	remove,
+};
 
-export default questionsAPI;
+export default qApi;
