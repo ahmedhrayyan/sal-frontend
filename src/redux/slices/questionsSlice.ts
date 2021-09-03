@@ -5,29 +5,30 @@ import {
 } from "@reduxjs/toolkit";
 import qApi from "../../apis/questions";
 
-export const handleLoadQuestions = createAsyncThunk(
-	"questions/load",
-	qApi.fetchPage,
-	{
-		condition(page, { getState }) {
-			return getState().questions.fetchedPages.indexOf(page) === -1;
-		},
-	}
+export const handleLoadQuestions = createAsyncThunk("q/all", qApi.fetchPage, {
+	condition(page, { getState }) {
+		return getState().questions.fetchedPages.indexOf(page) === -1;
+	},
+});
+
+export const handleDeleteQuestion = createAsyncThunk(
+	"q/delete",
+	(q: Question) => qApi.remove(q.id)
 );
 
-const questionsAdapter = createEntityAdapter<Question>();
+const qAdapter = createEntityAdapter<Question>();
 
 const slice = createSlice({
 	name: "questions",
-	initialState: questionsAdapter.getInitialState({
+	initialState: qAdapter.getInitialState({
 		total: 0,
 		fetchedPages: [] as number[],
 		status: "idle" as LoadingStatus,
 		isMutating: false, // when doing any db mutations like deleting or adding
 	}),
 	reducers: {
-		questionAdded: questionsAdapter.upsertOne,
-		questionRemoved: questionsAdapter.removeOne,
+		questionAdded: qAdapter.upsertOne,
+		questionRemoved: qAdapter.removeOne,
 	},
 	extraReducers: (builder) => {
 		builder
@@ -35,27 +36,22 @@ const slice = createSlice({
 				state.status = "succeeded";
 				state.total = payload.result.meta.total;
 				state.fetchedPages.push(payload.result.meta.current_page);
-				questionsAdapter.upsertMany(state, payload.entities.questions);
+				qAdapter.upsertMany(state, payload.entities.questions);
 			})
 			.addCase(handleLoadQuestions.pending, (state) => {
 				state.status = "pending";
 			})
 			.addCase(handleLoadQuestions.rejected, (state) => {
 				state.status = "failed";
+			})
+			.addCase(handleDeleteQuestion.pending, (state, { meta }) => {
+				qAdapter.removeOne(state, meta.arg.id);
+			})
+			.addCase(handleDeleteQuestion.rejected, (state, { meta }) => {
+				// put the question back in redux state incase it could not be deleted from the backend
+				qAdapter.addOne(state, meta.arg);
 			});
 	},
 });
-
-const { questionAdded, questionRemoved } = slice.actions;
-
-export function handleDeleteQuestion(question: Question) {
-	return (dispatch: any) => {
-		dispatch(questionRemoved(question.id));
-		return qApi.remove(question.id).catch(() => {
-			// incase of any error in deleting, add the question back the redux store
-			dispatch(questionAdded(question));
-		});
-	};
-}
 
 export default slice.reducer;
