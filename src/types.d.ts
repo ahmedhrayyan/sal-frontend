@@ -1,4 +1,5 @@
-type LoadingStatus = "idle" | "pending" | "failed" | "succeeded";
+// mutating below refers to any db mutations like deleting or adding
+type LoadingStatus = "idle" | "pending" | "mutating" | "failed" | "succeeded";
 
 type LoginData = {
 	username: string;
@@ -13,6 +14,8 @@ type RegisterData = {
 	username: string;
 };
 
+type Vote = 0 | 1 | 2; // 0 for unvote, 1 for upvote and 2 for downvote
+
 type Question = {
 	accepted_answer: null | number;
 	answers_count: number;
@@ -22,7 +25,7 @@ type Question = {
 	id: number;
 	upvotes: number;
 	user: number;
-	viewer_vote: null;
+	viewer_vote: null | boolean;
 };
 
 type User = {
