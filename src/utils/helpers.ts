@@ -20,29 +20,3 @@ export const formatKNumbers = (num: number) => {
 	// $: to match the end. \: escape sequence.
 	return num > 999 ? `${(num / 1000).toFixed(1).replace(/\.0$/, "")}K` : num;
 };
-
-/** Alter item like how a call to vote endpoint would, useful for optimistic updates */
-export function changeVote(
-	item: { downvotes: number; upvotes: number; viewer_vote: null | boolean },
-	vote: Vote
-) {
-	switch (vote) {
-		case 0:
-			// handle removing vote
-			if (item.viewer_vote === false) item.downvotes -= 1;
-			else if (item.viewer_vote) item.upvotes -= 1;
-			item.viewer_vote = null;
-			break;
-		case 1:
-			// handle upvote
-			if (item.viewer_vote === false) item.downvotes -= 1;
-			item.upvotes += 1;
-			item.viewer_vote = true;
-			break;
-		case 2:
-			// handle downvote
-			if (item.viewer_vote) item.upvotes -= 1;
-			item.downvotes += 1;
-			item.viewer_vote = false;
-	}
-}
