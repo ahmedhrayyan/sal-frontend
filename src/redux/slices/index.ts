@@ -1,10 +1,10 @@
 import { combineReducers } from "redux";
 import questions from "./questionsSlice";
-import auth from "./authSlice";
+import profile from "./profileSlice";
 
 const rootReducer = combineReducers({
 	questions,
-	auth
+	profile
 });
 
 export default rootReducer;

@@ -39,7 +39,12 @@ type User = {
 	username: string;
 };
 
-type Entity<T> = Record<number, T>;
+type Profile = User & {
+	id: number;
+	email: string;
+	phone: null | string;
+};
+
 type Result<T = any> = {
 	success: boolean;
 	data: T;
