@@ -1,5 +1,4 @@
 import { createStandaloneToast } from "@chakra-ui/react";
-import { schema } from "normalizr";
 import axios from "axios";
 import theme from "../theme";
 
@@ -53,10 +52,3 @@ client.interceptors.response.use(
 		return Promise.reject(status);
 	}
 );
-
-/* schemas */
-
-export const userSchema = new schema.Entity<User>("users");
-export const qSchema = new schema.Entity<Question>("questions", {
-	user: userSchema,
-});
