@@ -23,10 +23,10 @@ export const handleDeleteQuestion = createAsyncThunk(
 	(q: Question) => qApi.remove(q.id)
 );
 
-type VoteArgs = { question: Question; vote: Vote };
+type VoteArg = { question: Question; vote: Vote };
 export const handleVoteQuestion = createAsyncThunk(
 	"q/vote",
-	({ question, vote }: VoteArgs) => qApi.vote(question.id, vote)
+	({ question, vote }: VoteArg) => qApi.vote(question.id, vote)
 );
 
 export const handleAddQuestion = createAsyncThunk("q/add", qApi.store);
