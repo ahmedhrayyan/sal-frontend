@@ -2,18 +2,20 @@ import {
 	createAsyncThunk,
 	createEntityAdapter,
 	createSlice,
+	isFulfilled,
+	isPending,
+	isRejected,
 } from "@reduxjs/toolkit";
 import qApi from "../../apis/questions";
-import { changeVote } from "../../utils/helpers";
+import { changeVote } from "../../utils/redux";
 
 export const handleLoadQuestions = createAsyncThunk("q/all", qApi.fetchPage, {
-	condition(page, { getState }) {
-		return getState().questions.fetchedPages.indexOf(page) === -1;
-	},
+	condition: (page, { getState }) =>
+		!getState().questions.fetchedPages.includes(page),
 });
 
 export const handleShowQuestion = createAsyncThunk("q/show", qApi.show, {
-	condition: (id, { getState }) => getState().questions.ids.indexOf(id) === -1,
+	condition: (id, { getState }) => !getState().questions.ids.includes(id),
 });
 
 export const handleDeleteQuestion = createAsyncThunk(
@@ -21,11 +23,10 @@ export const handleDeleteQuestion = createAsyncThunk(
 	(q: Question) => qApi.remove(q.id)
 );
 
+type VoteArg = { question: Question; vote: Vote };
 export const handleVoteQuestion = createAsyncThunk(
 	"q/vote",
-	({ question, vote }: { question: Question; vote: Vote }) => {
-		return qApi.vote(question.id, vote);
-	}
+	({ question, vote }: VoteArg) => qApi.vote(question.id, vote)
 );
 
 export const handleAddQuestion = createAsyncThunk("q/add", qApi.store);
@@ -60,27 +61,41 @@ const slice = createSlice({
 			})
 			.addCase(handleVoteQuestion.pending, (state, { meta }) => {
 				const { question, vote } = meta.arg;
-				const q = state.entities[question.id];
-				if (q) changeVote(q, vote);
+				changeVote(state.entities[question.id] as any, vote);
 			})
 			.addCase(handleVoteQuestion.rejected, (state, { meta }) => {
 				qAdapter.upsertOne(state, meta.arg.question); // put the original question back to the redux state incase of vote errors
 			})
 			.addMatcher(
-				(action) => /^q\/(show|add|update)\/fulfilled$/.test(action.type), // match fulfilled actions in show, add and update
+				isFulfilled(
+					handleShowQuestion,
+					handleAddQuestion,
+					handleUpdateQuestion
+				),
 				(state, { payload }) => {
 					state.status = "succeeded";
 					qAdapter.upsertMany(state, payload.entities.questions);
 				}
 			)
 			.addMatcher(
-				({ type }) => /^q.*pending$/.test(type) && !/delete|vote/.test(type), // match q pending actions except delete and vote
-				(state, { type }) => {
-					state.status = /update|add/.test(type) ? "mutating" : "pending"; // assign mutating to status in mutating actions
+				isPending(handleLoadQuestions, handleShowQuestion),
+				(state) => {
+					state.status = "pending";
 				}
 			)
 			.addMatcher(
-				({ type }) => /^q.*rejected$/.test(type) && !/delete|vote/.test(type), // match q rejected actions except delete and vote
+				isPending(handleAddQuestion, handleUpdateQuestion),
+				(state) => {
+					state.status = "mutating";
+				}
+			)
+			.addMatcher(
+				isRejected(
+					handleLoadQuestions,
+					handleShowQuestion,
+					handleAddQuestion,
+					handleUpdateQuestion
+				),
 				(state) => {
 					state.status = "failed";
 				}
