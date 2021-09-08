@@ -3,7 +3,9 @@ import {
 	createAsyncThunk,
 	createSlice,
 	isFulfilled,
+	createSelector,
 } from "@reduxjs/toolkit";
+import { RootState } from "..";
 import profileApi from "../../apis/profile";
 import { isPendingAction, isRejectedAction } from "../../utils/redux";
 
@@ -64,5 +66,14 @@ const slice = createSlice({
 			});
 	},
 });
+
+export const selectProfile = createSelector(
+	(state: RootState) => state.profile.user,
+	(state: RootState) => state.users.entities,
+	(username, users) => {
+		if (!username) return null;
+		return users[username] as Profile;
+	}
+);
 
 export default slice.reducer;
