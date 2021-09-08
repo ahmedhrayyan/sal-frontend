@@ -1,13 +1,11 @@
 import {
+	createAction,
 	createAsyncThunk,
 	createSlice,
 	isFulfilled,
 } from "@reduxjs/toolkit";
 import profileApi from "../../apis/profile";
-import {
-	isPendingAction,
-	isRejectedAction,
-} from "../../utils/redux";
+import { isPendingAction, isRejectedAction } from "../../utils/redux";
 
 export const handleShowProfile = createAsyncThunk(
 	"profile/show",
@@ -23,6 +21,8 @@ export const handleRegister = createAsyncThunk(
 	profileApi.register
 );
 
+export const handleLogout = createAction("profile/logout");
+
 const slice = createSlice({
 	name: "profile",
 	initialState: {
@@ -33,6 +33,10 @@ const slice = createSlice({
 	reducers: {},
 	extraReducers: (builder) => {
 		builder
+			.addCase(handleLogout, (state) => {
+				state.token = null;
+				state.user = null;
+			})
 			.addMatcher(
 				isFulfilled(handleLogin, handleRegister),
 				(state, { payload }) => {
@@ -52,7 +56,11 @@ const slice = createSlice({
 			})
 			.addMatcher(isRejectedAction(), (state, { type, error }) => {
 				if (type.startsWith("profile/")) state.status = "failed"; // handle profile actions errors
-				if (error.message === "401") state.token = null; // handle unauthorized requests error in all actions
+				// handle unauthorized requests error in all actions
+				if (error.message === "401") {
+					state.token = null;
+					state.user = null;
+				}
 			});
 	},
 });
