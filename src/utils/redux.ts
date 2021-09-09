@@ -36,23 +36,23 @@ type PendingAction = ReturnType<GenericAsyncThunk["pending"]>;
 type RejectedAction = ReturnType<GenericAsyncThunk["rejected"]>;
 type FulfilledAction = ReturnType<GenericAsyncThunk["fulfilled"]>;
 
-function hasPrefix(action: AnyAction, prefix?: string) {
-	return prefix && action.type.startsWith(prefix);
+function hasPrefix(action: AnyAction, prefix: string) {
+	return action.type.startsWith(prefix);
 }
 
-export function isPendingAction(prefix?: string) {
+export function isPendingAction(prefix = "") {
 	return (action: AnyAction): action is PendingAction => {
 		return hasPrefix(action, prefix) && action.type.endsWith("/pending");
 	};
 }
 
-export function isRejectedAction(prefix?: string) {
+export function isRejectedAction(prefix = "") {
 	return (action: AnyAction): action is RejectedAction => {
 		return hasPrefix(action, prefix) && action.type.endsWith("/rejected");
 	};
 }
 
-export function isFulfilledAction(prefix?: string) {
+export function isFulfilledAction(prefix = "") {
 	return (action: AnyAction): action is FulfilledAction => {
 		return hasPrefix(action, prefix) && action.type.endsWith("/fulfilled");
 	};
