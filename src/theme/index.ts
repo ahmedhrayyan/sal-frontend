@@ -21,7 +21,7 @@ const overrides: ThemeOverride = {
       50: "#F5F5F5", //bg color
     },
     blue: {
-      500: "#0078D4", //primary
+      400: "#0078D4", //primary
     },
   },
   components: {

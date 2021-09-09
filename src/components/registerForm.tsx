@@ -27,16 +27,16 @@ const RegisterForm: FC = () => {
 		<VStack
 			as="form"
 			onSubmit={handleSubmit(onRegisterHandler)}
-			spacing={[2]}
+			spacing="2.5"
 			w={"full"}
-			maxW={"xs"}
+			maxW={["90%", "70%", "100%"]}
+			mx="auto"
 		>
 			<HStack align="flex-start">
 				<FormControl isInvalid={!!errors.first_name}>
 					<FormLabel srOnly>First name</FormLabel>
 					<Input
 						placeholder="First name"
-						autoFocus
 						{...register("first_name", {
 							required: validationMsgs["required"],
 						})}

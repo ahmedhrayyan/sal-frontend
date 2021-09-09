@@ -24,13 +24,13 @@ const LoginForm: FC = () => {
 			as="form"
 			w="full"
 			maxW={["90%", "70%", "100%"]}
-			spacing="2"
+			mx="auto"
+			spacing="2.5"
 			onSubmit={handleSubmit(onLoginHandler)}
 		>
 			<FormControl isInvalid={!!errors.username}>
 				<FormLabel srOnly>Username</FormLabel>
 				<Input
-					autoFocus
 					placeholder="Username"
 					{...register("username", { required: validationMsgs["required"] })}
 				/>
