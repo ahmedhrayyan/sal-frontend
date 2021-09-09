@@ -2,7 +2,7 @@ import { ComponentStory, ComponentMeta } from "@storybook/react";
 import Authentication from "../../pages/Authentication";
 
 export default {
-	title: "Pages/Form",
+	title: "Pages/Authentication",
 	component: Authentication,
 } as ComponentMeta<typeof Authentication>;
 

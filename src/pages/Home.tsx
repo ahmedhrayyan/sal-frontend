@@ -1,8 +1,8 @@
 import { Center, VStack } from "@chakra-ui/react";
 import { FunctionComponent } from "react";
 
-import QuestionForm from "../components/questionForm";
-import QuestionView from "../components/questionView";
+import QuestionForm from "../components/QuestionForm";
+import QuestionView from "../components/QuestionView";
 
 interface HomeProps {}
 export const currentUser = {

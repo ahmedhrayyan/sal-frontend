@@ -1,5 +1,5 @@
 import { Button, Stack, Center } from "@chakra-ui/react";
-import QuestionView from "../components/questionView";
+import QuestionView from "../components/QuestionView";
 import { FunctionComponent } from "react";
 
 interface QuestionViewProps {

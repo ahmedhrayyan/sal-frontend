@@ -13,8 +13,8 @@ import {
 } from "@chakra-ui/react";
 
 import { GoMarkGithub } from "react-icons/go";
-import LoginFrom from "../components/loginForm";
-import RegisterForm from "../components/registerForm";
+import LoginFrom from "../components/LoginForm";
+import RegisterForm from "../components/RegisterForm";
 
 enum Forms {
 	"signIn",
