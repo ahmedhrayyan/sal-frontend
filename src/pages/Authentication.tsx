@@ -1,7 +1,6 @@
 import { useState, FC } from "react";
 import formImage from "../images/ask_form.jpg";
 import logo from "../images/logo.svg";
-
 import {
 	Button,
 	VStack,
@@ -9,20 +8,19 @@ import {
 	Text,
 	Stack,
 	Image,
-	ButtonGroup,
+	Tabs,
+	TabList,
+	Tab,
+	TabPanels,
+	TabPanel,
 } from "@chakra-ui/react";
 
 import { GoMarkGithub } from "react-icons/go";
 import LoginFrom from "../components/loginForm";
 import RegisterForm from "../components/registerForm";
 
-enum Forms {
-	"signIn",
-	"signUp",
-}
-
 const Authentication: FC = () => {
-	const [currentForm, setCurrentForm] = useState<Forms>(Forms.signIn);
+	const [tabIndex, setTabIndex] = useState(0);
 	return (
 		<Stack
 			direction="row"
@@ -37,37 +35,41 @@ const Authentication: FC = () => {
 		>
 			<Flex flex={1} justify={"center"} alignItems="center" p=".9em" w="full">
 				<VStack
-					spacing={currentForm === Forms.signIn ? "4" : "2"}
+					spacing={tabIndex === 0 ? "4" : "2"}
 					w={["100vw", "100vw", "full"]}
 					maxW={{ md: "xs" }}
 				>
 					<Image
 						src={logo}
 						boxSize="6em"
-						maxW="70px"
+						maxW="100px"
 						mt="-6"
 						filter="saturate(100%) brightness(0%)" // change color to black
 					/>
-					<ButtonGroup spacing="-7" pb="4">
-						<Button
-							variant={currentForm === Forms.signIn ? "solid" : "white"}
-							pr={currentForm === Forms.signIn ? "1em" : "2em"}
+					<Tabs
+						onChange={(index) => setTabIndex(index)}
+						variant="solid-rounded"
+						w="100%"
+						textAlign="center"
+					>
+						<TabList
+							d="inline-flex"
+							borderRadius="full"
+							bgColor="white"
 							boxShadow={["sm", "md"]}
-							zIndex={currentForm === Forms.signIn ? "1" : "auto"}
-							onClick={() => setCurrentForm(Forms.signIn)}
 						>
-							Sign In
-						</Button>
-						<Button
-							variant={currentForm === Forms.signUp ? "solid" : "white"}
-							pl={currentForm === Forms.signUp ? "1em" : "2em"}
-							boxShadow={["sm", "md"]}
-							onClick={() => setCurrentForm(Forms.signUp)}
-						>
-							Sign Up
-						</Button>
-					</ButtonGroup>
-					{currentForm === Forms.signIn ? <LoginFrom /> : <RegisterForm />}
+							<Tab>Sign In</Tab>
+							<Tab>Sign Up</Tab>
+						</TabList>
+						<TabPanels mt="6">
+							<TabPanel p="0">
+								<LoginFrom />
+							</TabPanel>
+							<TabPanel p="0">
+								<RegisterForm />
+							</TabPanel>
+						</TabPanels>
+					</Tabs>
 					<Flex
 						maxW={["70%", "65%", "95%"]}
 						w="full"
@@ -98,7 +100,7 @@ const Authentication: FC = () => {
 						minHeight="10"
 						leftIcon={<GoMarkGithub />}
 					>
-						Sign {currentForm === Forms.signIn ? "in" : "up"} with GitHub
+						Sign {tabIndex === 0 ? "in" : "up"} with GitHub
 					</Button>
 				</VStack>
 			</Flex>

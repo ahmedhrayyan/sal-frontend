@@ -4,9 +4,6 @@ const Button: ComponentStyleConfig = {
   baseStyle: {
     rounded: "full",
   },
-  defaultProps: {
-    colorScheme: "blue",
-  },
   variants: {
     black: {
       color: "white",
