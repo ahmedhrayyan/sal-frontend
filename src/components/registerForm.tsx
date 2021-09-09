@@ -12,16 +12,22 @@ import {
 } from "@chakra-ui/react";
 import { validationMsgs } from "../data";
 import { emailRegExp } from "../utils/helpers";
+import { useAppDispatch, useAppSelector } from "../utils/hooks";
+import { handleRegister } from "../redux/slices/profileSlice";
 
 const RegisterForm: FC = () => {
+	const status = useAppSelector(state => state.profile.status);
+	const dispatch = useAppDispatch();
+
 	const {
 		register,
 		handleSubmit,
 		formState: { errors },
 	} = useForm<RegisterData>();
 
-	const onRegisterHandler: SubmitHandler<RegisterData> = (data) =>
-		console.log(data);
+	const onRegisterHandler: SubmitHandler<RegisterData> = (data) => {
+		dispatch(handleRegister(data));
+	}
 
 	return (
 		<VStack
@@ -93,7 +99,7 @@ const RegisterForm: FC = () => {
 				<FormErrorMessage>{errors.password?.message}</FormErrorMessage>
 			</FormControl>
 
-			<Button w="40" h="10" type="submit">
+			<Button w="40" h="10" type="submit" isLoading={status === "pending"}>
 				Sign up
 			</Button>
 		</VStack>
