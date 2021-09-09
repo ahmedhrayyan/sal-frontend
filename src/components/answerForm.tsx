@@ -5,7 +5,7 @@ import {
   useDisclosure,
   Divider,
 } from "@chakra-ui/react";
-import { FunctionComponent, FormEvent, useState } from "react";
+import { FC, FormEvent, useState } from "react";
 
 import AddForm from "./addForm";
 
@@ -13,7 +13,7 @@ interface AnswerFormProps {
   user: any;
 }
 
-const AnswerForm: FunctionComponent<AnswerFormProps> = ({ user }) => {
+const AnswerForm: FC<AnswerFormProps> = ({ user }) => {
   const { isOpen, onOpen, onClose } = useDisclosure(); // Modal
   const [textareaValue, setTextareaValue] = useState("");
 
