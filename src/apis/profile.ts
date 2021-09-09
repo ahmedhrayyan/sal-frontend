@@ -14,13 +14,13 @@ type AuthRes = { success: boolean; token: string };
 async function login(data: LoginData) {
 	const res = await client.post<AuthRes>("/login", data);
 	localStorage.setItem("token", res.data.token);
-	return res;
+	return res.data;
 }
 
 async function register(data: RegisterData) {
 	const res = await client.post<AuthRes>("/register", data);
 	localStorage.setItem("token", res.data.token);
-	return res;
+	return res.data;
 }
 
 async function showProfile() {
