@@ -1,20 +1,23 @@
 import { FC } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { Button, VStack, FormControl, Input } from "@chakra-ui/react";
-
-type Inputs = {
-	email: string;
-	password: string;
-};
+import {
+	Button,
+	VStack,
+	FormControl,
+	FormLabel,
+	FormErrorMessage,
+	Input,
+} from "@chakra-ui/react";
+import { validationMsgs } from "../data";
 
 const LoginForm: FC = () => {
 	const {
 		register,
 		handleSubmit,
 		formState: { errors },
-	} = useForm<Inputs>();
+	} = useForm<LoginData>();
 
-	const onLoginHandler: SubmitHandler<Inputs> = (data) => console.log(data);
+	const onLoginHandler: SubmitHandler<LoginData> = (data) => console.log(data);
 
 	return (
 		<VStack
@@ -24,23 +27,29 @@ const LoginForm: FC = () => {
 			spacing="2"
 			onSubmit={handleSubmit(onLoginHandler)}
 		>
-			{/** !! = boolean */}
-			<FormControl isInvalid={!!errors.email}>
+			<FormControl isInvalid={!!errors.username}>
+				<FormLabel srOnly>Username</FormLabel>
 				<Input
-					type="email"
 					autoFocus
-					placeholder="Email"
-					{...register("email", { required: "This is required" })}
+					placeholder="Username"
+					{...register("username", { required: validationMsgs["required"] })}
 				/>
+				<FormErrorMessage>{errors.username?.message}</FormErrorMessage>
 			</FormControl>
 			<FormControl isInvalid={!!errors.password}>
+				<FormLabel srOnly>Password</FormLabel>
 				<Input
 					type="password"
 					placeholder="Password"
 					{...register("password", {
-						required: "This is required",
+						required: validationMsgs["required"],
+						minLength: {
+							value: 8,
+							message: validationMsgs["shortPw"],
+						},
 					})}
 				/>
+				<FormErrorMessage>{errors.password?.message}</FormErrorMessage>
 			</FormControl>
 			<Button w="40" h="10" type="submit">
 				Sign in
