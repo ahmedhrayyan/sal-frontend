@@ -1,4 +1,4 @@
-import { FunctionComponent, FormEvent } from "react";
+import { FC, FormEvent } from "react";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 
 import {
@@ -42,7 +42,7 @@ type Inputs = {
   image: any;
 };
 
-const AddForm: FunctionComponent<AddFormProps> = ({
+const AddForm: FC<AddFormProps> = ({
   user,
   isQuestion,
   hasImageFeature,
@@ -74,11 +74,11 @@ const AddForm: FunctionComponent<AddFormProps> = ({
       size="xl"
       scrollBehavior="inside"
       useInert={false} //hide all except modal for screen readers
-      
+
     >
       <ModalOverlay />
       <ModalContent>
-        
+
         <ModalHeader>
           <UserAvatar
             name={user.full_name}

@@ -1,12 +1,12 @@
 import {
-	FunctionComponent,
+	FC,
 	useEffect,
 	useRef,
 	TextareaHTMLAttributes,
   FocusEventHandler
 } from "react";
 
-const AutoTextArea: FunctionComponent = (
+const AutoTextArea: FC = (
 	props: TextareaHTMLAttributes<HTMLTextAreaElement>
 ) => {
 	const textareaRef = useRef<HTMLTextAreaElement | null>(null);

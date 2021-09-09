@@ -1,4 +1,4 @@
-import { FunctionComponent } from "react";
+import { FC } from "react";
 import { Text, Stack, Avatar, HStack } from "@chakra-ui/react";
 
 interface UserAvatarProps {
@@ -7,7 +7,7 @@ interface UserAvatarProps {
   title: string;
 }
 
-const UserAvatar: FunctionComponent<UserAvatarProps> = ({
+const UserAvatar: FC<UserAvatarProps> = ({
   name,
   title = " ",
   imgSrc = "",

@@ -1,5 +1,5 @@
 import { Center, VStack } from "@chakra-ui/react";
-import { FunctionComponent } from "react";
+import { FC } from "react";
 
 import QuestionForm from "../components/questionForm";
 import QuestionView from "../components/questionView";
@@ -67,7 +67,7 @@ export const fakeQuestion = {
 };
 
 // add props after redux
-const Home: FunctionComponent = () => {
+const Home: FC = () => {
 	return (
 		<Center>
 			<VStack maxW="xl" w="full" spacing="6">
