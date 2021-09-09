@@ -2,9 +2,7 @@ import {
   Box,
   Button,
   HStack,
-  Icon,
   Text,
-  Flex,
   Menu,
   MenuButton,
   MenuList,
@@ -12,15 +10,12 @@ import {
   ButtonGroup,
   Spacer,
   IconButton,
-  Divider,
   useBreakpointValue,
   Stack,
   Avatar,
-  VStack,
 } from "@chakra-ui/react";
 import { FC } from "react";
 import { BiUpvote, BiDownvote } from "react-icons/bi";
-import { RiQuestionAnswerLine } from "react-icons/ri";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { formatKNumbers, formatTimeAgo } from "../utils/helpers";
 
