@@ -1,13 +1,13 @@
 import { Button, Stack, Center } from "@chakra-ui/react";
 import QuestionView from "../components/QuestionView";
-import { FunctionComponent } from "react";
+import { FC } from "react";
 
 interface QuestionViewProps {
   question: any; //no redux yet
   authToken: string;
   currentUser: any;
 }
-const Question: FunctionComponent<QuestionViewProps> = ({
+const Question: FC<QuestionViewProps> = ({
   question,
   currentUser,
 }) => {
