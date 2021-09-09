@@ -4,7 +4,6 @@ import { FC } from "react";
 import QuestionForm from "../components/questionForm";
 import QuestionView from "../components/questionView";
 
-interface HomeProps {}
 export const currentUser = {
 	avatar: "https://i.ibb.co/vYFBKQ4/11.jpg",
 	created_at: "Sat, 10 Jul 2021 13:14:28 GMT",
