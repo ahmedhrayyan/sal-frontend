@@ -9,15 +9,22 @@ import {
 	Input,
 } from "@chakra-ui/react";
 import { validationMsgs } from "../data";
+import { useAppDispatch, useAppSelector } from "../utils/hooks";
+import { handleLogin } from "../redux/slices/profileSlice";
 
 const LoginForm: FC = () => {
+	const status = useAppSelector((state) => state.profile.status);
+	const dispatch = useAppDispatch();
+
 	const {
 		register,
 		handleSubmit,
 		formState: { errors },
 	} = useForm<LoginData>();
 
-	const onLoginHandler: SubmitHandler<LoginData> = (data) => console.log(data);
+	const onLoginHandler: SubmitHandler<LoginData> = (data) => {
+		dispatch(handleLogin(data));
+	};
 
 	return (
 		<VStack
@@ -51,7 +58,7 @@ const LoginForm: FC = () => {
 				/>
 				<FormErrorMessage>{errors.password?.message}</FormErrorMessage>
 			</FormControl>
-			<Button w="40" h="10" type="submit">
+			<Button w="40" h="10" type="submit" isLoading={status === "pending"}>
 				Sign in
 			</Button>
 		</VStack>

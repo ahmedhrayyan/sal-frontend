@@ -43,7 +43,7 @@ const slice = createSlice({
 				isFulfilled(handleLogin, handleRegister),
 				(state, { payload }) => {
 					state.status = "succeeded";
-					state.token = payload.data.token;
+					state.token = payload.token;
 				}
 			)
 			.addMatcher(
