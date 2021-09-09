@@ -14,10 +14,10 @@ import {
   Stack,
   Avatar,
 } from "@chakra-ui/react";
-import { FunctionComponent } from "react";
+import { FC } from "react";
 import { BiUpvote, BiDownvote } from "react-icons/bi";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { formatKNumbers, formatTimeAgo } from "../helpers/index";
+import { formatKNumbers, formatTimeAgo } from "../utils/helpers";
 
 interface AnswerViewProps {
   answer: any; // update later
@@ -25,7 +25,7 @@ interface AnswerViewProps {
   authToken: string;
 }
 const respSize = { base: "xs", md: "sm" };
-const AnswerView: FunctionComponent<AnswerViewProps> = ({
+const AnswerView: FC<AnswerViewProps> = ({
   answer,
   currentUser,
   authToken,

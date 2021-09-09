@@ -12,7 +12,7 @@ import {
 	IconButton,
 	Stack,
 } from "@chakra-ui/react";
-import { FunctionComponent } from "react";
+import { FC } from "react";
 import { BiUpvote, BiDownvote } from "react-icons/bi";
 import { RiQuestionAnswerLine } from "react-icons/ri";
 import { BsThreeDotsVertical } from "react-icons/bs";
@@ -20,7 +20,7 @@ import UserAvatar from "./userAvatar";
 import AnswerView from "./answerView";
 import AnswerForm from "./answerForm";
 import { useState, useEffect } from "react";
-import { formatKNumbers, formatTimeAgo } from "../helpers/index";
+import { formatKNumbers, formatTimeAgo } from "../utils/helpers";
 
 interface QuestionViewProps {
 	question: any; //no redux yet
@@ -30,7 +30,7 @@ interface QuestionViewProps {
 const respSize = { base: "xs", md: "sm" };
 const ANSWERS_PER_PAGE = 2;
 
-const QuestionView: FunctionComponent<QuestionViewProps> = ({
+const QuestionView: FC<QuestionViewProps> = ({
 	question,
 	currentUser,
 	authToken,

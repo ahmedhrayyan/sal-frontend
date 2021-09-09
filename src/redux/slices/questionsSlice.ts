@@ -2,68 +2,105 @@ import {
 	createAsyncThunk,
 	createEntityAdapter,
 	createSlice,
+	isFulfilled,
+	isPending,
+	isRejected,
 } from "@reduxjs/toolkit";
-import { normalize } from "normalizr";
-import { AppDispatch } from "..";
-import questionsAPI from "../../apis/questions";
-import { questionEntity } from "../schemas";
+import qApi from "../../apis/questions";
+import { changeVote } from "../../utils/redux";
 
-export const handleLoadQuestions = createAsyncThunk(
-	"questions/load",
-	async (page: number = 1) => {
-		const res = await await questionsAPI.fetchPage(page);
-		const normalized = normalize(res.data, { data: [questionEntity] });
-		return normalized;
-	},
-	{
-		condition: (page = 1, { getState }: any) => {
-			if (getState().questions.fetchedPages.indexOf(page) > -1) return false;
-		},
-	}
+export const handleLoadQuestions = createAsyncThunk("q/all", qApi.fetchPage, {
+	condition: (page, { getState }) =>
+		!getState().questions.fetchedPages.includes(page),
+});
+
+export const handleShowQuestion = createAsyncThunk("q/show", qApi.show, {
+	condition: (id, { getState }) => !getState().questions.ids.includes(id),
+});
+
+export const handleDeleteQuestion = createAsyncThunk(
+	"q/delete",
+	(q: Question) => qApi.remove(q.id)
 );
 
-const questionsAdapter = createEntityAdapter<Question>();
+type VoteArg = { question: Question; vote: Vote };
+export const handleVoteQuestion = createAsyncThunk(
+	"q/vote",
+	({ question, vote }: VoteArg) => qApi.vote(question.id, vote)
+);
+
+export const handleAddQuestion = createAsyncThunk("q/add", qApi.store);
+export const handleUpdateQuestion = createAsyncThunk("q/update", qApi.update);
+
+const qAdapter = createEntityAdapter<Question>();
 
 const slice = createSlice({
 	name: "questions",
-	initialState: {
-		...questionsAdapter.getInitialState(),
-		fetchedPages: [] as number[],
+	initialState: qAdapter.getInitialState({
 		total: 0,
+		fetchedPages: [] as number[],
 		status: "idle" as LoadingStatus,
-	},
+	}),
 	reducers: {
-		questionAdded: questionsAdapter.upsertOne,
-		questionRemoved: questionsAdapter.removeOne,
+		questionAdded: qAdapter.upsertOne,
+		questionRemoved: qAdapter.removeOne,
 	},
 	extraReducers: (builder) => {
 		builder
-			.addCase(handleLoadQuestions.fulfilled, (state, action) => {
+			.addCase(handleLoadQuestions.fulfilled, (state, { payload }) => {
 				state.status = "succeeded";
-				state.total = action.payload.result.meta.total;
-				state.fetchedPages.push(action.payload.result.meta.current_page);
-				if (action.payload.entities.questions)
-					questionsAdapter.upsertMany(state, action.payload.entities.questions);
+				state.total = payload.result.meta.total;
+				state.fetchedPages.push(payload.result.meta.current_page);
+				qAdapter.upsertMany(state, payload.entities.questions);
 			})
-			.addCase(handleLoadQuestions.pending, (state) => {
-				state.status = "pending";
+			.addCase(handleDeleteQuestion.pending, (state, { meta }) => {
+				qAdapter.removeOne(state, meta.arg.id);
 			})
-			.addCase(handleLoadQuestions.rejected, (state) => {
-				state.status = "failed";
-			});
+			.addCase(handleDeleteQuestion.rejected, (state, { meta }) => {
+				qAdapter.addOne(state, meta.arg); // put the question back in redux state incase of delete errors
+			})
+			.addCase(handleVoteQuestion.pending, (state, { meta }) => {
+				const { question, vote } = meta.arg;
+				changeVote(state.entities[question.id] as any, vote);
+			})
+			.addCase(handleVoteQuestion.rejected, (state, { meta }) => {
+				qAdapter.upsertOne(state, meta.arg.question); // put the original question back to the redux state incase of vote errors
+			})
+			.addMatcher(
+				isFulfilled(
+					handleShowQuestion,
+					handleAddQuestion,
+					handleUpdateQuestion
+				),
+				(state, { payload }) => {
+					state.status = "succeeded";
+					qAdapter.upsertMany(state, payload.entities.questions);
+				}
+			)
+			.addMatcher(
+				isPending(handleLoadQuestions, handleShowQuestion),
+				(state) => {
+					state.status = "pending";
+				}
+			)
+			.addMatcher(
+				isPending(handleAddQuestion, handleUpdateQuestion),
+				(state) => {
+					state.status = "mutating";
+				}
+			)
+			.addMatcher(
+				isRejected(
+					handleLoadQuestions,
+					handleShowQuestion,
+					handleAddQuestion,
+					handleUpdateQuestion
+				),
+				(state) => {
+					state.status = "failed";
+				}
+			);
 	},
 });
-
-const { questionAdded, questionRemoved } = slice.actions;
-
-export function handleDeleteQuestion(question: Question) {
-	return (dispatch: AppDispatch) => {
-		dispatch(questionRemoved(question.id));
-
-		return questionsAPI.remove(question.id).catch(() => {
-			dispatch(questionAdded(question));
-		});
-	};
-}
 
 export default slice.reducer;
