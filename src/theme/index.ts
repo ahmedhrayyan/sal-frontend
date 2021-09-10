@@ -1,7 +1,7 @@
 // using chakra convention for customizing its theme
 // ref: https://chakra-ui.com/docs/theming/customize-theme#scaling-out-your-project
 
-import { extendTheme, ThemeOverride } from "@chakra-ui/react";
+import { extendTheme, ThemeOverride, withDefaultColorScheme } from "@chakra-ui/react";
 import Container from "./components/container";
 import Button from "./components/button";
 import Input from "./components/input";
@@ -21,7 +21,7 @@ const overrides: ThemeOverride = {
       50: "#F5F5F5", //bg color
     },
     blue: {
-      500: "#0078D4", //primary
+      400: "#0078D4", //primary
     },
   },
   components: {
@@ -31,4 +31,4 @@ const overrides: ThemeOverride = {
   },
 };
 
-export default extendTheme(overrides);
+export default extendTheme(overrides, withDefaultColorScheme({ colorScheme: "blue" }));

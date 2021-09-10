@@ -6,6 +6,8 @@ import { MemoryRouter } from "react-router";
 // to remove focus for non-keyboard interactions
 // ref: https://chakra-ui.com/docs/migration#css-reset
 import "focus-visible/dist/focus-visible";
+import { Provider } from "react-redux";
+import store from "../src/redux";
 
 export const parameters = {
 	viewport: {
@@ -40,4 +42,10 @@ const withRouter = (StoryFn) => (
 	</MemoryRouter>
 );
 
-export const decorators = [withChakra, withRouter, withPerformance];
+const withProvider = (StoryFn) => (
+	<Provider store={store}>
+		<StoryFn />
+	</Provider>
+)
+
+export const decorators = [withProvider, withRouter,  withChakra, withPerformance];
