@@ -41,6 +41,6 @@ LongAnswer.args = {
 export const NotCurrentUserAnswer = Template.bind({});
 
 NotCurrentUserAnswer.args = {
-	currentUser: getUser({ id: 8 }),
+	currentUser: getUser({ username: "test" }),
 	answer: getAnswer(),
 };

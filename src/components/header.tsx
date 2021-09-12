@@ -1,6 +1,7 @@
 import {
 	Avatar,
 	Box,
+	BoxProps,
 	chakra,
 	Container,
 	FormControl,
@@ -17,21 +18,31 @@ import {
 	MenuList,
 } from "@chakra-ui/react";
 import { FC } from "react";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, NavLink } from "react-router-dom";
 import {
 	AiOutlineSearch,
 	AiFillHome,
 	AiFillBell,
 	AiOutlineQuestionCircle,
 } from "react-icons/ai";
+import { handleLogout } from "../redux/slices/profileSlice";
+import { useAppDispatch } from "../utils/hooks";
 
 // images
 import logo from "../images/logo.svg";
 
-type HeaderProps = {};
-const Header: FC<HeaderProps> = (props) => {
+type HeaderProps = BoxProps & {
+	profile: Profile;
+};
+const Header: FC<HeaderProps> = ({ profile, ...rest }) => {
+	const dispatch = useAppDispatch();
+	function onLogout() {
+		dispatch(handleLogout());
+		delete localStorage.token;
+	}
+
 	return (
-		<Box as="header" bgColor="blue.500" color="white">
+		<Box as="header" bgColor="blue.500" color="white" {...rest}>
 			<HStack as={Container} spacing="4" justify="space-between" py="14px">
 				<Box>
 					<Link as={RouterLink} to="/" d="inline-block" h="32px">
@@ -47,36 +58,46 @@ const Header: FC<HeaderProps> = (props) => {
 						any question
 					</chakra.span>
 				</Box>
-				<Box flexGrow={0.4} d={{ base: "none", sm: "block" }}>
+				<Box flexGrow={0.26} d={{ base: "none", md: "block" }}>
 					<SearchForm />
 				</Box>
 				<chakra.nav>
-					<chakra.ul
+					<HStack
+						as="ul"
 						listStyleType="none"
-						d="flex"
-						alignItems="center"
+						spacing="1"
 						sx={{
 							".chakra-icon": {
 								boxSize: "6",
+							},
+							"a.active": {
+								bgColor: "blue.700",
 							},
 						}}
 					>
 						<chakra.li>
 							<IconButton
-								as={Link}
+								as={NavLink}
+								to="/"
+								exact
 								icon={<Icon as={AiFillHome} />}
 								aria-label="Home"
-								isActive
 							/>
 						</chakra.li>
 						<chakra.li>
 							<IconButton
+								as={NavLink}
+								to="/notifications"
 								icon={<Icon as={AiFillBell} />}
 								aria-label="Notifications"
 							/>
 						</chakra.li>
 						<chakra.li>
 							<IconButton
+								as={Link}
+								href="https://github.com/ahmedhrayyan/sal-frontend"
+								target="_blank"
+								rel="noopnner"
 								icon={<Icon as={AiOutlineQuestionCircle} />}
 								aria-label="About"
 							/>
@@ -87,19 +108,28 @@ const Header: FC<HeaderProps> = (props) => {
 									as={IconButton}
 									icon={
 										<Avatar
-											name="Ahmed Hamed"
-											src="https://placebeard.it/120/120"
+											name={profile.first_name}
+											src={profile.avatar || undefined}
 											size="sm"
 										/>
 									}
 									aria-label="About"
 								/>
 								<MenuList color="initial">
-									<MenuItem>Ahmed Hamed</MenuItem>
+									<MenuItem
+										as={RouterLink}
+										to={profile.username}
+										textTransform="capitalize"
+									>
+										{profile.full_name}
+									</MenuItem>
+									<MenuItem as="button" onClick={onLogout}>
+										Logout
+									</MenuItem>
 								</MenuList>
 							</Menu>
 						</chakra.li>
-					</chakra.ul>
+					</HStack>
 				</chakra.nav>
 			</HStack>
 		</Box>
