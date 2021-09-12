@@ -1,12 +1,18 @@
-import { Box } from "@chakra-ui/react";
+import { Route } from "react-router";
+import PrivateRoute from "./components/privateRoute";
+import Authentication from "./pages/Authentication";
 import Home from "./pages/Home";
 
 function App() {
 	return (
-		<>
-			<Box width="100vw" height="8vh" bg="#0078D4" mb="6"></Box>
-			<Home />
-		</>
+		<div className="app">
+			<Route path="/authentication">
+				<Authentication />
+			</Route>
+			<PrivateRoute path="/" exact={true}>
+				<Home />
+			</PrivateRoute>
+		</div>
 	);
 }
 
