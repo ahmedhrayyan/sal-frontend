@@ -1,14 +1,20 @@
 import {
+	createAsyncThunk,
 	createEntityAdapter,
 	createSlice,
 	isFulfilled,
 } from "@reduxjs/toolkit";
+import usersApi from "../../apis/users";
 import { handleShowProfile, handleUpdateProfile } from "./profileSlice";
 import {
 	handleLoadQuestions,
 	handleLoadUserQuestions,
 	handleShowQuestion,
 } from "./questionsSlice";
+
+export const handleShowUser = createAsyncThunk("users/show", usersApi.show, {
+	condition: (username, { getState }) => !getState().users.entities[username],
+});
 
 const usersAdapter = createEntityAdapter<User>({
 	selectId: (user) => user.username, // the unique field in users is username
