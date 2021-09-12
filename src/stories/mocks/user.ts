@@ -6,6 +6,8 @@ const getUser = (overrides?: Partial<User>) => {
 		first_name: "Hossam",
 		last_name: "Okasha",
 		full_name: "Hossam Okasha",
+		answers_count: 0,
+		questions_count: 0,
 		username: "hossam",
 		bio: null,
 	};

@@ -14,6 +14,15 @@ export const handleLoadQuestions = createAsyncThunk("q/all", qApi.fetchPage, {
 		!getState().questions.fetchedPages.includes(page),
 });
 
+export const handleLoadUserQuestions = createAsyncThunk(
+	"q/user-all",
+	qApi.fetchUserPage,
+	{
+		condition: ({ username, page }, { getState }) =>
+			!getState().users.entities[username]?.fetchedQPages?.includes(page),
+	}
+);
+
 export const handleShowQuestion = createAsyncThunk("q/show", qApi.show, {
 	condition: (id, { getState }) => !getState().questions.ids.includes(id),
 });
@@ -53,6 +62,10 @@ const slice = createSlice({
 				state.fetchedPages.push(payload.result.meta.current_page);
 				qAdapter.upsertMany(state, payload.entities.questions);
 			})
+			.addCase(handleLoadUserQuestions.fulfilled, (state, action) => {
+				state.status = "succeeded";
+				qAdapter.upsertMany(state, action.payload.entities.questions);
+			})
 			.addCase(handleDeleteQuestion.pending, (state, { meta }) => {
 				qAdapter.removeOne(state, meta.arg.id);
 			})
@@ -78,7 +91,11 @@ const slice = createSlice({
 				}
 			)
 			.addMatcher(
-				isPending(handleLoadQuestions, handleShowQuestion),
+				isPending(
+					handleLoadQuestions,
+					handleLoadUserQuestions,
+					handleShowQuestion
+				),
 				(state) => {
 					state.status = "pending";
 				}
@@ -92,6 +109,7 @@ const slice = createSlice({
 			.addMatcher(
 				isRejected(
 					handleLoadQuestions,
+					handleLoadUserQuestions,
 					handleShowQuestion,
 					handleAddQuestion,
 					handleUpdateQuestion

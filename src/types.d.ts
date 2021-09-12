@@ -37,6 +37,9 @@ type User = {
 	job: string | null;
 	last_name: string;
 	username: string;
+	answers_count: number;
+	questions_count: number;
+	fetchedQPages?: number[] // client side, used for pagination
 };
 
 type Profile = User & {

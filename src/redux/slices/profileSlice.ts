@@ -11,11 +11,11 @@ import { isPendingAction, isRejectedAction } from "../../utils/redux";
 
 export const handleShowProfile = createAsyncThunk(
 	"profile/show",
-	profileApi.showProfile
+	profileApi.show
 );
 export const handleUpdateProfile = createAsyncThunk(
 	"profile/update",
-	profileApi.showProfile
+	profileApi.update
 );
 export const handleLogin = createAsyncThunk("profile/login", profileApi.login);
 export const handleRegister = createAsyncThunk(

@@ -17,6 +17,12 @@ async function fetchPage(page: number) {
 	return normalize(data, { data: [qEntity] }) as Normalized;
 }
 
+type FetchUserPageArg = { username: string; page: number };
+async function fetchUserPage({ username, page }: FetchUserPageArg) {
+	const { data } = await client.get(`/users/${username}/questions?page=${page}`);
+	return normalize(data, { data: [qEntity] }) as Normalized;
+}
+
 async function show(id: number) {
 	const { data } = await client.get(`/questions/${id}`);
 	// omit (remove) meta from Result as response here has no meta attribute
@@ -47,6 +53,7 @@ function remove(id: number) {
 
 const qApi = {
 	fetchPage,
+	fetchUserPage,
 	show,
 	remove,
 	store,
