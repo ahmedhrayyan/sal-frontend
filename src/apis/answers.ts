@@ -12,11 +12,9 @@ type Normalized<T = Result> = {
   result: T;
 };
 
-type fetchQAArgs = {qId: number, page: number};
-async function fetchQuestionAnswers({qId, page}: fetchQAArgs) {
-  const { data } = await client.get(`/questions/${qId}/answers`, {
-    params: { page }
-  });
+type FetchQAArg = { qId: number, page: number };
+async function fetchQuestionAnswers({ qId, page }: FetchQAArg) {
+  const { data } = await client.get(`/questions/${qId}/answers?page=${page}`);
   return normalize(data, { data: [aEntity] }) as Normalized;
 }
 
@@ -25,8 +23,8 @@ async function show(id: number) {
   return normalize(data, { data: aEntity }) as Normalized<Omit<Result, "meta">>;
 }
 
-type storeArgs = {content: string, question_id: number};
-async function store({content, question_id}: storeArgs) {
+type StoreArgs = { content: string, question_id: number };
+async function store({ content, question_id }: StoreArgs) {
   const { data } = await client.post("/answers", { content, question_id });
   return normalize(data, { data: aEntity }) as Normalized<Omit<Result, "meta">>;
 }

@@ -9,7 +9,6 @@ import {
 import aApi from "../../apis/answers";
 import { changeVote } from "../../utils/redux";
 
-type pageArg = { qId: number, page: number }
 export const handleLoadAnswers = createAsyncThunk("a/all",
   aApi.fetchQuestionAnswers, {
   condition: ({qId, page}, { getState }) =>
