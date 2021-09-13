@@ -8,3 +8,7 @@ export const userEntity = new schema.Entity<User>(
 export const qEntity = new schema.Entity<Question>("questions", {
 	user: userEntity,
 });
+
+export const aEntity = new schema.Entity<Question>("answers", {
+	user: userEntity,
+});
