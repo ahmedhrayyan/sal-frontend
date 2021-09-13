@@ -42,6 +42,17 @@ type User = {
 	fetchedQPages?: number[] // client side, used for pagination
 };
 
+type Answer = {
+	id: number;
+	content: string;
+	created_at: string;
+	downvotes: number;
+	upvotes: number;
+	user: string;
+	viewer_vote: null | boolean;
+	question_id: number;
+};
+
 type Profile = User & {
 	id: number;
 	email: string;
