@@ -42,7 +42,7 @@ const QuestionView: FC<QuestionViewProps> = ({
 	useEffect(() => {
 		if (question.data && question.data.answers.length > 0)
 			setCurrentAnswers([{ ...question.data.answers[0] }]);
-	}, []);
+	}, []); // eslint-disable-line
 
 	const handleLoadMore = () => {
 		const answers = question.data.answers;
