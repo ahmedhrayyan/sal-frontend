@@ -80,12 +80,12 @@ const slice = createSlice({
 			.addCase(handleVoteQuestion.rejected, (state, { meta }) => {
 				qAdapter.upsertOne(state, meta.arg.question); // put the original question back to the redux state incase of vote errors
 			})
-			.addCase(handleLoadAnswers.fulfilled, (state, {meta}) => {
+			.addCase(handleLoadAnswers.fulfilled, (state, { meta }) => {
 				const { page, qId } = meta.arg;
 				const question = state.entities[qId];
 				if (question) {
-					if (!question.fetchedAnsPages) question.fetchedAnsPages = [page];
-					else question.fetchedAnsPages.push(page);
+					if (!question.fetchedAPages) question.fetchedAPages = [page];
+					else question.fetchedAPages.push(page);
 				}
 			})
 			.addMatcher(

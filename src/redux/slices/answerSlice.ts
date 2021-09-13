@@ -11,8 +11,8 @@ import { changeVote } from "../../utils/redux";
 
 export const handleLoadAnswers = createAsyncThunk("a/all",
   aApi.fetchQuestionAnswers, {
-  condition: ({qId, page}, { getState }) =>
-    !getState().questions.entities[qId]?.fetchedAnsPages?.includes(page),
+  condition: ({ qId, page }, { getState }) =>
+    !getState().questions.entities[qId]?.fetchedAPages?.includes(page),
 });
 
 export const handleShowAnswer = createAsyncThunk("a/show", aApi.show, {
@@ -30,8 +30,7 @@ export const handleVoteAnswer = createAsyncThunk(
   ({ answer, vote }: VoteArg) => aApi.vote(answer.id, vote)
 );
 
-type ansArg = { content: string, q_id: number };
-export const handleAddAnswer = createAsyncThunk("a/add",  aApi.store);
+export const handleAddAnswer = createAsyncThunk("a/add", aApi.store);
 export const handleUpdateAnswer = createAsyncThunk("a/update", aApi.update);
 
 const aAdapter = createEntityAdapter<Answer>();
@@ -39,8 +38,6 @@ const aAdapter = createEntityAdapter<Answer>();
 const slice = createSlice({
   name: "answers",
   initialState: aAdapter.getInitialState({
-    total: 0,
-    fetchedPages: [] as number[],
     status: "idle" as LoadingStatus,
   }),
   reducers: {
@@ -51,8 +48,6 @@ const slice = createSlice({
     builder
       .addCase(handleLoadAnswers.fulfilled, (state, { payload }) => {
         state.status = "succeeded";
-        state.total = payload.result.meta.total;
-        // state.fetchedPages.push(payload.result.meta.current_page);
         aAdapter.upsertMany(state, payload.entities.answers);
       })
       .addCase(handleDeleteAnswer.pending, (state, { meta }) => {

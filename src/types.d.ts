@@ -26,7 +26,7 @@ type Question = {
 	upvotes: number;
 	user: number;
 	viewer_vote: null | boolean;
-	fetchedAnsPages?: number[] 
+	fetchedAPages?: number[] // client side, used for pagination 
 };
 
 type User = {
