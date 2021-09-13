@@ -26,6 +26,7 @@ type Question = {
 	upvotes: number;
 	user: number;
 	viewer_vote: null | boolean;
+	fetchedAnsPages?: number[] 
 };
 
 type User = {
