@@ -14,13 +14,22 @@ import {
 	TabPanels,
 	TabPanel,
 } from "@chakra-ui/react";
-
 import { GoMarkGithub } from "react-icons/go";
 import LoginFrom from "../components/loginForm";
 import RegisterForm from "../components/registerForm";
+import { Redirect, useLocation } from "react-router";
+import { useAppSelector } from "../utils/hooks";
 
 const Authentication: FC = () => {
+	const { state } = useLocation<any>();
+	const token = useAppSelector((state) => state.profile.token);
+
 	const [tabIndex, setTabIndex] = useState(0);
+
+	if (token !== null) {
+		return <Redirect to={state?.from ? state.from : "/"} />;
+	}
+
 	return (
 		<Stack
 			direction="row"

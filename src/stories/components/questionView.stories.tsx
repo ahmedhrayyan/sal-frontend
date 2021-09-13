@@ -9,7 +9,7 @@ export default {
   title: "Components/QuestionView",
   component: QuestionView,
   args: {
-    currentUser: getUser({id: 99}),
+    currentUser: getUser({username: "test"}),
     authToken: "",
   },
 }as ComponentMeta<typeof QuestionView>;

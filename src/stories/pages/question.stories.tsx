@@ -12,7 +12,7 @@ export const Question = (args: any) => (
   <QuestionPage
     {...args}
     question={getQuestion()}
-    currentUser={getUser({id: 99})} // change currentUser
+    currentUser={getUser({username: "test"})} // change currentUser
     authToken=""
   />
 );

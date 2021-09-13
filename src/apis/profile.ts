@@ -23,21 +23,21 @@ async function register(data: RegisterData) {
 	return res.data;
 }
 
-async function showProfile() {
+async function show() {
 	const { data } = await client.get("/profile");
 	return normalize(data, { data: userEntity }) as Normalized;
 }
 
-async function updateProfile(profile: Partial<Profile>) {
+async function update(profile: Partial<Profile>) {
 	const { data } = await client.patch("/profile", profile);
 	return normalize(data, { data: userEntity }) as Normalized;
 }
 
-const authApi = {
+const profileApi = {
 	login,
 	register,
-	showProfile,
-	updateProfile
+	show,
+	update
 };
 
-export default authApi;
+export default profileApi;
