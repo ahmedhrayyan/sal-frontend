@@ -17,8 +17,8 @@ async function fetchPage(page: number) {
 	return normalize(data, { data: [qEntity] }) as Normalized;
 }
 
-type FetchUserPageArg = { username: string; page: number };
-async function fetchUserPage({ username, page }: FetchUserPageArg) {
+type FetchUserQuestionsArg = { username: string; page: number };
+async function fetchUserQuestions({ username, page }: FetchUserQuestionsArg) {
 	const { data } = await client.get(`/users/${username}/questions?page=${page}`);
 	return normalize(data, { data: [qEntity] }) as Normalized;
 }
@@ -53,7 +53,7 @@ function remove(id: number) {
 
 const qApi = {
 	fetchPage,
-	fetchUserPage,
+	fetchUserQuestions,
 	show,
 	remove,
 	store,

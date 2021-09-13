@@ -16,7 +16,7 @@ export const handleLoadQuestions = createAsyncThunk("q/all", qApi.fetchPage, {
 
 export const handleLoadUserQuestions = createAsyncThunk(
 	"q/user-all",
-	qApi.fetchUserPage,
+	qApi.fetchUserQuestions,
 	{
 		condition: ({ username, page }, { getState }) =>
 			!getState().users.entities[username]?.fetchedQPages?.includes(page),
