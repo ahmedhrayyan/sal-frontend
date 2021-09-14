@@ -47,7 +47,7 @@ const QuestionForm: FC<QuestionFormProps> = ({ user }) => {
         isQuestion
         isOpen={isOpen}
         onClose={onClose}
-        onAddHandler={({}) => {}}
+        onAddHandler={({}) => {}} // eslint-disable-line
         onCancelHandler={onCancelHandler}
         user={user}
       />

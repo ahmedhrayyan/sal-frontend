@@ -26,6 +26,7 @@ type Question = {
 	upvotes: number;
 	user: number;
 	viewer_vote: null | boolean;
+	fetchedAPages?: number[] // client side, used for pagination 
 };
 
 type User = {
@@ -40,6 +41,17 @@ type User = {
 	answers_count: number;
 	questions_count: number;
 	fetchedQPages?: number[] // client side, used for pagination
+};
+
+type Answer = {
+	id: number;
+	content: string;
+	created_at: string;
+	downvotes: number;
+	upvotes: number;
+	user: string;
+	viewer_vote: null | boolean;
+	question_id: number;
 };
 
 type Profile = User & {

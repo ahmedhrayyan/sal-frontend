@@ -58,7 +58,6 @@ const AddForm: FC<AddFormProps> = ({
     control,
     register,
     handleSubmit,
-    formState: { errors },
   } = useForm<Inputs>();
 
   const onSubmitHandler: SubmitHandler<Inputs> = (data) => {
@@ -153,7 +152,7 @@ const AddForm: FC<AddFormProps> = ({
                 size={respSize}
                 boxShadow="none" // disable global box shadow for form buttons
               >
-                Add {isQuestion ? "Qustion" : "Answer"}
+                Add {isQuestion ? "Question" : "Answer"}
               </Button>
             </Flex>
           </Stack>
