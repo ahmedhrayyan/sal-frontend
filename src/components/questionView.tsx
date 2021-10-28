@@ -23,40 +23,18 @@ import { useState, useEffect } from "react";
 import { formatKNumbers, formatTimeAgo } from "../utils/helpers";
 
 interface QuestionViewProps {
-	question: any; //no redux yet
-	currentUser: any;
-	authToken: string;
+	question: Question;
+	currentUser: Profile | null;
 }
 const respSize = { base: "xs", md: "sm" };
 const ANSWERS_PER_PAGE = 2;
 
-const QuestionView: FC<QuestionViewProps> = ({
-	question,
-	currentUser,
-	authToken,
-}) => {
+const QuestionView: FC<QuestionViewProps> = ({ question, currentUser }) => {
 	const [showAnswers, setShowAnswers] = useState(false);
 	const [currentAnswers, setCurrentAnswers] = useState<any[]>([]);
 	const [currentPage, setCurrentPage] = useState(0);
 
-	useEffect(() => {
-		if (question.data && question.data.answers.length > 0)
-			setCurrentAnswers([{ ...question.data.answers[0] }]);
-	}, []); // eslint-disable-line
-
-	const handleLoadMore = () => {
-		const answers = question.data.answers;
-		// shallow copy is ok here
-		setCurrentAnswers(
-			answers.slice(
-				0,
-				currentPage * question.data.answers_count + ANSWERS_PER_PAGE
-			)
-		);
-		setCurrentPage((currentPage) => currentPage + 1);
-	};
-
-	const isTheCurrentUser = question.data.user.id === currentUser.id;
+	const isTheCurrentUser = question.user === currentUser?.username;
 	return (
 		<Stack
 			w="full"
@@ -70,9 +48,9 @@ const QuestionView: FC<QuestionViewProps> = ({
 		>
 			<HStack mr="-4" mb="4">
 				<UserAvatar
-					name={question.data.user.full_name}
-					imgSrc={question.data.user.avatar}
-					title={question.data.user.job}
+					name={question.user}
+					imgSrc="" //update later
+					title="" //update later
 				/>
 				<Spacer />
 				<Menu placement="bottom-end">
@@ -95,7 +73,7 @@ const QuestionView: FC<QuestionViewProps> = ({
 					</MenuList>
 				</Menu>
 			</HStack>
-			<Box mb="4" dangerouslySetInnerHTML={{ __html: question.data.content }} />
+			<Box mb="4" dangerouslySetInnerHTML={{ __html: question.content }} />
 
 			<HStack color="blue.500" spacing={[2, 4]}>
 				<ButtonGroup
@@ -111,12 +89,12 @@ const QuestionView: FC<QuestionViewProps> = ({
 						pl="0"
 					>
 						<Text mb="-1" as="span" ml="-1" fontSize={respSize}>
-							{formatKNumbers(question.data.upVotes)}
+							{formatKNumbers(question.upvotes)}
 						</Text>
 					</Button>
 					<Button leftIcon={<BiDownvote size="20" />} pl="0" color="gray.600">
 						<Text mb="-1" as="span" ml="-1" fontSize={respSize}>
-							{formatKNumbers(question.data.downVotes)}
+							{formatKNumbers(question.downvotes)}
 						</Text>
 					</Button>
 				</ButtonGroup>
@@ -127,15 +105,15 @@ const QuestionView: FC<QuestionViewProps> = ({
 					variant="outline"
 					onClick={() => setShowAnswers(!showAnswers)}
 				>
-					{question.data.answers_count !== 0 && (
+					{question.answers_count !== 0 && (
 						<Text mb="-1" as="span" ml="-1" fontSize={respSize}>
-							{question.data.answers_count}
+							{question.answers_count}
 						</Text>
 					)}
 				</Button>
 				<Spacer />
 				<Text as="span" color="gray.500" fontSize={respSize}>
-					{formatTimeAgo(new Date(question.data.created_at))}
+					{formatTimeAgo(new Date(question.created_at))}
 				</Text>
 			</HStack>
 
@@ -145,15 +123,11 @@ const QuestionView: FC<QuestionViewProps> = ({
 
 					{currentAnswers.length > 0 &&
 						currentAnswers.map((answer) => (
-							<AnswerView
-								answer={answer}
-								authToken={authToken}
-								currentUser={currentUser}
-							/>
+							<AnswerView answer={answer} currentUser={currentUser} />
 						))}
-					{question.data.answers.length > 1 &&
-						question.data.answers.length !== currentAnswers.length && (
-							<Button onClick={handleLoadMore} variant="link" size="sm">
+					{question.answers_count > 1 &&
+						question.answers_count !== currentAnswers.length && (
+							<Button onClick={() => {}} variant="link" size="sm">
 								Load More
 							</Button>
 						)}

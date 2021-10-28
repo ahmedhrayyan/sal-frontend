@@ -28,11 +28,12 @@ import AutoTextArea from "./textArea";
 interface AddFormProps {
   user: any; // change later
   isQuestion?: boolean;
+  isEditForm ?: boolean; // for edit Q/A
   hasImageFeature?: boolean;
   isOpen: boolean;
   textareaValue: string;
   onChangeHandler(e: FormEvent<HTMLTextAreaElement>): void;
-  onAddHandler(data: any): void;
+  onAddHandler(): any;
   onClose(): void;
   onCancelHandler(): void;
 }
@@ -48,6 +49,7 @@ const AddForm: FC<AddFormProps> = ({
   hasImageFeature,
   isOpen,
   textareaValue,
+  isEditForm,
   onChangeHandler,
   onAddHandler,
   onClose,
@@ -61,8 +63,8 @@ const AddForm: FC<AddFormProps> = ({
   } = useForm<Inputs>();
 
   const onSubmitHandler: SubmitHandler<Inputs> = (data) => {
-    onAddHandler(data);
-    console.log(data);
+    onCancelHandler();
+    onAddHandler();
   };
 
   return (
@@ -143,16 +145,15 @@ const AddForm: FC<AddFormProps> = ({
                 variant="link"
                 mr={[2, 4, 6]}
                 onClick={onCancelHandler}
-                boxShadow="none" // disable global box shadow for form buttons
               >
                 Cancel
               </Button>
               <Button
                 type="submit"
                 size={respSize}
-                boxShadow="none" // disable global box shadow for form buttons
+                disabled={textareaValue === ""}
               >
-                Add {isQuestion ? "Question" : "Answer"}
+                {isEditForm ? "Save" : "Add"} {isQuestion ? "Question" : "Answer"}
               </Button>
             </Flex>
           </Stack>

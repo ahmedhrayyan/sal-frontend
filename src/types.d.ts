@@ -24,7 +24,7 @@ type Question = {
 	downvotes: number;
 	id: number;
 	upvotes: number;
-	user: number;
+	user: string;
 	viewer_vote: null | boolean;
 	fetchedAPages?: number[] // client side, used for pagination 
 };
