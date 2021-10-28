@@ -1,22 +1,29 @@
 import { Button, Stack, Center } from "@chakra-ui/react";
+import { useParams, useHistory } from "react-router-dom";
 import QuestionView from "../components/questionView";
 import { FC } from "react";
+import { useShallowEqSelector } from "../utils/hooks";
+import { selectProfile } from "../redux/slices/profileSlice";
+import { selectQuestion } from "../redux/slices/questionsSlice";
+import { Link as ReactLink } from "react-router-dom";
 
-interface QuestionViewProps {
-	question: any; //no redux yet
-	authToken: string;
-	currentUser: any;
-}
-const Question: FC<QuestionViewProps> = ({ question, currentUser }) => {
+interface QuestionViewProps {}
+const Question: FC<QuestionViewProps> = () => {
+	const history = useHistory();
+	const { qId } = useParams() as { qId: string | undefined };
+	const currentUser = useShallowEqSelector(selectProfile);
+	const question = useShallowEqSelector((state) =>
+		selectQuestion(state, Number(qId))
+	);
 	return (
-		<Center>
+		<Center mt="13vh">
 			<Stack
 				w={["full", "90vw"]}
 				maxW={"xl"}
 				spacing="2"
 				alignItems="flex-start"
 			>
-				<Button w={[20, 32]} h={[7, 10]}>
+				<Button onClick={() => history.goBack()} w={[20, 32]} h={[7, 10]}>
 					Back
 				</Button>
 				<QuestionView question={question} currentUser={currentUser} />
@@ -26,3 +33,4 @@ const Question: FC<QuestionViewProps> = ({ question, currentUser }) => {
 };
 
 export default Question;
+

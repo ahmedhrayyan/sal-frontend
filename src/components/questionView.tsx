@@ -10,8 +10,9 @@ import {
 	ButtonGroup,
 	Spacer,
 	IconButton,
-	Stack
+	Stack,
 } from "@chakra-ui/react";
+import { Link } from "react-router-dom";
 import { FC } from "react";
 import { BiUpvote, BiDownvote } from "react-icons/bi";
 import { RiQuestionAnswerLine } from "react-icons/ri";
@@ -113,11 +114,15 @@ const QuestionView: FC<QuestionViewProps> = ({ question, currentUser }) => {
 						aria-label="Edit Question"
 					/>
 					<MenuList>
-						<MenuItem>View question</MenuItem>
+						<MenuItem as={Link} to={`/questions/${question.id}`}>
+							View question
+						</MenuItem>
 						{isTheCurrentUser && (
 							<>
 								<MenuItem onClick={onOpen}>Edit question</MenuItem>
-								<MenuItem onClick={() => setIsDAlert(true)}>Delete question</MenuItem>
+								<MenuItem onClick={() => setIsDAlert(true)}>
+									Delete question
+								</MenuItem>
 							</>
 						)}
 						{isTheCurrentUser || <MenuItem>Report question</MenuItem>}
