@@ -21,6 +21,16 @@ import AnswerView from "./answerView";
 import AnswerForm from "./answerForm";
 import { useState, useEffect } from "react";
 import { formatKNumbers, formatTimeAgo } from "../utils/helpers";
+import {
+	useAddFormState,
+	useAppDispatch,
+	useShallowEqSelector,
+} from "../utils/hooks";
+import {
+	handleDeleteQuestion,
+	handleUpdateQuestion,
+	handleVoteQuestion,
+} from "../redux/slices/questionsSlice";
 
 interface QuestionViewProps {
 	question: Question;
@@ -33,8 +43,24 @@ const QuestionView: FC<QuestionViewProps> = ({ question, currentUser }) => {
 	const [showAnswers, setShowAnswers] = useState(false);
 	const [currentAnswers, setCurrentAnswers] = useState<any[]>([]);
 	const [currentPage, setCurrentPage] = useState(0);
+	const dispatch = useAppDispatch();
 
 	const isTheCurrentUser = question.user === currentUser?.username;
+
+	const handleUpVote = () => {
+		const qVote = question.viewer_vote;
+		// upVote in case of null or false.
+		const vote: Vote = !qVote ? 1 : 0;
+		dispatch(handleVoteQuestion({ question, vote }));
+	};
+
+	const handleDownVote = () => {
+		const qVote = question.viewer_vote;
+		// downVote in case of null or true.
+		const vote: Vote = qVote === null || qVote === true ? 2 : 0;
+		dispatch(handleVoteQuestion({ question, vote }));
+	};
+
 	return (
 		<Stack
 			w="full"
@@ -87,12 +113,18 @@ const QuestionView: FC<QuestionViewProps> = ({ question, currentUser }) => {
 						leftIcon={<BiUpvote size="20" />}
 						mr="-px"
 						pl="0"
+						onClick={handleUpVote}
 					>
 						<Text mb="-1" as="span" ml="-1" fontSize={respSize}>
 							{formatKNumbers(question.upvotes)}
 						</Text>
 					</Button>
-					<Button leftIcon={<BiDownvote size="20" />} pl="0" color="gray.600">
+					<Button
+						leftIcon={<BiDownvote size="20" />}
+						pl="0"
+						color="gray.600"
+						onClick={handleDownVote}
+					>
 						<Text mb="-1" as="span" ml="-1" fontSize={respSize}>
 							{formatKNumbers(question.downvotes)}
 						</Text>
