@@ -31,6 +31,7 @@ import {
 	handleUpdateQuestion,
 	handleVoteQuestion,
 } from "../redux/slices/questionsSlice";
+import EditForm from "./addForm";
 
 interface QuestionViewProps {
 	question: Question;
@@ -40,6 +41,14 @@ const respSize = { base: "xs", md: "sm" };
 const ANSWERS_PER_PAGE = 2;
 
 const QuestionView: FC<QuestionViewProps> = ({ question, currentUser }) => {
+	const {
+		isOpen,
+		textareaValue,
+		onOpen,
+		onClose,
+		onChangeHandler,
+		onCancelHandler,
+	} = useAddFormState(question.content);
 	const [showAnswers, setShowAnswers] = useState(false);
 	const [currentAnswers, setCurrentAnswers] = useState<any[]>([]);
 	const [currentPage, setCurrentPage] = useState(0);
@@ -59,6 +68,15 @@ const QuestionView: FC<QuestionViewProps> = ({ question, currentUser }) => {
 		// downVote in case of null or true.
 		const vote: Vote = qVote === null || qVote === true ? 2 : 0;
 		dispatch(handleVoteQuestion({ question, vote }));
+	};
+
+	const handleUpdateQ = () => {
+		dispatch(
+			handleUpdateQuestion({
+				id: question.id,
+				content: textareaValue,
+			})
+		);
 	};
 
 	return (
@@ -91,7 +109,7 @@ const QuestionView: FC<QuestionViewProps> = ({ question, currentUser }) => {
 						<MenuItem>View question</MenuItem>
 						{isTheCurrentUser && (
 							<>
-								<MenuItem>Edit question</MenuItem>
+								<MenuItem onClick={onOpen}>Edit question</MenuItem>
 								<MenuItem>Delete question</MenuItem>
 							</>
 						)}
@@ -99,6 +117,17 @@ const QuestionView: FC<QuestionViewProps> = ({ question, currentUser }) => {
 					</MenuList>
 				</Menu>
 			</HStack>
+			<EditForm
+				textareaValue={textareaValue}
+				onChangeHandler={onChangeHandler}
+				isOpen={isOpen}
+				onClose={onClose}
+				onAddHandler={handleUpdateQ}
+				onCancelHandler={onCancelHandler}
+				user={currentUser}
+				isQuestion
+				isEditForm
+			/>
 			<Box mb="4" dangerouslySetInnerHTML={{ __html: question.content }} />
 
 			<HStack color="blue.500" spacing={[2, 4]}>
