@@ -10,6 +10,7 @@ import {
 	Icon,
 	IconButton,
 	Image,
+	Progress,
 	Input,
 	Link,
 	Menu,
@@ -26,23 +27,37 @@ import {
 	AiOutlineQuestionCircle,
 } from "react-icons/ai";
 import { handleLogout } from "../redux/slices/profileSlice";
-import { useAppDispatch } from "../utils/hooks";
+import { selectQStatus } from "../redux/slices/questionsSlice";
+import { selectAStatus } from "../redux/slices/answerSlice";
+import { useAppDispatch, useShallowEqSelector } from "../utils/hooks";
 
 // images
 import logo from "../images/logo.svg";
+import LoadingLogo from "./loadingLogo";
 
 type HeaderProps = BoxProps & {
 	profile: Profile;
 };
 const Header: FC<HeaderProps> = ({ profile, ...rest }) => {
 	const dispatch = useAppDispatch();
+	const qStatus = useShallowEqSelector(selectQStatus);
+	const aStatus = useShallowEqSelector(selectAStatus);
 	function onLogout() {
 		dispatch(handleLogout());
 		delete localStorage.token;
 	}
 
 	return (
-		<Box as="header" bgColor="blue.500" color="white" {...rest}>
+		<Box
+			as="header"
+			bgColor="blue.500"
+			color="white"
+			{...rest}
+			pos="fixed"
+			w="100%"
+			zIndex={2}
+			top="0"
+		>
 			<HStack as={Container} spacing="4" justify="space-between" py="14px">
 				<Box>
 					<Link as={RouterLink} to="/" d="inline-block" h="32px">
@@ -132,6 +147,9 @@ const Header: FC<HeaderProps> = ({ profile, ...rest }) => {
 					</HStack>
 				</chakra.nav>
 			</HStack>
+			{(qStatus === "mutating" || aStatus === "mutating") && (
+				<Progress size="md" isIndeterminate />
+			)}
 		</Box>
 	);
 };
