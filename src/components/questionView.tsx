@@ -10,7 +10,7 @@ import {
 	ButtonGroup,
 	Spacer,
 	IconButton,
-	Stack,
+	Stack
 } from "@chakra-ui/react";
 import { FC } from "react";
 import { BiUpvote, BiDownvote } from "react-icons/bi";
@@ -31,6 +31,7 @@ import {
 	handleUpdateQuestion,
 	handleVoteQuestion,
 } from "../redux/slices/questionsSlice";
+import DeleteAlert from "./deleteAlert";
 import EditForm from "./addForm";
 
 interface QuestionViewProps {
@@ -52,6 +53,7 @@ const QuestionView: FC<QuestionViewProps> = ({ question, currentUser }) => {
 	const [showAnswers, setShowAnswers] = useState(false);
 	const [currentAnswers, setCurrentAnswers] = useState<any[]>([]);
 	const [currentPage, setCurrentPage] = useState(0);
+	const [isDAlert, setIsDAlert] = useState(false); // delete alert
 	const dispatch = useAppDispatch();
 
 	const isTheCurrentUser = question.user === currentUser?.username;
@@ -77,6 +79,11 @@ const QuestionView: FC<QuestionViewProps> = ({ question, currentUser }) => {
 				content: textareaValue,
 			})
 		);
+	};
+
+	const handleDeleteQ = () => {
+		setIsDAlert(false);
+		dispatch(handleDeleteQuestion(question));
 	};
 
 	return (
@@ -110,13 +117,19 @@ const QuestionView: FC<QuestionViewProps> = ({ question, currentUser }) => {
 						{isTheCurrentUser && (
 							<>
 								<MenuItem onClick={onOpen}>Edit question</MenuItem>
-								<MenuItem>Delete question</MenuItem>
+								<MenuItem onClick={() => setIsDAlert(true)}>Delete question</MenuItem>
 							</>
 						)}
 						{isTheCurrentUser || <MenuItem>Report question</MenuItem>}
 					</MenuList>
 				</Menu>
 			</HStack>
+			<DeleteAlert
+				label="Question"
+				onDeleteHandler={handleDeleteQ}
+				isOpen={isDAlert}
+				onClose={() => setIsDAlert(false)}
+			/>
 			<EditForm
 				textareaValue={textareaValue}
 				onChangeHandler={onChangeHandler}
