@@ -22,6 +22,9 @@ export const useAddFormState = (initTextArea: string) => {
 	const onOpen = () => {
 		setTextareaValue(initTextArea);
 		setIsOpen(true);
+		// Fix weird body margin-right added by chakra
+		// Ref: https://github.com/chakra-ui/chakra-ui/issues/1915
+		document.body.setAttribute('style', 'margin-right: 0 !important');
 	}
 	const onClose = () => setIsOpen(false);
 	const onCancelHandler = () => {
