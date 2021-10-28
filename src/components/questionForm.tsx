@@ -1,5 +1,6 @@
-import { Box, useDisclosure } from "@chakra-ui/react";
-import { FC, useState, FormEvent } from "react";
+import { Box } from "@chakra-ui/react";
+import { FC } from "react";
+import { handleAddQuestion } from "../redux/slices/questionsSlice";
 import { useAppDispatch, useAddFormState } from "../utils/hooks";
 import AddForm from "./addForm";
 import UserAvatar from "./userAvatar";
@@ -16,15 +17,7 @@ const QuestionForm: FC<QuestionFormProps> = ({ user }) => {
 		onChangeHandler,
 		onCancelHandler,
 	} = useAddFormState("");
-
-	const onChangeHandler = (e: FormEvent<HTMLTextAreaElement>): void => {
-		setTextareaValue(e.currentTarget.value);
-	};
-
-	const onCancelHandler = () => {
-		onClose();
-		setTextareaValue("");
-	};
+	const dispatch = useAppDispatch();
 
 	return (
 		<>
@@ -54,7 +47,7 @@ const QuestionForm: FC<QuestionFormProps> = ({ user }) => {
 				isQuestion
 				isOpen={isOpen}
 				onClose={onClose}
-				onAddHandler={({}) => {}} // eslint-disable-line
+				onAddHandler={() => dispatch(handleAddQuestion(textareaValue))} // eslint-disable-line
 				onCancelHandler={onCancelHandler}
 				user={user}
 			/>
