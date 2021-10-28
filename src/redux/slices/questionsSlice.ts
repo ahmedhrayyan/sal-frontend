@@ -5,7 +5,9 @@ import {
 	isFulfilled,
 	isPending,
 	isRejected,
+	createSelector
 } from "@reduxjs/toolkit";
+import { RootState } from "..";
 import qApi from "../../apis/questions";
 import { changeVote } from "../../utils/redux";
 import { handleLoadAnswers } from "./answerSlice";
@@ -131,3 +133,26 @@ const slice = createSlice({
 });
 
 export default slice.reducer;
+
+export const selectNextQPage = createSelector(
+	(state: RootState) => state.questions.fetchedPages,
+	pages => {
+		return pages === [] ? 1 : pages[pages.length - 1] + 1;
+	}
+)
+
+export const selectQuestions = createSelector(
+	(state: RootState) => state.questions,
+	questions => questions
+)
+
+export const selectQuestion = createSelector(
+	(state: RootState) => state.questions,
+	(_: any, qId: number) => qId,
+	(questions, qId) => questions.entities[qId] as Question
+)
+
+export const selectQStatus = createSelector(
+	(state: RootState) => state.questions,
+	(questions) => questions.status as LoadingStatus
+)
