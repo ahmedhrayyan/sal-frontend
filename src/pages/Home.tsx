@@ -51,15 +51,15 @@ const Home: FC = () => {
 					))}
 				{questions.ids.length === questions.total || (
 					<>
-					<Button
-						size={respSize}
-						onClick={() => {
-							dispatch(handleLoadQuestions(nextQPage));
-						}}
-					>
-						Load More
-					</Button>
-					<Box/>
+						<Button
+							size={respSize}
+							onClick={() => {
+								dispatch(handleLoadQuestions(nextQPage));
+							}}
+						>
+							Load More
+						</Button>
+						<Box />
 					</>
 				)}
 			</VStack>
@@ -67,4 +67,4 @@ const Home: FC = () => {
 	);
 };
 
-export default Home;	
+export default Home;

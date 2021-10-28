@@ -28,8 +28,8 @@ client.interceptors.response.use(
 			status === 0
 				? "Check your internet connection."
 				: status === 500
-				? "Internal Server Error, Try again later."
-				: error.response.data.message;
+					? "Internal Server Error, Try again later."
+					: error.response.data.message;
 
 		// handle unauthorized requests
 		if (status === 401) {
