@@ -239,7 +239,7 @@ const QuestionView: FC<QuestionViewProps> = ({ question, currentUser }) => {
 
 			{showAnswers && (
 				<>
-					<AnswerForm user={currentUser} />
+					<AnswerForm user={currentUser} question_id={question.id} />
 
 					{currentAnswers.length > 0 &&
 						currentAnswers.map((answer) => (
@@ -247,7 +247,12 @@ const QuestionView: FC<QuestionViewProps> = ({ question, currentUser }) => {
 						))}
 					{question.answers_count > 1 &&
 						question.answers_count !== currentAnswers.length && (
-							<Button onClick={handleLoadMoreA} variant="link" size="sm" isLoading={aStatus === "pending"}>
+							<Button
+								onClick={handleLoadMoreA}
+								variant="link"
+								size="sm"
+								isLoading={aStatus === "pending"}
+							>
 								Load More
 							</Button>
 						)}

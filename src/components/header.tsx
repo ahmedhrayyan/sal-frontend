@@ -147,7 +147,7 @@ const Header: FC<HeaderProps> = ({ profile, ...rest }) => {
 				</chakra.nav>
 			</HStack>
 			{(qStatus === "mutating" || aStatus === "mutating") && (
-				<Progress size="md" isIndeterminate />
+				<Progress size="sm" isIndeterminate />
 			)}
 		</Box>
 	);
