@@ -28,7 +28,8 @@ const Home: FC = () => {
 	const nextQPage = useShallowEqSelector(selectNextQPage);
 	const respSize = useBreakpointValue({ base: "sm", md: "md" });
 	useEffect(() => {
-		dispatch(handleLoadQuestions(nextQPage));
+		if (nextQPage === 1) dispatch(handleLoadQuestions(1));
+		document.title = "Sal";
 	}, []);
 
 	return (
