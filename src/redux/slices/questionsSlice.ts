@@ -69,6 +69,14 @@ const slice = createSlice({
 				state.status = "succeeded";
 				qAdapter.upsertMany(state, action.payload.entities.questions);
 			})
+			.addCase(handleAddQuestion.fulfilled, (state, action) => {
+				state.status = "succeeded";
+				qAdapter.upsertMany(state, action.payload.entities.questions);
+				// resort the array to push the new Q to the first
+				let tmp = state.ids[state.ids.length - 1];
+				state.ids.pop();
+				state.ids.unshift(tmp);
+			})
 			.addCase(handleDeleteQuestion.pending, (state, { meta }) => {
 				qAdapter.removeOne(state, meta.arg.id);
 			})
@@ -93,7 +101,6 @@ const slice = createSlice({
 			.addMatcher(
 				isFulfilled(
 					handleShowQuestion,
-					handleAddQuestion,
 					handleUpdateQuestion
 				),
 				(state, { payload }) => {
