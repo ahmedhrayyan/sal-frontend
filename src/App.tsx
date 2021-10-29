@@ -27,7 +27,7 @@ function App() {
 
 	return (
 		<div className="app">
-			<Header mb="10" profile={profile as Profile} />
+			<Header profile={profile as Profile} />
 			<Route path="/" exact>
 				<Home />
 			</Route>
