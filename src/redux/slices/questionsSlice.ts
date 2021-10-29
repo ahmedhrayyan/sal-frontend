@@ -10,7 +10,7 @@ import {
 import { RootState } from "..";
 import qApi from "../../apis/questions";
 import { changeVote } from "../../utils/redux";
-import { handleLoadAnswers } from "./answerSlice";
+import { handleLoadAnswers, handleAddAnswer, handleDeleteAnswer } from "./answerSlice";
 
 export const handleLoadQuestions = createAsyncThunk("q/all", qApi.fetchPage, {
 	condition: (page, { getState }) =>
@@ -19,7 +19,7 @@ export const handleLoadQuestions = createAsyncThunk("q/all", qApi.fetchPage, {
 
 export const handleLoadUserQuestions = createAsyncThunk(
 	"q/user-all",
-	qApi.fetchUserQuestions,
+	qApi.fetchUserPage,
 	{
 		condition: ({ username, page }, { getState }) =>
 			!getState().users.entities[username]?.fetchedQPages?.includes(page),
@@ -97,6 +97,16 @@ const slice = createSlice({
 					if (!question.fetchedAPages) question.fetchedAPages = [page];
 					else question.fetchedAPages.push(page);
 				}
+			})
+			.addCase(handleAddAnswer.fulfilled, (state, { meta }) => {
+				const { question_id } = meta.arg;
+				const question = state.entities[question_id];
+				if (question) question.answers_count += 1;
+			})
+			.addCase(handleDeleteAnswer.fulfilled, (state, { meta }) => {
+				const { question_id } = meta.arg;
+				const question = state.entities[question_id];
+				if (question) question.answers_count -= 1;
 			})
 			.addMatcher(
 				isFulfilled(
