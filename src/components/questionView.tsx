@@ -32,6 +32,12 @@ import {
 	handleUpdateQuestion,
 	handleVoteQuestion,
 } from "../redux/slices/questionsSlice";
+import {
+	handleLoadAnswers,
+	selectNextAPage,
+	selectAnswers,
+	selectAStatus,
+} from "../redux/slices/answerSlice";
 import DeleteAlert from "./deleteAlert";
 import EditForm from "./addForm";
 
@@ -56,9 +62,22 @@ const QuestionView: FC<QuestionViewProps> = ({ question, currentUser }) => {
 	const [currentPage, setCurrentPage] = useState(0);
 	const [isDAlert, setIsDAlert] = useState(false); // delete alert
 	const dispatch = useAppDispatch();
-
+	const answers = useShallowEqSelector((state) =>
+		selectAnswers(state, question.id)
+	);
+	const aStatus = useShallowEqSelector(selectAStatus);
+	const nextAPage = useShallowEqSelector((state) =>
+		selectNextAPage(state, question.id)
+	);
 	const isTheCurrentUser = question.user === currentUser?.username;
 
+	useEffect(() => {
+		setCurrentAnswers(
+			answers.slice(0, currentAnswers.length + ANSWERS_PER_PAGE)
+		);
+	}, [answers]); // eslint-disable-line
+
+	/* --- Questions Handlers --- */
 	const handleUpVote = () => {
 		const qVote = question.viewer_vote;
 		// upVote in case of null or false.
@@ -85,6 +104,17 @@ const QuestionView: FC<QuestionViewProps> = ({ question, currentUser }) => {
 	const handleDeleteQ = () => {
 		setIsDAlert(false);
 		dispatch(handleDeleteQuestion(question));
+	};
+
+	/* --- Answers Handlers --- */
+	const handleShowAnswers = () => {
+		if (answers.length === 0 && question.answers_count !== 0) {
+			dispatch(
+				handleLoadAnswers({ qId: question.id, page: Number(nextAPage) })
+			);
+		}
+
+		setShowAnswers((showAnswers) => !showAnswers);
 	};
 
 	return (
@@ -182,7 +212,7 @@ const QuestionView: FC<QuestionViewProps> = ({ question, currentUser }) => {
 					border="none"
 					color="blue.500"
 					variant="outline"
-					onClick={() => setShowAnswers(!showAnswers)}
+					onClick={handleShowAnswers}
 				>
 					{question.answers_count !== 0 && (
 						<Text mb="-1" as="span" ml="-1" fontSize={respSize}>
