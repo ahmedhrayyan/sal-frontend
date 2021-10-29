@@ -14,28 +14,58 @@ import {
 	Stack,
 	Avatar,
 } from "@chakra-ui/react";
+import { handleUpdateAnswer } from "../redux/slices/answerSlice";
 import { FC } from "react";
+import { useDispatch } from "react-redux";
+import { useShallowEqSelector, useAddFormState } from "../utils/hooks";
+import { selectUser } from "../redux/slices/usersSlice";
 import { BiUpvote, BiDownvote } from "react-icons/bi";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { formatKNumbers, formatTimeAgo } from "../utils/helpers";
+import EditForm from "./addForm";
 
 interface AnswerViewProps {
 	answer: any; // update later
 	currentUser: any;
 }
 const respSize = { base: "xs", md: "sm" };
+
 const AnswerView: FC<AnswerViewProps> = ({ answer, currentUser }) => {
+	const {
+		isOpen,
+		textareaValue,
+		onOpen,
+		onClose,
+		onChangeHandler,
+		onCancelHandler,
+	} = useAddFormState(answer.content);
+	const user = useShallowEqSelector((state) => selectUser(state, answer.user));
 	const respButton = useBreakpointValue([15, 20]);
-	const isTheCurrentUser = answer.user.id === currentUser.id;
+	const dispatch = useDispatch();
+	const isTheCurrentUser = answer.user === currentUser.username;
+
+	const handleUpdateA = () => {
+		dispatch(
+			handleUpdateAnswer({
+				id: answer.id,
+				content: textareaValue,
+			})
+		);
+	};
 	return (
 		<HStack my="4" alignItems="start">
-			<Avatar name={answer.user.full_name} boxSize={[8, 9]} />
+			<Avatar
+				name={user.full_name}
+				src={user.avatar || ""}
+				alt="User Avatar"
+				boxSize={[8, 9]}
+			/>
 			<Box w="full">
 				<Box bg="gray.50" p="3" rounded="xl">
 					<HStack mr="-3" mb="1">
 						<Stack spacing={0} fontSize=".85em">
-							<Text fontWeight={600}>{answer.user.full_name}</Text>
-							<Text color="gray.500">{answer.user.job}</Text>
+							<Text fontWeight={600}>{user.full_name}</Text>
+							<Text color="gray.500">{user.job}</Text>
 						</Stack>
 						<Spacer />
 						<Menu placement="bottom-end">
@@ -50,7 +80,7 @@ const AnswerView: FC<AnswerViewProps> = ({ answer, currentUser }) => {
 							<MenuList>
 								{isTheCurrentUser && (
 									<>
-										<MenuItem>Edit answer</MenuItem>
+										<MenuItem onClick={onOpen}>Edit answer</MenuItem>
 										<MenuItem>Delete answer</MenuItem>
 									</>
 								)}
@@ -58,6 +88,17 @@ const AnswerView: FC<AnswerViewProps> = ({ answer, currentUser }) => {
 							</MenuList>
 						</Menu>
 					</HStack>
+					<EditForm
+						textareaValue={textareaValue.replace(/(<([^>]+)>)/ig, "")}//remove html tags.
+						onChangeHandler={onChangeHandler}
+						isOpen={isOpen}
+						onClose={onClose}
+						onAddHandler={handleUpdateA}
+						onCancelHandler={onCancelHandler}
+						user={currentUser}
+						isEditForm // edit form
+						hasImageFeature
+					/>
 					<Box mb="4" dangerouslySetInnerHTML={{ __html: answer.content }} />
 				</Box>
 				<HStack color="blue.500" spacing={[2, 4]} mt="4px">
