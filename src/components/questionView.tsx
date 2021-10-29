@@ -12,7 +12,7 @@ import {
 	IconButton,
 	Stack,
 } from "@chakra-ui/react";
-import { Link } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
 import { FC } from "react";
 import { BiUpvote, BiDownvote } from "react-icons/bi";
 import { RiQuestionAnswerLine } from "react-icons/ri";
@@ -113,8 +113,19 @@ const QuestionView: FC<QuestionViewProps> = ({ question, currentUser }) => {
 				handleLoadAnswers({ qId: question.id, page: Number(nextAPage) })
 			);
 		}
-
 		setShowAnswers((showAnswers) => !showAnswers);
+	};
+
+	const handleLoadMoreA = () => {
+		if (currentAnswers.length === answers.length) {
+			dispatch(
+				handleLoadAnswers({ qId: question.id, page: Number(nextAPage) })
+			);
+		}
+		// shallow copy is ok here
+		setCurrentAnswers(
+			answers.slice(0, currentAnswers.length + ANSWERS_PER_PAGE)
+		);
 	};
 
 	return (
@@ -144,7 +155,7 @@ const QuestionView: FC<QuestionViewProps> = ({ question, currentUser }) => {
 						aria-label="Edit Question"
 					/>
 					<MenuList>
-						<MenuItem as={Link} to={`/questions/${question.id}`}>
+						<MenuItem as={RouterLink} to={`/questions/${question.id}`}>
 							View question
 						</MenuItem>
 						{isTheCurrentUser && (
@@ -236,7 +247,7 @@ const QuestionView: FC<QuestionViewProps> = ({ question, currentUser }) => {
 						))}
 					{question.answers_count > 1 &&
 						question.answers_count !== currentAnswers.length && (
-							<Button onClick={() => {}} variant="link" size="sm">
+							<Button onClick={handleLoadMoreA} variant="link" size="sm" isLoading={aStatus === "pending"}>
 								Load More
 							</Button>
 						)}
