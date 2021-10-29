@@ -137,7 +137,7 @@ export default slice.reducer;
 export const selectNextQPage = createSelector(
 	(state: RootState) => state.questions.fetchedPages,
 	pages => {
-		return pages === [] ? 1 : pages[pages.length - 1] + 1;
+		return (pages.length === 0 ? 1 : pages[pages.length - 1] + 1);
 	}
 )
 
