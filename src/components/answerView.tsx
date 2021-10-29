@@ -14,8 +14,12 @@ import {
 	Stack,
 	Avatar,
 } from "@chakra-ui/react";
-import { handleUpdateAnswer, handleVoteAnswer } from "../redux/slices/answerSlice";
-import { FC } from "react";
+import {
+	handleUpdateAnswer,
+	handleVoteAnswer,
+	handleDeleteAnswer,
+} from "../redux/slices/answerSlice";
+import { FC, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useShallowEqSelector, useAddFormState } from "../utils/hooks";
 import { selectUser } from "../redux/slices/usersSlice";
@@ -23,6 +27,7 @@ import { BiUpvote, BiDownvote } from "react-icons/bi";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { formatKNumbers, formatTimeAgo } from "../utils/helpers";
 import EditForm from "./addForm";
+import DeleteAlert from "./deleteAlert";
 
 interface AnswerViewProps {
 	answer: any; // update later
@@ -39,9 +44,10 @@ const AnswerView: FC<AnswerViewProps> = ({ answer, currentUser }) => {
 		onChangeHandler,
 		onCancelHandler,
 	} = useAddFormState(answer.content);
+	const [isDAlert, setIsDAlert] = useState(false); // delete alert
 	const user = useShallowEqSelector((state) => selectUser(state, answer.user));
-	const respButton = useBreakpointValue([15, 20]);
 	const dispatch = useDispatch();
+	const respButton = useBreakpointValue([15, 20]);
 	const isTheCurrentUser = answer.user === currentUser.username;
 
 	const handleUpVote = () => {
@@ -66,6 +72,12 @@ const AnswerView: FC<AnswerViewProps> = ({ answer, currentUser }) => {
 			})
 		);
 	};
+
+	const handleDeleteA = () => {
+		setIsDAlert(false);
+		dispatch(handleDeleteAnswer(answer));
+	};
+
 	return (
 		<HStack my="4" alignItems="start">
 			<Avatar
@@ -95,13 +107,23 @@ const AnswerView: FC<AnswerViewProps> = ({ answer, currentUser }) => {
 								{isTheCurrentUser && (
 									<>
 										<MenuItem onClick={onOpen}>Edit answer</MenuItem>
-										<MenuItem>Delete answer</MenuItem>
+										<MenuItem onClick={() => setIsDAlert(true)}>
+											Delete answer
+										</MenuItem>
 									</>
 								)}
 								{isTheCurrentUser || <MenuItem>Report answer</MenuItem>}
 							</MenuList>
 						</Menu>
 					</HStack>
+					{/* Delete Alert */}
+					<DeleteAlert
+						label={"Answer"}
+						onDeleteHandler={handleDeleteA}
+						isOpen={isDAlert}
+						onClose={() => setIsDAlert(false)}
+					/>
+					{/* Edit Form*/}
 					<EditForm
 						textareaValue={textareaValue.replace(/(<([^>]+)>)/gi, "")} //remove html tags.
 						onChangeHandler={onChangeHandler}
@@ -116,7 +138,7 @@ const AnswerView: FC<AnswerViewProps> = ({ answer, currentUser }) => {
 					<Box mb="4" dangerouslySetInnerHTML={{ __html: answer.content }} />
 				</Box>
 				<HStack color="blue.500" spacing={[2, 4]} mt="4px">
-				<ButtonGroup
+					<ButtonGroup
 						size="xs"
 						variant="ghost"
 						rounded={["none", "xl"]}
