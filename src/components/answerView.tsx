@@ -14,7 +14,7 @@ import {
 	Stack,
 	Avatar,
 } from "@chakra-ui/react";
-import { handleUpdateAnswer } from "../redux/slices/answerSlice";
+import { handleUpdateAnswer, handleVoteAnswer } from "../redux/slices/answerSlice";
 import { FC } from "react";
 import { useDispatch } from "react-redux";
 import { useShallowEqSelector, useAddFormState } from "../utils/hooks";
@@ -43,6 +43,20 @@ const AnswerView: FC<AnswerViewProps> = ({ answer, currentUser }) => {
 	const respButton = useBreakpointValue([15, 20]);
 	const dispatch = useDispatch();
 	const isTheCurrentUser = answer.user === currentUser.username;
+
+	const handleUpVote = () => {
+		const aVote = answer.viewer_vote;
+		// upVote in case of downVoted or no vote.
+		const vote: Vote = !aVote ? 1 : 0;
+		dispatch(handleVoteAnswer({ answer, vote }));
+	};
+
+	const handleDownVote = () => {
+		const aVote = answer.viewer_vote;
+		// downVote in case of upVoted or no vote.
+		const vote: Vote = aVote === null || aVote === true ? 2 : 0;
+		dispatch(handleVoteAnswer({ answer, vote }));
+	};
 
 	const handleUpdateA = () => {
 		dispatch(
@@ -89,7 +103,7 @@ const AnswerView: FC<AnswerViewProps> = ({ answer, currentUser }) => {
 						</Menu>
 					</HStack>
 					<EditForm
-						textareaValue={textareaValue.replace(/(<([^>]+)>)/ig, "")}//remove html tags.
+						textareaValue={textareaValue.replace(/(<([^>]+)>)/gi, "")} //remove html tags.
 						onChangeHandler={onChangeHandler}
 						isOpen={isOpen}
 						onClose={onClose}
@@ -102,24 +116,30 @@ const AnswerView: FC<AnswerViewProps> = ({ answer, currentUser }) => {
 					<Box mb="4" dangerouslySetInnerHTML={{ __html: answer.content }} />
 				</Box>
 				<HStack color="blue.500" spacing={[2, 4]} mt="4px">
-					<ButtonGroup
+				<ButtonGroup
 						size="xs"
 						variant="ghost"
 						rounded={["none", "xl"]}
 						isAttached
 					>
-						<Button leftIcon={<BiUpvote size={respButton} />} mr="-px" pl="2">
+						<Button
+							leftIcon={<BiUpvote size={respButton} />}
+							mr="-px"
+							pl="2"
+							onClick={handleUpVote}
+						>
 							<Text mb="-1" as="span" ml="-1" fontSize={respSize}>
-								{formatKNumbers(answer.upVotes)}
+								{answer.upvotes !== 0 && formatKNumbers(answer.upvotes)}
 							</Text>
 						</Button>
 						<Button
 							leftIcon={<BiDownvote size={respButton} />}
 							pl="0"
 							color="gray.600"
+							onClick={handleDownVote}
 						>
 							<Text mb="-1" as="span" ml="-1" fontSize={respSize}>
-								{formatKNumbers(answer.downVotes)}
+								{answer.downvotes !== 0 && formatKNumbers(answer.downvotes)}
 							</Text>
 						</Button>
 					</ButtonGroup>

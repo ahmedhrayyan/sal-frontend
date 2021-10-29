@@ -59,7 +59,6 @@ const QuestionView: FC<QuestionViewProps> = ({ question, currentUser }) => {
 	} = useAddFormState(question.content);
 	const [showAnswers, setShowAnswers] = useState(false);
 	const [currentAnswers, setCurrentAnswers] = useState<any[]>([]);
-	const [currentPage, setCurrentPage] = useState(0);
 	const [isDAlert, setIsDAlert] = useState(false); // delete alert
 	const dispatch = useAppDispatch();
 	const answers = useShallowEqSelector((state) =>
