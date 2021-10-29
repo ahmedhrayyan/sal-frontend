@@ -5,7 +5,9 @@ import {
   isFulfilled,
   isPending,
   isRejected,
+  createSelector
 } from "@reduxjs/toolkit";
+import { RootState } from "..";
 import aApi from "../../apis/answers";
 import { changeVote } from "../../utils/redux";
 
@@ -101,3 +103,8 @@ const slice = createSlice({
 });
 
 export default slice.reducer;
+
+export const selectAStatus = createSelector(
+  (state: RootState) => state.answers,
+  (answers) => answers.status as LoadingStatus
+)

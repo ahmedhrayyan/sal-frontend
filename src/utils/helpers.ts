@@ -9,7 +9,8 @@ const intervals = [
 ];
 
 export const formatTimeAgo = (date: Date) => {
-	const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
+	// add 2 sec to fix recently added Que issue.
+	const seconds = Math.floor((Date.now() - date.getTime()) / 1000) + 2;
 	const interval = intervals.find((i) => i.seconds < seconds);
 	const count = Math.floor(seconds / interval!.seconds);
 	return `${count} ${interval!.label}${count !== 1 ? "s" : ""} ago`;

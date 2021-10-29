@@ -6,6 +6,7 @@ import LoadingLogo from "./components/loadingLogo";
 import Home from "./pages/Home";
 import { handleShowProfile, selectProfile } from "./redux/slices/profileSlice";
 import { useAppDispatch, useShallowEqSelector } from "./utils/hooks";
+import Question from "./pages/Question";
 
 function App() {
 	const dispatch = useAppDispatch();
@@ -27,8 +28,11 @@ function App() {
 	return (
 		<div className="app">
 			<Header mb="10" profile={profile as Profile} />
-			<Route path="/" exact={true}>
+			<Route path="/" exact>
 				<Home />
+			</Route>
+			<Route path="/questions/:qId" >
+				<Question />
 			</Route>
 		</div>
 	);

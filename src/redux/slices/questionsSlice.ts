@@ -5,7 +5,9 @@ import {
 	isFulfilled,
 	isPending,
 	isRejected,
+	createSelector
 } from "@reduxjs/toolkit";
+import { RootState } from "..";
 import qApi from "../../apis/questions";
 import { changeVote } from "../../utils/redux";
 import { handleLoadAnswers } from "./answerSlice";
@@ -67,6 +69,14 @@ const slice = createSlice({
 				state.status = "succeeded";
 				qAdapter.upsertMany(state, action.payload.entities.questions);
 			})
+			.addCase(handleAddQuestion.fulfilled, (state, action) => {
+				state.status = "succeeded";
+				qAdapter.upsertMany(state, action.payload.entities.questions);
+				// resort the array to push the new Q to the first
+				let tmp = state.ids[state.ids.length - 1];
+				state.ids.pop();
+				state.ids.unshift(tmp);
+			})
 			.addCase(handleDeleteQuestion.pending, (state, { meta }) => {
 				qAdapter.removeOne(state, meta.arg.id);
 			})
@@ -91,7 +101,6 @@ const slice = createSlice({
 			.addMatcher(
 				isFulfilled(
 					handleShowQuestion,
-					handleAddQuestion,
 					handleUpdateQuestion
 				),
 				(state, { payload }) => {
@@ -131,3 +140,26 @@ const slice = createSlice({
 });
 
 export default slice.reducer;
+
+export const selectNextQPage = createSelector(
+	(state: RootState) => state.questions.fetchedPages,
+	pages => {
+		return (pages.length === 0 ? 1 : pages[pages.length - 1] + 1);
+	}
+)
+
+export const selectQuestions = createSelector(
+	(state: RootState) => state.questions,
+	questions => questions
+)
+
+export const selectQuestion = createSelector(
+	(state: RootState) => state.questions,
+	(_: any, qId: number) => qId,
+	(questions, qId) => questions.entities[qId] as Question
+)
+
+export const selectQStatus = createSelector(
+	(state: RootState) => state.questions,
+	(questions) => questions.status as LoadingStatus
+)

@@ -13,6 +13,7 @@ import store from "./redux";
 import Authentication from "./pages/Authentication";
 import PrivateRoute from "./components/privateRoute";
 
+
 // Import & configure dotenv package
 require("dotenv").config();
 
