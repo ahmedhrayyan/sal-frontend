@@ -111,7 +111,7 @@ export const selectNextAPage = createSelector(
   (questions, qId) => {
     const pages = questions.entities[qId]?.fetchedAPages;
     if (pages)
-      return pages === [] ? 1 : pages[pages.length - 1] + 1;
+      return (pages.length === 0 ? 1 : pages[pages.length - 1] + 1);
   }
 )
 
