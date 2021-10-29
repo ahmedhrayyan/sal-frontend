@@ -5,7 +5,6 @@ import { FC } from "react";
 import { useShallowEqSelector } from "../utils/hooks";
 import { selectProfile } from "../redux/slices/profileSlice";
 import { selectQuestion } from "../redux/slices/questionsSlice";
-import { Link as ReactLink } from "react-router-dom";
 
 interface QuestionViewProps {}
 const Question: FC<QuestionViewProps> = () => {

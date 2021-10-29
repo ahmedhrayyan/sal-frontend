@@ -33,7 +33,6 @@ import { useAppDispatch, useShallowEqSelector } from "../utils/hooks";
 
 // images
 import logo from "../images/logo.svg";
-import LoadingLogo from "./loadingLogo";
 
 type HeaderProps = BoxProps & {
 	profile: Profile;

@@ -30,7 +30,7 @@ const Home: FC = () => {
 	useEffect(() => {
 		if (nextQPage === 1) dispatch(handleLoadQuestions(1));
 		document.title = "Sal";
-	}, []);
+	}, []); //eslint-disable-line
 
 	return (
 		<Center mt="13vh">

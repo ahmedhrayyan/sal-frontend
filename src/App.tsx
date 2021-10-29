@@ -28,7 +28,7 @@ function App() {
 	return (
 		<div className="app">
 			<Header mb="10" profile={profile as Profile} />
-			<Route path="/" exact={true}>
+			<Route path="/" exact>
 				<Home />
 			</Route>
 			<Route path="/questions/:qId" >
