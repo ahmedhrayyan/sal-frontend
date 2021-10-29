@@ -243,7 +243,11 @@ const QuestionView: FC<QuestionViewProps> = ({ question, currentUser }) => {
 
 					{currentAnswers.length > 0 &&
 						currentAnswers.map((answer) => (
-							<AnswerView answer={answer} currentUser={currentUser} />
+							<AnswerView
+								key={answer.id}
+								answer={answer}
+								currentUser={currentUser}
+							/>
 						))}
 					{question.answers_count > 1 &&
 						question.answers_count !== currentAnswers.length && (
