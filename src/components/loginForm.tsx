@@ -34,6 +34,13 @@ const LoginForm: FC = () => {
 			mx="auto"
 			spacing="2.5"
 			onSubmit={handleSubmit(onLoginHandler)}
+			sx={{
+				input: {
+					bg: "white !important",
+					borderRadius: "20em !important",
+					boxShadow: ["sm", "md"],
+				},
+			}}
 		>
 			<FormControl isInvalid={!!errors.username}>
 				<FormLabel srOnly>Username</FormLabel>
