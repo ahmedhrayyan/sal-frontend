@@ -46,7 +46,6 @@ interface QuestionViewProps {
 	currentUser: Profile | null;
 }
 const respSize = { base: "xs", md: "sm" };
-const ANSWERS_PER_PAGE = 2;
 
 const QuestionView: FC<QuestionViewProps> = ({ question, currentUser }) => {
 	const {
@@ -58,7 +57,6 @@ const QuestionView: FC<QuestionViewProps> = ({ question, currentUser }) => {
 		onCancelHandler,
 	} = useAddFormState(question.content);
 	const [showAnswers, setShowAnswers] = useState(false);
-	const [currentAnswers, setCurrentAnswers] = useState<any[]>([]);
 	const [isDAlert, setIsDAlert] = useState(false); // delete alert
 	const dispatch = useAppDispatch();
 	const answers = useShallowEqSelector((state) =>
@@ -69,12 +67,6 @@ const QuestionView: FC<QuestionViewProps> = ({ question, currentUser }) => {
 		selectNextAPage(state, question.id)
 	);
 	const isTheCurrentUser = question.user === currentUser?.username;
-
-	useEffect(() => {
-		setCurrentAnswers(
-			answers.slice(0, currentAnswers.length + ANSWERS_PER_PAGE)
-		);
-	}, [answers]); // eslint-disable-line
 
 	/* --- Questions Handlers --- */
 	const handleUpVote = () => {
@@ -107,24 +99,15 @@ const QuestionView: FC<QuestionViewProps> = ({ question, currentUser }) => {
 
 	/* --- Answers Handlers --- */
 	const handleShowAnswers = () => {
+		// Don't send req if the answers showed before or the Q has no answers.
 		if (answers.length === 0 && question.answers_count !== 0) {
-			dispatch(
-				handleLoadAnswers({ qId: question.id, page: Number(nextAPage) })
-			);
+			dispatch(handleLoadAnswers({ qId: question.id, page: nextAPage }));
 		}
 		setShowAnswers((showAnswers) => !showAnswers);
 	};
 
 	const handleLoadMoreA = () => {
-		if (currentAnswers.length === answers.length) {
-			dispatch(
-				handleLoadAnswers({ qId: question.id, page: Number(nextAPage) })
-			);
-		}
-		// shallow copy is ok here
-		setCurrentAnswers(
-			answers.slice(0, currentAnswers.length + ANSWERS_PER_PAGE)
-		);
+		dispatch(handleLoadAnswers({ qId: question.id, page: Number(nextAPage) }));
 	};
 
 	return (
@@ -240,16 +223,16 @@ const QuestionView: FC<QuestionViewProps> = ({ question, currentUser }) => {
 				<>
 					<AnswerForm user={currentUser} question_id={question.id} />
 
-					{currentAnswers.length > 0 &&
-						currentAnswers.map((answer) => (
+					{answers.length > 0 &&
+						answers.map((answer) => (
 							<AnswerView
 								key={answer.id}
 								answer={answer}
 								currentUser={currentUser}
 							/>
 						))}
-					{question.answers_count > 1 &&
-						question.answers_count !== currentAnswers.length && (
+					{question.answers_count > 0 &&
+						question.answers_count !== answers.length && (
 							<Button
 								onClick={handleLoadMoreA}
 								variant="link"
