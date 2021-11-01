@@ -3,6 +3,7 @@ import {
 	MenuButton,
 	MenuList,
 	MenuItem,
+	Flex,
 	Box,
 	Button,
 	HStack,
@@ -20,7 +21,7 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import UserAvatar from "./userAvatar";
 import AnswerView from "./answerView";
 import AnswerForm from "./answerForm";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { formatKNumbers, formatTimeAgo } from "../utils/helpers";
 import {
 	useAddFormState,
@@ -121,7 +122,7 @@ const QuestionView: FC<QuestionViewProps> = ({ question, currentUser }) => {
 			pb="2"
 			fontSize={["sm", "md"]}
 		>
-			<HStack mr="-4" mb="4">
+			<Flex mr="-4" mb="4">
 				<UserAvatar
 					name={question.user}
 					imgSrc="" //update later
@@ -151,7 +152,7 @@ const QuestionView: FC<QuestionViewProps> = ({ question, currentUser }) => {
 						{isTheCurrentUser || <MenuItem>Report question</MenuItem>}
 					</MenuList>
 				</Menu>
-			</HStack>
+			</Flex>
 			<DeleteAlert
 				label="Question"
 				onDeleteHandler={handleDeleteQ}
