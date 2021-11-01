@@ -40,6 +40,9 @@ const LoginForm: FC = () => {
 					borderRadius: "20em !important",
 					boxShadow: ["sm", "md"],
 				},
+				button: {
+					boxShadow: ["sm", "md"],
+				},
 			}}
 		>
 			<FormControl isInvalid={!!errors.username}>

@@ -108,6 +108,7 @@ const Authentication: FC = () => {
 						maxW={["70%", "65%", "95%"]}
 						minHeight="10"
 						leftIcon={<GoMarkGithub />}
+						boxShadow={["sm", "md"]}
 					>
 						Sign {tabIndex === 0 ? "in" : "up"} with GitHub
 					</Button>
