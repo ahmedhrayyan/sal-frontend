@@ -2,6 +2,7 @@ import {
 	Box,
 	Button,
 	HStack,
+	Flex,
 	Text,
 	Menu,
 	MenuButton,
@@ -88,7 +89,7 @@ const AnswerView: FC<AnswerViewProps> = ({ answer, currentUser }) => {
 			/>
 			<Box w="full">
 				<Box bg="gray.50" p="3" rounded="xl">
-					<HStack mr="-3" mb="1">
+					<Flex mr="-3" mb="1">
 						<Stack spacing={0} fontSize=".85em">
 							<Text fontWeight={600}>{user.full_name}</Text>
 							<Text color="gray.500">{user.job}</Text>
@@ -115,7 +116,7 @@ const AnswerView: FC<AnswerViewProps> = ({ answer, currentUser }) => {
 								{isTheCurrentUser || <MenuItem>Report answer</MenuItem>}
 							</MenuList>
 						</Menu>
-					</HStack>
+					</Flex>
 					{/* Delete Alert */}
 					<DeleteAlert
 						label={"Answer"}
