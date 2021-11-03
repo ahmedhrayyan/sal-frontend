@@ -70,7 +70,8 @@ const AddForm: FC<AddFormProps> = ({
 			isCentered
 			size="xl"
 			scrollBehavior="inside"
-			useInert={false} //hide all except modal for screen readers
+			useInert={false} // hide all except modal for screen readers
+			motionPreset="slideInBottom"
 		>
 			<ModalOverlay />
 			<ModalContent>
