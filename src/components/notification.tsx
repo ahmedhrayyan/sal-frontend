@@ -7,9 +7,8 @@ type Props = { data: Omit<APINotification, "is_read">; isRead?: boolean };
 const Notification: FC<Props> = ({ data, isRead = false }) => {
 	return (
 		<LinkBox
-			as="article"
-			maxW="lg"
-			py="3"
+			w="full"
+			py="4"
 			ps="5"
 			pe="8"
 			pos="relative"
@@ -17,7 +16,7 @@ const Notification: FC<Props> = ({ data, isRead = false }) => {
 			rounded="lg"
 			bgColor="white"
 		>
-			<Text size="md" my="2" color={isRead ? "gray.500" : "inherit"}>
+			<Text size="md" mb="1" color={isRead ? "gray.500" : "inherit"}>
 				<LinkOverlay
 					as={Link}
 					to={data.url}
@@ -26,11 +25,7 @@ const Notification: FC<Props> = ({ data, isRead = false }) => {
 					{data.content}
 				</LinkOverlay>
 			</Text>
-			<Text
-				textAlign="end"
-				fontSize="sm"
-				color={isRead ? "gray.400" : "blue.500"}
-			>
+			<Text fontSize="sm" color={isRead ? "gray.400" : "blue.500"}>
 				<time>{formatTimeAgo(new Date(data.created_at))}</time>
 			</Text>
 			<Circle
