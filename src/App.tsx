@@ -5,6 +5,7 @@ import Header from "./components/header";
 import LoadingLogo from "./components/loadingLogo";
 import { handleShowProfile, selectProfile } from "./redux/slices/profileSlice";
 import { useAppDispatch, useShallowEqSelector } from "./utils/hooks";
+import { handleLoadNotifications } from "./redux/slices/notificationsSlice";
 import Home from "./pages/Home";
 import Question from "./pages/Question";
 import Notifications from "./pages/Notifications";
@@ -16,6 +17,7 @@ function App() {
 	// mount logic
 	useEffect(() => {
 		dispatch(handleShowProfile());
+		dispatch(handleLoadNotifications(1));
 	}, []); // eslint-disable-line
 
 	if (!profile) {

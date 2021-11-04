@@ -2,9 +2,15 @@ import { FC } from "react";
 import { LinkBox, LinkOverlay, Text, Circle } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { formatTimeAgo } from "../utils/helpers";
+import { useAppDispatch } from "../utils/hooks";
+import { handleMarkNotificationRead } from "../redux/slices/notificationsSlice";
 
-type Props = { data: Omit<APINotification, "is_read">; isRead?: boolean };
-const Notification: FC<Props> = ({ data, isRead = false }) => {
+type Props = { data: APINotification };
+const Notification: FC<Props> = ({ data }) => {
+	const dispatch = useAppDispatch();
+	function handleMarkRead() {
+		dispatch(handleMarkNotificationRead(data));
+	}
 	return (
 		<LinkBox
 			w="full"
@@ -15,8 +21,9 @@ const Notification: FC<Props> = ({ data, isRead = false }) => {
 			borderWidth="1px"
 			rounded="lg"
 			bgColor="white"
+			onClick={handleMarkRead}
 		>
-			<Text size="md" mb="1" color={isRead ? "gray.500" : "inherit"}>
+			<Text size="md" mb="1" color={data.is_read ? "gray.600" : "inherit"}>
 				<LinkOverlay
 					as={Link}
 					to={data.url}
@@ -25,11 +32,11 @@ const Notification: FC<Props> = ({ data, isRead = false }) => {
 					{data.content}
 				</LinkOverlay>
 			</Text>
-			<Text fontSize="sm" color={isRead ? "gray.400" : "blue.500"}>
+			<Text fontSize="sm" color={data.is_read ? "gray.500" : "blue.500"}>
 				<time>{formatTimeAgo(new Date(data.created_at))}</time>
 			</Text>
 			<Circle
-				d={isRead ? "none" : "initial"}
+				d={data.is_read ? "none" : "initial"}
 				size="3"
 				pos="absolute"
 				insetEnd="2"

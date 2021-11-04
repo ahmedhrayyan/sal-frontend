@@ -14,8 +14,13 @@ export const handleLoadNotifications = createAsyncThunk(
 	notificationsApi.fetchPage,
 	{
 		condition: (page, { getState }) =>
-			!getState().questions.fetchedPages.includes(page),
+			!getState().notifications.fetchedPages.includes(page),
 	}
+);
+
+export const handleMarkNotificationRead = createAsyncThunk(
+	"notifications/mark-read",
+	(notification: APINotification) => notificationsApi.setRead(notification.id)
 );
 
 const notificationAdapter = createEntityAdapter<APINotification>();
@@ -24,6 +29,7 @@ const slice = createSlice({
 	name: "questions",
 	initialState: notificationAdapter.getInitialState({
 		total: 0,
+		unread_count: null as null | number,
 		fetchedPages: [] as number[],
 		status: "idle" as LoadingStatus,
 	}),
@@ -33,8 +39,23 @@ const slice = createSlice({
 			.addCase(handleLoadNotifications.fulfilled, (state, { payload }) => {
 				state.status = "succeeded";
 				state.total = payload.result.meta.total;
+				state.unread_count = payload.result.unread_count;
 				state.fetchedPages.push(payload.result.meta.current_page);
-				notificationAdapter.upsertMany(state, payload.entities.notifications || []);
+				notificationAdapter.upsertMany(
+					state,
+					payload.entities.notifications || []
+				);
+			})
+			.addCase(handleMarkNotificationRead.pending, (state, { meta }) => {
+				const target = state.entities[meta.arg.id];
+				if (target) {
+					target.is_read = true;
+					if (state.unread_count) state.unread_count -= 1;
+				}
+			})
+			.addCase(handleMarkNotificationRead.rejected, (state, { meta }) => {
+				notificationAdapter.upsertOne(state, meta.arg); // put the original question back to the redux state incase of vote errors
+				if (state.unread_count) state.unread_count += 1;
 			})
 			.addMatcher(isPending(handleLoadNotifications), (state) => {
 				state.status = "pending";

@@ -11,4 +11,4 @@ export default {
 const Template: ComponentStory<Props> = (args) => <Notification {...args} />;
 
 export const Default = Template.bind({});
-Default.args = { data: getNotification(), isRead: false };
+Default.args = { data: getNotification() };
