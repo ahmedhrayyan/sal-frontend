@@ -22,7 +22,7 @@ const Question: FC<QuestionViewProps> = () => {
 				spacing="2"
 				alignItems="flex-start"
 			>
-				<Button onClick={() => history.goBack()} w={[20, 32]} h={[7, 10]}>
+				<Button onClick={() => history.push("/")} w={[20, 32]} h={[7, 10]}>
 					Back
 				</Button>
 				<QuestionView question={question} currentUser={currentUser} />
