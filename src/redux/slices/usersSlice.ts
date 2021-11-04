@@ -11,6 +11,7 @@ import { handleShowProfile, handleUpdateProfile } from "./profileSlice";
 import {
 	handleLoadQuestions,
 	handleLoadUserQuestions,
+	handleSearchQuestions,
 	handleShowQuestion,
 } from "./questionsSlice";
 
@@ -44,7 +45,8 @@ const slice = createSlice({
 					handleLoadQuestions,
 					handleShowQuestion,
 					handleShowProfile,
-					handleUpdateProfile
+					handleUpdateProfile,
+					handleSearchQuestions
 				),
 				(state, { payload }) => {
 					usersAdapter.upsertMany(state, payload.entities.users);

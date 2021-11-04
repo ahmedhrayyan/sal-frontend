@@ -26,6 +26,15 @@ export const handleLoadUserQuestions = createAsyncThunk(
 	}
 );
 
+export const handleSearchQuestions = createAsyncThunk(
+	"q/search",
+	qApi.search,
+	{
+		condition: ({ page }, { getState }) =>
+			!getState().questions.searchedPages.includes(page),
+	}
+);
+
 export const handleShowQuestion = createAsyncThunk("q/show", qApi.show, {
 	condition: (id, { getState }) => !getState().questions.ids.includes(id),
 });
@@ -47,15 +56,22 @@ export const handleUpdateQuestion = createAsyncThunk("q/update", qApi.update);
 const qAdapter = createEntityAdapter<Question>();
 
 const slice = createSlice({
-	name: "questions",
+	name: "q",
 	initialState: qAdapter.getInitialState({
 		total: 0,
 		fetchedPages: [] as number[],
 		status: "idle" as LoadingStatus,
+		searchTerm: "",
+		searchedPages: [] as number[],
 	}),
 	reducers: {
 		questionAdded: qAdapter.upsertOne,
 		questionRemoved: qAdapter.removeOne,
+		clearSearch: state => {
+			state.status = "idle"
+			state.searchedPages = [];
+			state.searchTerm = "";
+		}
 	},
 	extraReducers: (builder) => {
 		builder
@@ -68,6 +84,16 @@ const slice = createSlice({
 			.addCase(handleLoadUserQuestions.fulfilled, (state, action) => {
 				state.status = "succeeded";
 				qAdapter.upsertMany(state, action.payload.entities.questions);
+			})
+			.addCase(handleSearchQuestions.fulfilled, (state, { payload }) => {
+				state.status = "succeeded";
+				state.total = payload.result.meta.total;
+				state.searchTerm = payload.result.search_term
+				state.searchedPages.push(payload.result.meta.current_page);
+				// don't remove in case of loadMore results
+				if (payload.result.meta.current_page === 1)
+					qAdapter.removeAll(state);
+				qAdapter.upsertMany(state, payload.entities.questions);
 			})
 			.addCase(handleAddQuestion.fulfilled, (state, action) => {
 				state.status = "succeeded";
@@ -87,6 +113,7 @@ const slice = createSlice({
 				const { question, vote } = meta.arg;
 				changeVote(state.entities[question.id] as any, vote);
 			})
+
 			.addCase(handleVoteQuestion.rejected, (state, { meta }) => {
 				qAdapter.upsertOne(state, meta.arg.question); // put the original question back to the redux state incase of vote errors
 			})
@@ -122,7 +149,8 @@ const slice = createSlice({
 				isPending(
 					handleLoadQuestions,
 					handleLoadUserQuestions,
-					handleShowQuestion
+					handleShowQuestion,
+					handleSearchQuestions
 				),
 				(state) => {
 					state.status = "pending";
@@ -149,6 +177,7 @@ const slice = createSlice({
 	},
 });
 
+export const { clearSearch } = slice.actions;
 export default slice.reducer;
 
 export const selectNextQPage = createSelector(
@@ -158,10 +187,18 @@ export const selectNextQPage = createSelector(
 	}
 )
 
+export const selectNextQSearchedPage = createSelector(
+	(state: RootState) => state.questions.searchedPages,
+	pages => {
+		return (pages.length === 0 ? 1 : pages[pages.length - 1] + 1);
+	}
+)
+
 export const selectQuestions = createSelector(
 	(state: RootState) => state.questions,
 	questions => questions
 )
+
 
 export const selectQuestion = createSelector(
 	(state: RootState) => state.questions,
