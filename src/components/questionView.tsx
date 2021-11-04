@@ -3,6 +3,7 @@ import {
 	MenuButton,
 	MenuList,
 	MenuItem,
+	Flex,
 	Box,
 	Button,
 	HStack,
@@ -12,7 +13,7 @@ import {
 	IconButton,
 	Stack,
 } from "@chakra-ui/react";
-import { Link } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
 import { FC } from "react";
 import { BiUpvote, BiDownvote } from "react-icons/bi";
 import { RiQuestionAnswerLine } from "react-icons/ri";
@@ -20,7 +21,7 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import UserAvatar from "./userAvatar";
 import AnswerView from "./answerView";
 import AnswerForm from "./answerForm";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { formatKNumbers, formatTimeAgo } from "../utils/helpers";
 import {
 	useAddFormState,
@@ -32,6 +33,12 @@ import {
 	handleUpdateQuestion,
 	handleVoteQuestion,
 } from "../redux/slices/questionsSlice";
+import {
+	handleLoadAnswers,
+	selectNextAPage,
+	selectAnswers,
+	selectAStatus,
+} from "../redux/slices/answerSlice";
 import DeleteAlert from "./deleteAlert";
 import EditForm from "./addForm";
 
@@ -40,7 +47,6 @@ interface QuestionViewProps {
 	currentUser: Profile | null;
 }
 const respSize = { base: "xs", md: "sm" };
-const ANSWERS_PER_PAGE = 2;
 
 const QuestionView: FC<QuestionViewProps> = ({ question, currentUser }) => {
 	const {
@@ -52,13 +58,18 @@ const QuestionView: FC<QuestionViewProps> = ({ question, currentUser }) => {
 		onCancelHandler,
 	} = useAddFormState(question.content);
 	const [showAnswers, setShowAnswers] = useState(false);
-	const [currentAnswers, setCurrentAnswers] = useState<any[]>([]);
-	const [currentPage, setCurrentPage] = useState(0);
 	const [isDAlert, setIsDAlert] = useState(false); // delete alert
 	const dispatch = useAppDispatch();
-
+	const answers = useShallowEqSelector((state) =>
+		selectAnswers(state, question.id)
+	);
+	const aStatus = useShallowEqSelector(selectAStatus);
+	const nextAPage = useShallowEqSelector((state) =>
+		selectNextAPage(state, question.id)
+	);
 	const isTheCurrentUser = question.user === currentUser?.username;
 
+	/* --- Questions Handlers --- */
 	const handleUpVote = () => {
 		const qVote = question.viewer_vote;
 		// upVote in case of null or false.
@@ -87,6 +98,19 @@ const QuestionView: FC<QuestionViewProps> = ({ question, currentUser }) => {
 		dispatch(handleDeleteQuestion(question));
 	};
 
+	/* --- Answers Handlers --- */
+	const handleShowAnswers = () => {
+		// Don't send req if the answers showed before or the Q has no answers.
+		if (answers.length === 0 && question.answers_count !== 0) {
+			dispatch(handleLoadAnswers({ qId: question.id, page: nextAPage }));
+		}
+		setShowAnswers((showAnswers) => !showAnswers);
+	};
+
+	const handleLoadMoreA = () => {
+		dispatch(handleLoadAnswers({ qId: question.id, page: Number(nextAPage) }));
+	};
+
 	return (
 		<Stack
 			w="full"
@@ -98,7 +122,7 @@ const QuestionView: FC<QuestionViewProps> = ({ question, currentUser }) => {
 			pb="2"
 			fontSize={["sm", "md"]}
 		>
-			<HStack mr="-4" mb="4">
+			<Flex mr="-4" mb="4">
 				<UserAvatar
 					name={question.user}
 					imgSrc="" //update later
@@ -114,7 +138,7 @@ const QuestionView: FC<QuestionViewProps> = ({ question, currentUser }) => {
 						aria-label="Edit Question"
 					/>
 					<MenuList>
-						<MenuItem as={Link} to={`/questions/${question.id}`}>
+						<MenuItem as={RouterLink} to={`/questions/${question.id}`}>
 							View question
 						</MenuItem>
 						{isTheCurrentUser && (
@@ -128,7 +152,7 @@ const QuestionView: FC<QuestionViewProps> = ({ question, currentUser }) => {
 						{isTheCurrentUser || <MenuItem>Report question</MenuItem>}
 					</MenuList>
 				</Menu>
-			</HStack>
+			</Flex>
 			<DeleteAlert
 				label="Question"
 				onDeleteHandler={handleDeleteQ}
@@ -182,7 +206,7 @@ const QuestionView: FC<QuestionViewProps> = ({ question, currentUser }) => {
 					border="none"
 					color="blue.500"
 					variant="outline"
-					onClick={() => setShowAnswers(!showAnswers)}
+					onClick={handleShowAnswers}
 				>
 					{question.answers_count !== 0 && (
 						<Text mb="-1" as="span" ml="-1" fontSize={respSize}>
@@ -198,15 +222,24 @@ const QuestionView: FC<QuestionViewProps> = ({ question, currentUser }) => {
 
 			{showAnswers && (
 				<>
-					<AnswerForm user={currentUser} />
+					<AnswerForm user={currentUser} question_id={question.id} />
 
-					{currentAnswers.length > 0 &&
-						currentAnswers.map((answer) => (
-							<AnswerView answer={answer} currentUser={currentUser} />
+					{answers.length > 0 &&
+						answers.map((answer) => (
+							<AnswerView
+								key={answer.id}
+								answer={answer}
+								currentUser={currentUser}
+							/>
 						))}
-					{question.answers_count > 1 &&
-						question.answers_count !== currentAnswers.length && (
-							<Button onClick={() => {}} variant="link" size="sm">
+					{question.answers_count > 0 &&
+						question.answers_count !== answers.length && (
+							<Button
+								onClick={handleLoadMoreA}
+								variant="link"
+								size="sm"
+								isLoading={aStatus === "pending"}
+							>
 								Load More
 							</Button>
 						)}

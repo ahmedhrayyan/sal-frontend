@@ -16,7 +16,7 @@ import { useAppDispatch, useAppSelector } from "../utils/hooks";
 import { handleRegister } from "../redux/slices/profileSlice";
 
 const RegisterForm: FC = () => {
-	const status = useAppSelector(state => state.profile.status);
+	const status = useAppSelector((state) => state.profile.status);
 	const dispatch = useAppDispatch();
 
 	const {
@@ -27,7 +27,7 @@ const RegisterForm: FC = () => {
 
 	const onRegisterHandler: SubmitHandler<RegisterData> = (data) => {
 		dispatch(handleRegister(data));
-	}
+	};
 
 	return (
 		<VStack
@@ -37,6 +37,16 @@ const RegisterForm: FC = () => {
 			w={"full"}
 			maxW={["90%", "70%", "100%"]}
 			mx="auto"
+			sx={{
+				input: {
+					bg: "white !important",
+					borderRadius: "20em !important",
+					boxShadow: ["sm", "md"],
+				},
+				button: {
+					boxShadow: ["sm", "md"],
+				},
+			}}
 		>
 			<HStack align="flex-start">
 				<FormControl isInvalid={!!errors.first_name}>

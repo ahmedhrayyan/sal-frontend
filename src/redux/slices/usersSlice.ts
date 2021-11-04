@@ -3,7 +3,9 @@ import {
 	createEntityAdapter,
 	createSlice,
 	isFulfilled,
+	createSelector
 } from "@reduxjs/toolkit";
+import { RootState } from "..";
 import usersApi from "../../apis/users";
 import { handleShowProfile, handleUpdateProfile } from "./profileSlice";
 import {
@@ -52,3 +54,9 @@ const slice = createSlice({
 });
 
 export default slice.reducer;
+
+export const selectUser = createSelector(
+	(state: RootState) => state.users,
+	(_: any, uId: number) => uId,
+	(users, uId) => users.entities[uId] as User
+)

@@ -22,7 +22,7 @@ export const handleShowAnswer = createAsyncThunk("a/show", aApi.show, {
 });
 
 export const handleDeleteAnswer = createAsyncThunk(
-  "q/delete",
+  "a/delete",
   (a: Answer) => aApi.remove(a.id)
 );
 
@@ -36,6 +36,7 @@ export const handleAddAnswer = createAsyncThunk("a/add", aApi.store);
 export const handleUpdateAnswer = createAsyncThunk("a/update", aApi.update);
 
 const aAdapter = createEntityAdapter<Answer>();
+const selectors = aAdapter.getSelectors();
 
 const slice = createSlice({
   name: "answers",
@@ -103,6 +104,29 @@ const slice = createSlice({
 });
 
 export default slice.reducer;
+
+export const selectNextAPage = createSelector(
+  (state: RootState) => state.questions,
+  (_: any, qId: number) => qId,
+  (questions, qId) => {
+    const pages = questions.entities[qId]?.fetchedAPages;
+    return pages ? pages[pages.length - 1] + 1 : 1;
+  }
+)
+
+export const selectAnswers = createSelector(
+  (state: RootState) => selectors.selectAll(state.answers),
+  (_: any, qId: number) => qId,
+  (answers, qId) => {
+    return answers.filter(answer => answer.question_id === qId);
+  }
+)
+
+export const selectQAnswers = createSelector(
+  (state: RootState) => state.answers,
+  answers => answers
+
+)
 
 export const selectAStatus = createSelector(
   (state: RootState) => state.answers,

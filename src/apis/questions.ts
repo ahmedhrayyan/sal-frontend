@@ -17,8 +17,8 @@ async function fetchPage(page: number) {
 	return normalize(data, { data: [qEntity] }) as Normalized;
 }
 
-type FetchUserQuestionsArg = { username: string; page: number };
-async function fetchUserQuestions({ username, page }: FetchUserQuestionsArg) {
+type FetchUserPageArg = { username: string; page: number };
+async function fetchUserPage({ username, page }: FetchUserPageArg) {
 	const { data } = await client.get(`/users/${username}/questions?page=${page}`);
 	return normalize(data, { data: [qEntity] }) as Normalized;
 }
@@ -48,12 +48,12 @@ async function vote(id: number, vote: Vote) {
 }
 
 function remove(id: number) {
-	return client.delete(`/questions/${id}`);
+	return client.delete(`/questions/${id}`).then(res => res.data);
 }
 
 const qApi = {
 	fetchPage,
-	fetchUserQuestions,
+	fetchUserPage,
 	show,
 	remove,
 	store,
