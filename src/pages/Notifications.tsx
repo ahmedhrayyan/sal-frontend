@@ -1,4 +1,4 @@
-import { FC, useEffect } from "react";
+import { FC } from "react";
 import { Container, Heading, Box, VStack } from "@chakra-ui/react";
 import { useAppSelector } from "../utils/hooks";
 import { selectNotifications } from "../redux/slices/notificationsSlice";
