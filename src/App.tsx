@@ -3,10 +3,12 @@ import { useEffect } from "react";
 import { Route } from "react-router";
 import Header from "./components/header";
 import LoadingLogo from "./components/loadingLogo";
-import Home from "./pages/Home";
 import { handleShowProfile, selectProfile } from "./redux/slices/profileSlice";
 import { useAppDispatch, useShallowEqSelector } from "./utils/hooks";
+import { handleLoadNotifications } from "./redux/slices/notificationsSlice";
+import Home from "./pages/Home";
 import Question from "./pages/Question";
+import Notifications from "./pages/Notifications";
 
 function App() {
 	const dispatch = useAppDispatch();
@@ -15,6 +17,7 @@ function App() {
 	// mount logic
 	useEffect(() => {
 		dispatch(handleShowProfile());
+		dispatch(handleLoadNotifications(1));
 	}, []); // eslint-disable-line
 
 	if (!profile) {
@@ -31,8 +34,11 @@ function App() {
 			<Route path="/" exact>
 				<Home />
 			</Route>
-			<Route path="/questions/:qId" >
+			<Route path="/questions/:qId">
 				<Question />
+			</Route>
+			<Route path="/notifications">
+				<Notifications />
 			</Route>
 		</div>
 	);

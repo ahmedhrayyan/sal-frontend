@@ -1,6 +1,7 @@
 import {
 	Avatar,
 	Box,
+	Text,
 	BoxProps,
 	chakra,
 	Container,
@@ -29,7 +30,11 @@ import {
 import { handleLogout } from "../redux/slices/profileSlice";
 import { selectQStatus } from "../redux/slices/questionsSlice";
 import { selectAStatus } from "../redux/slices/answerSlice";
-import { useAppDispatch, useShallowEqSelector } from "../utils/hooks";
+import {
+	useAppDispatch,
+	useAppSelector,
+	useShallowEqSelector,
+} from "../utils/hooks";
 
 // images
 import logo from "../images/logo.svg";
@@ -41,6 +46,9 @@ const Header: FC<HeaderProps> = ({ profile, ...rest }) => {
 	const dispatch = useAppDispatch();
 	const qStatus = useShallowEqSelector(selectQStatus);
 	const aStatus = useShallowEqSelector(selectAStatus);
+	const unreadNotifications = useAppSelector(
+		(state) => state.notifications.unread_count
+	);
 	function onLogout() {
 		dispatch(handleLogout());
 		delete localStorage.token;
@@ -98,13 +106,30 @@ const Header: FC<HeaderProps> = ({ profile, ...rest }) => {
 								aria-label="Home"
 							/>
 						</chakra.li>
-						<chakra.li>
+						<chakra.li pos="relative">
 							<IconButton
 								as={NavLink}
 								to="/notifications"
 								icon={<Icon as={AiFillBell} />}
 								aria-label="Notifications"
 							/>
+							<Text
+								as="span"
+								d="inline-block"
+								pos="absolute"
+								top="0"
+								insetEnd="0"
+								px="4px"
+								py="2px"
+								minW="5"
+								borderRadius="full"
+								bgColor="#63b3edb2"
+								fontSize="xs"
+								textAlign="center"
+								_empty={{ display: "none" }}
+							>
+								{unreadNotifications ? unreadNotifications : ""}
+							</Text>
 						</chakra.li>
 						<chakra.li>
 							<IconButton

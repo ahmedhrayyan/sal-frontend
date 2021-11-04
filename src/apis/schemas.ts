@@ -9,6 +9,10 @@ export const qEntity = new schema.Entity<Question>("questions", {
 	user: userEntity,
 });
 
-export const aEntity = new schema.Entity<Question>("answers", {
+export const aEntity = new schema.Entity<Answer>("answers", {
 	user: userEntity,
 });
+
+export const notificationEntity = new schema.Entity<APINotification>(
+	"notifications"
+);
