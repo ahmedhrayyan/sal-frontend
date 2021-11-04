@@ -26,7 +26,7 @@ type Question = {
 	upvotes: number;
 	user: string;
 	viewer_vote: null | boolean;
-	fetchedAPages?: number[] // client side, used for pagination 
+	fetchedAPages?: number[]; // client side, used for pagination
 };
 
 type User = {
@@ -40,7 +40,7 @@ type User = {
 	username: string;
 	answers_count: number;
 	questions_count: number;
-	fetchedQPages?: number[] // client side, used for pagination
+	fetchedQPages?: number[]; // client side, used for pagination
 };
 
 type Answer = {
@@ -68,4 +68,12 @@ type Result<T = any> = {
 		per_page: number;
 		total: number;
 	};
+};
+
+type APINotification = {
+	id: number;
+	content: string;
+	url: string;
+	is_read: boolean;
+	created_at: string;
 };
