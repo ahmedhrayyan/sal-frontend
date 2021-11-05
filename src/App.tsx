@@ -31,9 +31,6 @@ function App() {
 			<Route path="/" exact>
 				<Home/>
 			</Route>
-			<Route path="/results" exact>
-				<Home isSearchPage/>
-			</Route>
 			<Route path="/questions/:qId" >
 				<Question />
 			</Route>
