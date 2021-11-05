@@ -6,6 +6,7 @@ import {
 	useSelector,
 } from "react-redux";
 import { AppDispatch, RootState } from "../redux";
+import { useLocation, useHistory } from "react-router-dom";
 
 export const useAppDispatch = () => useDispatch<AppDispatch>();
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
@@ -33,4 +34,12 @@ export const useAddFormState = (initTextArea: string) => {
 	};
 
 	return { textareaValue, isOpen, onOpen, onClose, onCancelHandler, onChangeHandler }
+}
+
+export const useSearch = (param: string) => {
+	const {search} = useLocation();
+	const params = new URLSearchParams(search);
+	return {
+		getValue: () => params.get(param) || ""
+	}
 }
