@@ -124,9 +124,9 @@ const QuestionView: FC<QuestionViewProps> = ({ question, currentUser }) => {
 		>
 			<Flex mr="-4" mb="4">
 				<UserAvatar
-					name={question.user}
-					imgSrc="" //update later
-					title="" //update later
+					name={currentUser?.full_name as string}
+					imgSrc={currentUser?.avatar || ""}
+					title={currentUser?.job || ""}
 				/>
 				<Spacer />
 				<Menu placement="bottom-end">
