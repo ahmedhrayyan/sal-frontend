@@ -20,7 +20,14 @@ export const handleLoadNotifications = createAsyncThunk(
 
 export const handleMarkNotificationRead = createAsyncThunk(
 	"notifications/mark-read",
-	(notification: APINotification) => notificationsApi.setRead(notification.id)
+	(notification: APINotification) => notificationsApi.setRead(notification.id),
+	{
+		condition: ({ id }, { getState }) => {
+			const target = getState().notifications.entities[id];
+			if (!target) return false;
+			return !target.is_read;
+		},
+	}
 );
 
 const notificationAdapter = createEntityAdapter<APINotification>();
@@ -47,11 +54,9 @@ const slice = createSlice({
 				);
 			})
 			.addCase(handleMarkNotificationRead.pending, (state, { meta }) => {
-				const target = state.entities[meta.arg.id];
-				if (target) {
-					target.is_read = true;
-					if (state.unread_count) state.unread_count -= 1;
-				}
+				const target = state.entities[meta.arg.id] as APINotification;
+				target.is_read = true;
+				if (state.unread_count) state.unread_count -= 1;
 			})
 			.addCase(handleMarkNotificationRead.rejected, (state, { meta }) => {
 				notificationAdapter.upsertOne(state, meta.arg); // put the original question back to the redux state incase of vote errors
