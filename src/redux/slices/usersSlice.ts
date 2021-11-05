@@ -58,8 +58,4 @@ const slice = createSlice({
 
 export default slice.reducer;
 
-export const selectUser = createSelector(
-	(state: RootState) => state.users,
-	(_: any, uId: number) => uId,
-	(users, uId) => users.entities[uId] as User
-)
+export const selectUser = (state: RootState, uId: number) => state.users.entities[uId] as User

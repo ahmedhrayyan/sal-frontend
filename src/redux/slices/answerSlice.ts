@@ -122,13 +122,4 @@ export const selectAnswers = createSelector(
   }
 )
 
-export const selectQAnswers = createSelector(
-  (state: RootState) => state.answers,
-  answers => answers
-
-)
-
-export const selectAStatus = createSelector(
-  (state: RootState) => state.answers,
-  (answers) => answers.status as LoadingStatus
-)
+export const selectAStatus = (state: RootState) => state.answers.status as LoadingStatus

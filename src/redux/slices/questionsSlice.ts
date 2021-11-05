@@ -183,6 +183,10 @@ const slice = createSlice({
 export const { clearSearch } = slice.actions;
 export default slice.reducer;
 
+export const selectQuestions = (state: RootState) => state.questions;
+export const selectQStatus = (state: RootState) => state.questions.status as LoadingStatus
+export const selectQuestion = (state: RootState, qId: number) => state.questions.entities[qId] as Question;
+
 export const selectNextQPage = createSelector(
 	(state: RootState) => state.questions.fetchedPages,
 	pages => {
@@ -195,21 +199,4 @@ export const selectNextQSearchedPage = createSelector(
 	pages => {
 		return (pages.length === 0 ? 1 : pages[pages.length - 1] + 1);
 	}
-)
-
-export const selectQuestions = createSelector(
-	(state: RootState) => state.questions,
-	questions => questions
-)
-
-
-export const selectQuestion = createSelector(
-	(state: RootState) => state.questions,
-	(_: any, qId: number) => qId,
-	(questions, qId) => questions.entities[qId] as Question
-)
-
-export const selectQStatus = createSelector(
-	(state: RootState) => state.questions,
-	(questions) => questions.status as LoadingStatus
 )
