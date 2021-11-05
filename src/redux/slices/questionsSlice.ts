@@ -93,7 +93,9 @@ const slice = createSlice({
 				// don't remove in case of loadMore results
 				if (payload.result.meta.current_page === 1)
 					qAdapter.removeAll(state);
-				qAdapter.upsertMany(state, payload.entities.questions);
+				// don't add in case of no results
+				if (payload.entities.questions)
+					qAdapter.upsertMany(state, payload.entities.questions);
 			})
 			.addCase(handleAddQuestion.fulfilled, (state, action) => {
 				state.status = "succeeded";
@@ -168,7 +170,8 @@ const slice = createSlice({
 					handleLoadUserQuestions,
 					handleShowQuestion,
 					handleAddQuestion,
-					handleUpdateQuestion
+					handleUpdateQuestion,
+					handleSearchQuestions
 				),
 				(state) => {
 					state.status = "failed";

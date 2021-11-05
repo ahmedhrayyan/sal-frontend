@@ -7,6 +7,7 @@ import {
 	SkeletonCircle,
 	SkeletonText,
 	useBreakpointValue,
+	Heading,
 } from "@chakra-ui/react";
 
 import QuestionForm from "../components/questionForm";
@@ -109,21 +110,26 @@ const Home: FC<HomeProps> = ({ isSearchPage }) => {
 					<QuestionForm user={profile} />
 				)}
 				{questions.status === "pending"
-					// Loading
-					? [...Array(20)].map((_, index) => (
+					? // Loading
+					  [...Array(20)].map((_, index) => (
 							<Box key={index} padding="6" boxShadow="lg" bg="white" w="full">
 								<SkeletonCircle size="10" />
 								<SkeletonText mt="4" noOfLines={4} spacing="4" />
 							</Box>
 					  ))
-					// Questions
-					: questions.ids.map((id) => (
+					: // Questions
+					  questions.ids.map((id) => (
 							<QuestionView
 								key={id}
 								question={questions.entities[id]!}
 								currentUser={profile}
 							/>
 					  ))}
+				{isSearchPage && questions.ids.length === 0 && (
+					<Heading as="h3" size="lg" mt="8">
+						No results found, try another keyword.
+					</Heading>
+				)}
 				{questions.ids.length === questions.total || (
 					<>
 						<Button size={respSize} onClick={handleLoadMore}>

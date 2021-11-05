@@ -24,7 +24,7 @@ const usersAdapter = createEntityAdapter<User>({
 });
 
 const slice = createSlice({
-	name: "questions",
+	name: "users",
 	initialState: usersAdapter.getInitialState({
 		status: "idle" as LoadingStatus,
 	}),
@@ -49,7 +49,8 @@ const slice = createSlice({
 					handleSearchQuestions
 				),
 				(state, { payload }) => {
-					usersAdapter.upsertMany(state, payload.entities.users);
+					if (payload.entities.users)
+						usersAdapter.upsertMany(state, payload.entities.users);
 				}
 			);
 	},
