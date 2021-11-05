@@ -97,7 +97,7 @@ const Home: FC<HomeProps> = ({ isSearchPage }) => {
 					<Button
 						alignSelf="start"
 						onClick={() => {
-							window.location.href = window.location.origin;
+							window.location.href = window.location.origin; // Force reload
 						}}
 						w={[20, 32]}
 						h={[7, 10]}
@@ -108,20 +108,22 @@ const Home: FC<HomeProps> = ({ isSearchPage }) => {
 					//Home Page
 					<QuestionForm user={profile} />
 				)}
-				{questions.ids.map((id) => (
-					<QuestionView
-						key={id}
-						question={questions.entities[id]!}
-						currentUser={profile}
-					/>
-				))}
-				{questions.status === "pending" &&
-					[...Array(20)].map((_, index) => (
-						<Box key={index} padding="6" boxShadow="lg" bg="white" w="full">
-							<SkeletonCircle size="10" />
-							<SkeletonText mt="4" noOfLines={4} spacing="4" />
-						</Box>
-					))}
+				{questions.status === "pending"
+					// Loading
+					? [...Array(20)].map((_, index) => (
+							<Box key={index} padding="6" boxShadow="lg" bg="white" w="full">
+								<SkeletonCircle size="10" />
+								<SkeletonText mt="4" noOfLines={4} spacing="4" />
+							</Box>
+					  ))
+					// Questions
+					: questions.ids.map((id) => (
+							<QuestionView
+								key={id}
+								question={questions.entities[id]!}
+								currentUser={profile}
+							/>
+					  ))}
 				{questions.ids.length === questions.total || (
 					<>
 						<Button size={respSize} onClick={handleLoadMore}>
