@@ -2,8 +2,7 @@ import {
 	createAsyncThunk,
 	createEntityAdapter,
 	createSlice,
-	isFulfilled,
-	createSelector
+	isFulfilled
 } from "@reduxjs/toolkit";
 import { RootState } from "..";
 import usersApi from "../../apis/users";
@@ -11,7 +10,6 @@ import { handleShowProfile, handleUpdateProfile } from "./profileSlice";
 import {
 	handleLoadQuestions,
 	handleLoadUserQuestions,
-	handleSearchQuestions,
 	handleShowQuestion,
 } from "./questionsSlice";
 
@@ -45,8 +43,7 @@ const slice = createSlice({
 					handleLoadQuestions,
 					handleShowQuestion,
 					handleShowProfile,
-					handleUpdateProfile,
-					handleSearchQuestions
+					handleUpdateProfile
 				),
 				(state, { payload }) => {
 					if (payload.entities.users)

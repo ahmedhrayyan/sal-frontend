@@ -3,7 +3,6 @@ import {
 	createAsyncThunk,
 	createSlice,
 	isFulfilled,
-	createSelector,
 } from "@reduxjs/toolkit";
 import { RootState } from "..";
 import profileApi from "../../apis/profile";
