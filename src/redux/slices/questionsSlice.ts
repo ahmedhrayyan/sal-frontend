@@ -13,7 +13,7 @@ import { changeVote } from "../../utils/redux";
 import { handleLoadAnswers, handleAddAnswer, handleDeleteAnswer } from "./answerSlice";
 
 export const handleLoadQuestions = createAsyncThunk("q/all", qApi.fetchPage, {
-	condition: (page, { getState }) =>
+	condition: ({ page }, { getState }) =>
 		!getState().questions.fetchedPages.includes(page),
 });
 
@@ -26,14 +26,14 @@ export const handleLoadUserQuestions = createAsyncThunk(
 	}
 );
 
-export const handleSearchQuestions = createAsyncThunk(
-	"q/search",
-	qApi.search,
-	{
-		condition: ({ page }, { getState }) =>
-			!getState().questions.searchedPages.includes(page),
-	}
-);
+// export const handleSearchQuestions = createAsyncThunk(
+// 	"q/search",
+// 	qApi.search,
+// 	{
+// 		condition: ({ page }, { getState }) =>
+// 			!getState().questions.searchedPages.includes(page),
+// 	}
+// );
 
 export const handleShowQuestion = createAsyncThunk("q/show", qApi.show, {
 	condition: (id, { getState }) => !getState().questions.ids.includes(id),
@@ -61,16 +61,14 @@ const slice = createSlice({
 		total: 0,
 		fetchedPages: [] as number[],
 		status: "idle" as LoadingStatus,
-		searchTerm: "",
-		searchedPages: [] as number[],
+		// searchTerm: "",
+		// searchedPages: [] as number[],
 	}),
 	reducers: {
 		questionAdded: qAdapter.upsertOne,
 		questionRemoved: qAdapter.removeOne,
 		clearSearch: state => {
-			state.status = "idle"
-			state.searchedPages = [];
-			state.searchTerm = "";
+			state.fetchedPages = [];
 		}
 	},
 	extraReducers: (builder) => {
@@ -79,17 +77,6 @@ const slice = createSlice({
 				state.status = "succeeded";
 				state.total = payload.result.meta.total;
 				state.fetchedPages.push(payload.result.meta.current_page);
-				qAdapter.upsertMany(state, payload.entities.questions);
-			})
-			.addCase(handleLoadUserQuestions.fulfilled, (state, action) => {
-				state.status = "succeeded";
-				qAdapter.upsertMany(state, action.payload.entities.questions);
-			})
-			.addCase(handleSearchQuestions.fulfilled, (state, { payload }) => {
-				state.status = "succeeded";
-				state.total = payload.result.meta.total;
-				state.searchTerm = payload.result.search_term
-				state.searchedPages.push(payload.result.meta.current_page);
 				// don't remove in case of loadMore results
 				if (payload.result.meta.current_page === 1)
 					qAdapter.removeAll(state);
@@ -97,6 +84,22 @@ const slice = createSlice({
 				if (payload.entities.questions)
 					qAdapter.upsertMany(state, payload.entities.questions);
 			})
+			.addCase(handleLoadUserQuestions.fulfilled, (state, action) => {
+				state.status = "succeeded";
+				qAdapter.upsertMany(state, action.payload.entities.questions);
+			})
+			// .addCase(handleSearchQuestions.fulfilled, (state, { payload }) => {
+			// 	state.status = "succeeded";
+			// 	state.total = payload.result.meta.total;
+			// 	state.searchTerm = payload.result.search_term
+			// 	state.searchedPages.push(payload.result.meta.current_page);
+			// 
+			// 	if (payload.result.meta.current_page === 1)
+			// 		qAdapter.removeAll(state);
+			// 	// don't add in case of no results
+			// 	if (payload.entities.questions)
+			// 		qAdapter.upsertMany(state, payload.entities.questions);
+			// })
 			.addCase(handleAddQuestion.fulfilled, (state, action) => {
 				state.status = "succeeded";
 				qAdapter.upsertMany(state, action.payload.entities.questions);
@@ -151,8 +154,7 @@ const slice = createSlice({
 				isPending(
 					handleLoadQuestions,
 					handleLoadUserQuestions,
-					handleShowQuestion,
-					handleSearchQuestions
+					handleShowQuestion
 				),
 				(state) => {
 					state.status = "pending";
@@ -170,8 +172,7 @@ const slice = createSlice({
 					handleLoadUserQuestions,
 					handleShowQuestion,
 					handleAddQuestion,
-					handleUpdateQuestion,
-					handleSearchQuestions
+					handleUpdateQuestion
 				),
 				(state) => {
 					state.status = "failed";
@@ -194,9 +195,9 @@ export const selectNextQPage = createSelector(
 	}
 )
 
-export const selectNextQSearchedPage = createSelector(
-	(state: RootState) => state.questions.searchedPages,
-	pages => {
-		return (pages.length === 0 ? 1 : pages[pages.length - 1] + 1);
-	}
-)
+// export const selectNextQSearchedPage = createSelector(
+// 	(state: RootState) => state.questions.searchedPages,
+// 	pages => {
+// 		return (pages.length === 0 ? 1 : pages[pages.length - 1] + 1);
+// 	}
+// )

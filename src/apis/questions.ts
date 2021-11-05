@@ -12,15 +12,10 @@ type Normalized<T = Result> = {
 	result: T;
 };
 
-async function fetchPage(page: number) {
-	const { data } = await client.get(`/questions?page=${page}`);
-	return normalize(data, { data: [qEntity] }) as Normalized;
-}
-
-type SearchArg = { searchTerm: string; page: number };
-async function search({searchTerm, page}: SearchArg) {
-	const { data } = await client.post(`/search?page=${page}`, { searchTerm });
-	return normalize(data, { data: [qEntity] }) as Normalized<Result & {search_term: string} >;
+type FetchArg = { search: string; page: number };
+async function fetchPage({search="", page}: FetchArg) {
+	const { data } = await client.get(`/questions?searchTerm=${search}&page=${page}`);
+	return normalize(data, { data: [qEntity] }) as Normalized<Result & {search_term: string}>;
 }
 
 type FetchUserPageArg = { username: string; page: number };
@@ -65,8 +60,7 @@ const qApi = {
 	remove,
 	store,
 	update,
-	vote,
-	search
+	vote
 };
 
 export default qApi;
