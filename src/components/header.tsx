@@ -18,7 +18,7 @@ import {
 	MenuItem,
 	MenuList,
 } from "@chakra-ui/react";
-import { FC, useState, FormEvent } from "react";
+import { FC, useState, FormEvent, useEffect } from "react";
 import { Link as RouterLink, NavLink, useHistory } from "react-router-dom";
 import {
 	AiOutlineSearch,
@@ -158,9 +158,16 @@ const SearchForm: FC<SearchProps> = (props) => {
 	const [searchValue, setSearchValue] = useState("");
 	const history = useHistory();
 
+	useEffect(() => {
+		// clear searchValue after back to home
+		if (!history.location.search) setSearchValue("");
+	}, [history.location]);
+
 	const submitHandler = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		history.push(`/results?searchTerm=${searchValue}`);
+		if (searchValue) history.push(`/?searchTerm=${searchValue}`);
+		// if no search or search is empty
+		else history.push("/");
 	};
 	return (
 		<chakra.form onSubmit={submitHandler}>
