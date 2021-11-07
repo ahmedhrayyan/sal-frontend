@@ -14,7 +14,7 @@ import {
 	Stack,
 } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { BiUpvote, BiDownvote } from "react-icons/bi";
 import { RiQuestionAnswerLine } from "react-icons/ri";
 import { BsThreeDotsVertical } from "react-icons/bs";
@@ -45,10 +45,11 @@ import EditForm from "./addForm";
 interface QuestionViewProps {
 	question: Question;
 	currentUser: Profile | null;
+	qPage?: Boolean; // open answers in Q Page by default
 }
 const respSize = { base: "xs", md: "sm" };
 
-const QuestionView: FC<QuestionViewProps> = ({ question, currentUser }) => {
+const QuestionView: FC<QuestionViewProps> = ({ question, currentUser, qPage }) => {
 	const {
 		isOpen,
 		textareaValue,
@@ -69,6 +70,9 @@ const QuestionView: FC<QuestionViewProps> = ({ question, currentUser }) => {
 	);
 	const isTheCurrentUser = question.user === currentUser?.username;
 
+	useEffect(() => {
+		if(qPage) handleShowAnswers();
+	}, [qPage]); // eslint-disable-line
 	/* --- Questions Handlers --- */
 	const handleUpVote = () => {
 		const qVote = question.viewer_vote;
@@ -220,7 +224,7 @@ const QuestionView: FC<QuestionViewProps> = ({ question, currentUser }) => {
 				</Text>
 			</HStack>
 
-			{showAnswers && (
+			{(showAnswers || qPage) && (
 				<>
 					<AnswerForm user={currentUser} question_id={question.id} />
 
