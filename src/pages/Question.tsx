@@ -14,7 +14,6 @@ import { selectProfile } from "../redux/slices/profileSlice";
 import {
 	handleShowQuestion,
 	selectQuestion,
-	selectQStatus,
 } from "../redux/slices/questionsSlice";
 
 interface QuestionViewProps {}
@@ -22,7 +21,6 @@ const Question: FC<QuestionViewProps> = () => {
 	const history = useHistory();
 	const { qId } = useParams() as { qId: string | undefined };
 	const currentUser = useShallowEqSelector(selectProfile);
-	const qStatus = useShallowEqSelector(selectQStatus);
 
 	const dispatch = useAppDispatch();
 	let question = useShallowEqSelector((state) =>
@@ -31,7 +29,7 @@ const Question: FC<QuestionViewProps> = () => {
 
 	useEffect(() => {
 		if (!question) dispatch(handleShowQuestion(Number(qId)));
-	}, []);
+	}, [question, qId]); // eslint-disable-line
 
 	return (
 		<Center mt={["13vh", "16vh"]}>

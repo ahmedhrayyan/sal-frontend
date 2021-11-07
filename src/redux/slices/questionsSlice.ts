@@ -45,7 +45,6 @@ export const handleAddQuestion = createAsyncThunk("q/add", qApi.store);
 export const handleUpdateQuestion = createAsyncThunk("q/update", qApi.update);
 
 const qAdapter = createEntityAdapter<Question>();
-const qSelectors = qAdapter.getSelectors();
 
 const slice = createSlice({
 	name: "q",
