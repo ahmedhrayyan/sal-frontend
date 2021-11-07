@@ -7,7 +7,6 @@ import {
 	SkeletonCircle,
 	SkeletonText,
 	useBreakpointValue,
-	Heading,
 } from "@chakra-ui/react";
 
 import QuestionForm from "../components/questionForm";
@@ -16,90 +15,47 @@ import QuestionView from "../components/questionView";
 import { selectProfile } from "../redux/slices/profileSlice";
 import {
 	handleLoadQuestions,
-	handleSearchQuestions,
 	selectNextQPage,
 	selectQuestions,
-	selectNextQSearchedPage,
 	clearSearch,
 } from "../redux/slices/questionsSlice";
-import { useAppDispatch, useShallowEqSelector } from "../utils/hooks";
-import { useHistory, useLocation } from "react-router";
+import {
+	useAppDispatch,
+	useSearch,
+	useShallowEqSelector,
+} from "../utils/hooks";
+import { useHistory } from "react-router";
+import NoResult from "../components/noResult";
 
-interface HomeProps {
-	isSearchPage?: boolean;
-}
-const Home: FC<HomeProps> = ({ isSearchPage }) => {
+const Home: FC = () => {
 	const dispatch = useAppDispatch();
 	const profile = useShallowEqSelector(selectProfile);
 	const questions = useShallowEqSelector(selectQuestions);
-	const nextQPage = useShallowEqSelector(selectNextQPage);
-	const nextQSearchedPage = useShallowEqSelector(selectNextQSearchedPage);
+	const page = useShallowEqSelector(selectNextQPage);
 	const respSize = useBreakpointValue({ base: "sm", md: "md" });
 
-	const { search } = useLocation(); //cuurent URL
-	const params = new URLSearchParams(search);
+	const search = useSearch("searchTerm").getValue();
 	const history = useHistory();
 
 	// Home Page
 	useEffect(() => {
-		if (!isSearchPage) {
-			dispatch(handleLoadQuestions(1));
-			document.title = "Sal - Home";
-		}
-	}, []); //eslint-disable-line
-
-	// Search Page
-	useEffect(() => {
-		if (isSearchPage) {
-			dispatch(clearSearch());
-			if (params.get("searchTerm")) {
-				const searchTerm = params.get("searchTerm") as string;
-				dispatch(
-					handleSearchQuestions({
-						searchTerm,
-						page: 1,
-					})
-				);
-				document.title = `${searchTerm} - Search Results | Sal`;
-			}
-		}
+		dispatch(clearSearch());
+		dispatch(handleLoadQuestions({ page: 1, search }));
+		document.title = search ? `${search} - Search Results | Sal` : "Sal - Home";
 	}, [search]); //eslint-disable-line
 
-	useEffect(() => {
-		if (isSearchPage) {
-			history.listen((location) => {
-				if (history.action === "POP") {
-					window.location.href = window.location.origin;
-				}
-			});
-		}
-	});
-
 	const handleLoadMore = () => {
-		if (isSearchPage && params.get("searchTerm")) {
-			// Search Page
-			dispatch(
-				handleSearchQuestions({
-					searchTerm: params.get("searchTerm") as string,
-					page: nextQSearchedPage,
-				})
-			);
-		} else {
-			// Home Page
-			dispatch(handleLoadQuestions(nextQPage));
-		}
+		dispatch(handleLoadQuestions({ page, search }));
 	};
 
 	return (
-		<Center mt="13vh">
+		<Center mt={["13vh", "16vh"]}>
 			<VStack maxW="xl" w="full" spacing="6">
-				{isSearchPage ? (
+				{search ? (
 					// Search Page
 					<Button
 						alignSelf="start"
-						onClick={() => {
-							window.location.href = window.location.origin; // Force reload
-						}}
+						onClick={() => history.push("/")}
 						w={[20, 32]}
 						h={[7, 10]}
 					>
@@ -125,11 +81,7 @@ const Home: FC<HomeProps> = ({ isSearchPage }) => {
 								currentUser={profile}
 							/>
 					  ))}
-				{isSearchPage && questions.ids.length === 0 && (
-					<Heading as="h3" size="lg" mt="8">
-						No results found, try another keyword.
-					</Heading>
-				)}
+				{search && questions.ids.length === 0 && <NoResult />}
 				{questions.ids.length === questions.total || (
 					<>
 						<Button size={respSize} onClick={handleLoadMore}>
