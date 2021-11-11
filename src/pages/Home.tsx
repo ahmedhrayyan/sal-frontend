@@ -17,7 +17,8 @@ import {
 	handleLoadQuestions,
 	selectNextQPage,
 	selectQuestions,
-	clearSearch,
+	clearSearchPages,
+	selectQSearch,
 } from "../redux/slices/questionsSlice";
 import {
 	useAppDispatch,
@@ -30,22 +31,24 @@ import NoResult from "../components/noResult";
 const Home: FC = () => {
 	const dispatch = useAppDispatch();
 	const profile = useShallowEqSelector(selectProfile);
+	const searchStore = useShallowEqSelector(selectQSearch);
 	const questions = useShallowEqSelector(selectQuestions);
-	const page = useShallowEqSelector(selectNextQPage);
+	const nextPage = useShallowEqSelector(selectNextQPage);
 	const respSize = useBreakpointValue({ base: "sm", md: "md" });
 
 	const search = useSearch("searchTerm").getValue();
 	const history = useHistory();
 
 	// Home Page
+
 	useEffect(() => {
-		dispatch(clearSearch());
+		if (search || searchStore) dispatch(clearSearchPages());
 		dispatch(handleLoadQuestions({ page: 1, search }));
 		document.title = search ? `${search} - Search Results | Sal` : "Sal - Home";
 	}, [search]); //eslint-disable-line
 
 	const handleLoadMore = () => {
-		dispatch(handleLoadQuestions({ page, search }));
+		dispatch(handleLoadQuestions({ page: nextPage, search }));
 	};
 
 	return (
@@ -81,7 +84,12 @@ const Home: FC = () => {
 								currentUser={profile}
 							/>
 					  ))}
-				{search && questions.ids.length === 0 && <NoResult />}
+				{search && questions.ids.length === 0 && (
+					<NoResult
+						heading="No results found"
+						text="Please check spelling or try different keywords."
+					/>
+				)}
 				{questions.ids.length === questions.total || (
 					<>
 						<Button size={respSize} onClick={handleLoadMore}>

@@ -13,8 +13,8 @@ import { changeVote } from "../../utils/redux";
 import { handleLoadAnswers, handleAddAnswer, handleDeleteAnswer } from "./answerSlice";
 
 export const handleLoadQuestions = createAsyncThunk("q/all", qApi.fetchPage, {
-	condition: ({ page }, { getState }) =>
-		!getState().questions.fetchedPages.includes(page),
+	condition: ({ page, search }, { getState }) =>
+		!(getState().questions.fetchedPages.includes(page) && getState().questions.search === search),
 });
 
 export const handleLoadUserQuestions = createAsyncThunk(
@@ -52,11 +52,12 @@ const slice = createSlice({
 		total: 0,
 		fetchedPages: [] as number[],
 		status: "idle" as LoadingStatus,
+		search: "" as string,
 	}),
 	reducers: {
 		questionAdded: qAdapter.upsertOne,
 		questionRemoved: qAdapter.removeOne,
-		clearSearch: state => {
+		clearSearchPages: state => {
 			state.fetchedPages = [];
 		}
 	},
@@ -65,7 +66,10 @@ const slice = createSlice({
 			.addCase(handleLoadQuestions.fulfilled, (state, { payload }) => {
 				state.status = "succeeded";
 				state.total = payload.result.meta.total;
-				state.fetchedPages.push(payload.result.meta.current_page);
+				state.search = payload.result.search_term;
+
+				if (!state.fetchedPages.includes(payload.result.meta.current_page))
+					state.fetchedPages.push(payload.result.meta.current_page);
 				// don't remove in case of loadMore results
 				if (payload.result.meta.current_page === 1)
 					qAdapter.removeAll(state);
@@ -160,16 +164,17 @@ const slice = createSlice({
 	},
 });
 
-export const { clearSearch } = slice.actions;
+export const { clearSearchPages } = slice.actions;
 export default slice.reducer;
 
 export const selectQuestions = (state: RootState) => {
 	return state.questions
 };
-export const selectQStatus = (state: RootState) => state.questions.status as LoadingStatus
+export const selectQStatus = (state: RootState) => state.questions.status as LoadingStatus;
+export const selectQSearch = (state: RootState) => state.questions.search as string;
 export const selectQuestion = (state: RootState, qId: number) => {
 	return state.questions.entities[qId] as Question;
-}
+};
 
 export const selectNextQPage = createSelector(
 	(state: RootState) => state.questions.fetchedPages,
