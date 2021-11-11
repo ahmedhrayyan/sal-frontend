@@ -46,10 +46,16 @@ interface QuestionViewProps {
 	question: Question;
 	currentUser: Profile | null;
 	qPage?: Boolean; // open answers in Q Page by default
+	answerId?: string | undefined;
 }
 const respSize = { base: "xs", md: "sm" };
 
-const QuestionView: FC<QuestionViewProps> = ({ question, currentUser, qPage }) => {
+const QuestionView: FC<QuestionViewProps> = ({
+	question,
+	currentUser,
+	qPage,
+	answerId,
+}) => {
 	const {
 		isOpen,
 		textareaValue,
@@ -71,19 +77,20 @@ const QuestionView: FC<QuestionViewProps> = ({ question, currentUser, qPage }) =
 	const isTheCurrentUser = question.user === currentUser?.username;
 
 	useEffect(() => {
-		if(qPage) handleShowAnswers();
+		if (qPage) handleShowAnswers();
 	}, [qPage]); // eslint-disable-line
+
 	/* --- Questions Handlers --- */
 	const handleUpVote = () => {
 		const qVote = question.viewer_vote;
-		// upVote in case of null or false.
+		// upVote(=1) in case of null or false.
 		const vote: Vote = !qVote ? 1 : 0;
 		dispatch(handleVoteQuestion({ question, vote }));
 	};
 
 	const handleDownVote = () => {
 		const qVote = question.viewer_vote;
-		// downVote in case of null or true.
+		// downVote(=2) in case of null or true.
 		const vote: Vote = qVote === null || qVote === true ? 2 : 0;
 		dispatch(handleVoteQuestion({ question, vote }));
 	};
@@ -224,7 +231,7 @@ const QuestionView: FC<QuestionViewProps> = ({ question, currentUser, qPage }) =
 				</Text>
 			</HStack>
 
-			{(showAnswers || qPage) && (
+			{showAnswers && (
 				<>
 					<AnswerForm user={currentUser} question_id={question.id} />
 
@@ -234,6 +241,7 @@ const QuestionView: FC<QuestionViewProps> = ({ question, currentUser, qPage }) =
 								key={answer.id}
 								answer={answer}
 								currentUser={currentUser}
+								scrollToAns={Number(answerId) === answer.id}
 							/>
 						))}
 					{question.answers_count > 0 &&
