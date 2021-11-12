@@ -67,19 +67,20 @@ const slice = createSlice({
 				state.status = "succeeded";
 				state.total = payload.result.meta.total;
 				state.search = payload.result.search_term;
+				state.fetchedPages.push(payload.result.meta.current_page);
 
-				if (!state.fetchedPages.includes(payload.result.meta.current_page))
-					state.fetchedPages.push(payload.result.meta.current_page);
-				// don't remove in case of loadMore results
-				if (payload.result.meta.current_page === 1)
+				// Remove Qs if (searchTerm changed) ONLY
+				if (payload.result.meta.current_page === 1) {
 					qAdapter.removeAll(state);
-				// don't add in case of no results
+				}
+				// null saftey
 				if (payload.entities.questions)
 					qAdapter.upsertMany(state, payload.entities.questions);
 			})
 			.addCase(handleLoadUserQuestions.fulfilled, (state, action) => {
 				state.status = "succeeded";
-				qAdapter.upsertMany(state, action.payload.entities.questions);
+				if (action.payload.entities.questions)
+					qAdapter.upsertMany(state, action.payload.entities.questions);
 			})
 			.addCase(handleAddQuestion.fulfilled, (state, action) => {
 				state.status = "succeeded";

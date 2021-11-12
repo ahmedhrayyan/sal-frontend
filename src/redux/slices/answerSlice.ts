@@ -51,7 +51,8 @@ const slice = createSlice({
     builder
       .addCase(handleLoadAnswers.fulfilled, (state, { payload }) => {
         state.status = "succeeded";
-        aAdapter.upsertMany(state, payload.entities.answers);
+        if (payload.entities.answers)
+          aAdapter.upsertMany(state, payload.entities.answers);
       })
       .addCase(handleDeleteAnswer.pending, (state, { meta }) => {
         aAdapter.removeOne(state, meta.arg.id);
