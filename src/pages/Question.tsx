@@ -21,24 +21,33 @@ import {
 	selectQuestion,
 } from "../redux/slices/questionsSlice";
 import NoResult from "../components/noResult";
+import { handleShowAnswer, selectAnswer } from "../redux/slices/answerSlice";
 
 interface QuestionViewProps {}
 const Question: FC<QuestionViewProps> = () => {
 	const history = useHistory();
 	const { qId } = useParams() as { qId: string | undefined };
-	const answerId = useSearch("answer_id").getValue();
+	const aId = useSearch("answer_id").getValue();
 	const currentUser = useShallowEqSelector(selectProfile);
 	const qStatus = useShallowEqSelector(selectQStatus);
 
 	const dispatch = useAppDispatch();
-	let question = useShallowEqSelector((state) =>
+	const question = useShallowEqSelector((state) =>
 		selectQuestion(state, Number(qId))
+	);
+
+	const answer = useShallowEqSelector((state) =>
+		selectAnswer(state, Number(aId))
 	);
 
 	useEffect(() => {
 		if (!question) dispatch(handleShowQuestion(Number(qId)));
 		// if(qStatus === 'failed') history.
 	}, [question, qId]); // eslint-disable-line
+
+	useEffect(() => {
+		if (aId && !answer) dispatch(handleShowAnswer(Number(aId)));
+	}, [aId]); // eslint-disable-line
 
 	return (
 		<Center mt={["13vh", "16vh"]}>
@@ -65,7 +74,7 @@ const Question: FC<QuestionViewProps> = () => {
 						</Box>
 					) : (
 						<QuestionView
-							answerId={answerId}
+							answerId={aId}
 							question={question}
 							currentUser={currentUser}
 							qPage

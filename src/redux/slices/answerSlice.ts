@@ -122,4 +122,8 @@ export const selectAnswers = createSelector(
   }
 )
 
+export const selectAnswer = (state: RootState, aId: number) => {
+  return state.answers.entities[aId] as Answer;
+};
+
 export const selectAStatus = (state: RootState) => state.answers.status as LoadingStatus
