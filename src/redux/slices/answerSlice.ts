@@ -51,7 +51,8 @@ const slice = createSlice({
     builder
       .addCase(handleLoadAnswers.fulfilled, (state, { payload }) => {
         state.status = "succeeded";
-        aAdapter.upsertMany(state, payload.entities.answers);
+        if (payload.entities.answers)
+          aAdapter.upsertMany(state, payload.entities.answers);
       })
       .addCase(handleDeleteAnswer.pending, (state, { meta }) => {
         aAdapter.removeOne(state, meta.arg.id);
@@ -75,6 +76,10 @@ const slice = createSlice({
         (state, { payload }) => {
           state.status = "succeeded";
           aAdapter.upsertMany(state, payload.entities.answers);
+          // resort the array to push the new A to the first
+          let tmp = state.ids[state.ids.length - 1];
+          state.ids.pop();
+          state.ids.unshift(tmp);
         }
       )
       .addMatcher(
@@ -122,13 +127,8 @@ export const selectAnswers = createSelector(
   }
 )
 
-export const selectQAnswers = createSelector(
-  (state: RootState) => state.answers,
-  answers => answers
+export const selectAnswer = (state: RootState, aId: number) => {
+  return state.answers.entities[aId] as Answer;
+};
 
-)
-
-export const selectAStatus = createSelector(
-  (state: RootState) => state.answers,
-  (answers) => answers.status as LoadingStatus
-)
+export const selectAStatus = (state: RootState) => state.answers.status as LoadingStatus

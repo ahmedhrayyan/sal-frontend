@@ -12,9 +12,10 @@ type Normalized<T = Result> = {
 	result: T;
 };
 
-async function fetchPage(page: number) {
-	const { data } = await client.get(`/questions?page=${page}`);
-	return normalize(data, { data: [qEntity] }) as Normalized;
+type FetchArg = { search: string; page: number };
+async function fetchPage({search="", page}: FetchArg) {
+	const { data } = await client.get(`/questions?searchTerm=${search}&page=${page}`);
+	return normalize(data, { data: [qEntity] }) as Normalized<Result & {search_term: string}>;
 }
 
 type FetchUserPageArg = { username: string; page: number };
@@ -47,8 +48,9 @@ async function vote(id: number, vote: Vote) {
 	return normalize(data, { data: qEntity }) as Normalized<Omit<Result, "meta">>;
 }
 
-function remove(id: number) {
-	return client.delete(`/questions/${id}`).then(res => res.data);
+async function remove(id: number) {
+	const res = await client.delete(`/questions/${id}`);
+	return res.data;
 }
 
 const qApi = {
@@ -58,7 +60,7 @@ const qApi = {
 	remove,
 	store,
 	update,
-	vote,
+	vote
 };
 
 export default qApi;

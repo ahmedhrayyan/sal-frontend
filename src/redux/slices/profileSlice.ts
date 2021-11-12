@@ -3,7 +3,6 @@ import {
 	createAsyncThunk,
 	createSlice,
 	isFulfilled,
-	createSelector,
 } from "@reduxjs/toolkit";
 import { RootState } from "..";
 import profileApi from "../../apis/profile";
@@ -67,13 +66,9 @@ const slice = createSlice({
 	},
 });
 
-export const selectProfile = createSelector(
-	(state: RootState) => state.profile.user,
-	(state: RootState) => state.users.entities,
-	(username, users) => {
-		if (!username) return null;
-		return users[username] as Profile;
-	}
-);
+export const selectProfile = (state: RootState) => {
+	if (!state.profile.user) return null;
+	return state.users.entities[state.profile.user] as Profile;
+}
 
 export default slice.reducer;

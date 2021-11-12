@@ -20,7 +20,7 @@ import {
 	handleVoteAnswer,
 	handleDeleteAnswer,
 } from "../redux/slices/answerSlice";
-import { FC, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useShallowEqSelector, useAddFormState } from "../utils/hooks";
 import { selectUser } from "../redux/slices/usersSlice";
@@ -31,12 +31,17 @@ import EditForm from "./addForm";
 import DeleteAlert from "./deleteAlert";
 
 interface AnswerViewProps {
-	answer: any; // update later
+	answer: any;
 	currentUser: any;
+	scrollToAns?: Boolean;
 }
 const respSize = { base: "xs", md: "sm" };
 
-const AnswerView: FC<AnswerViewProps> = ({ answer, currentUser }) => {
+const AnswerView: FC<AnswerViewProps> = ({
+	answer,
+	currentUser,
+	scrollToAns,
+}) => {
 	const {
 		isOpen,
 		textareaValue,
@@ -45,22 +50,41 @@ const AnswerView: FC<AnswerViewProps> = ({ answer, currentUser }) => {
 		onChangeHandler,
 		onCancelHandler,
 	} = useAddFormState(answer.content);
+	const ref = useRef<HTMLDivElement>(null);
 	const [isDAlert, setIsDAlert] = useState(false); // delete alert
 	const user = useShallowEqSelector((state) => selectUser(state, answer.user));
 	const dispatch = useDispatch();
 	const respButton = useBreakpointValue([15, 20]);
-	const isTheCurrentUser = answer.user === currentUser.username;
+	const isTheCurrentUser = answer.user === currentUser?.username;
+
+	useEffect(() => {
+		let intId: number; // store interval id
+
+		if (scrollToAns) ref.current?.scrollIntoView({ behavior: "smooth" });
+
+		// change the background to highlight the scrolled answer
+		if (scrollToAns && ref.current) {
+			ref.current.style.backgroundColor = "#e2e8f0";
+			ref.current.style.transition = "400ms all";
+
+			// back to the normal bgColor after 1 sec
+			intId = window.setInterval(() => {
+				if (ref.current) ref.current.style.backgroundColor = "#F5F5F5";
+			}, 1000);
+		}
+		return () => clearInterval(intId); // clearIntervel
+	}, [scrollToAns]);
 
 	const handleUpVote = () => {
 		const aVote = answer.viewer_vote;
-		// upVote in case of downVoted or no vote.
+		// upVote(=1) in case of null or false.
 		const vote: Vote = !aVote ? 1 : 0;
 		dispatch(handleVoteAnswer({ answer, vote }));
 	};
 
 	const handleDownVote = () => {
 		const aVote = answer.viewer_vote;
-		// downVote in case of upVoted or no vote.
+		// downVote(=2) in case of null or true.
 		const vote: Vote = aVote === null || aVote === true ? 2 : 0;
 		dispatch(handleVoteAnswer({ answer, vote }));
 	};
@@ -88,7 +112,7 @@ const AnswerView: FC<AnswerViewProps> = ({ answer, currentUser }) => {
 				boxSize={[8, 9]}
 			/>
 			<Box w="full">
-				<Box bg="gray.50" p="3" rounded="xl">
+				<Box ref={ref} bg="gray.50" p="3" rounded="xl">
 					<Flex mr="-3" mb="1">
 						<Stack spacing={0} fontSize=".85em">
 							<Text fontWeight={600}>{user.full_name}</Text>

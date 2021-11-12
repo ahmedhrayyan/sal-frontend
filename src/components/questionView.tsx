@@ -14,7 +14,7 @@ import {
 	Stack,
 } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { BiUpvote, BiDownvote } from "react-icons/bi";
 import { RiQuestionAnswerLine } from "react-icons/ri";
 import { BsThreeDotsVertical } from "react-icons/bs";
@@ -45,10 +45,17 @@ import EditForm from "./addForm";
 interface QuestionViewProps {
 	question: Question;
 	currentUser: Profile | null;
+	qPage?: Boolean; // open answers in Q Page by default
+	answerId?: string | undefined;
 }
 const respSize = { base: "xs", md: "sm" };
 
-const QuestionView: FC<QuestionViewProps> = ({ question, currentUser }) => {
+const QuestionView: FC<QuestionViewProps> = ({
+	question,
+	currentUser,
+	qPage,
+	answerId,
+}) => {
 	const {
 		isOpen,
 		textareaValue,
@@ -69,17 +76,21 @@ const QuestionView: FC<QuestionViewProps> = ({ question, currentUser }) => {
 	);
 	const isTheCurrentUser = question.user === currentUser?.username;
 
+	useEffect(() => {
+		if (qPage) handleShowAnswers();
+	}, [qPage]); // eslint-disable-line
+
 	/* --- Questions Handlers --- */
 	const handleUpVote = () => {
 		const qVote = question.viewer_vote;
-		// upVote in case of null or false.
+		// upVote(=1) in case of null or false.
 		const vote: Vote = !qVote ? 1 : 0;
 		dispatch(handleVoteQuestion({ question, vote }));
 	};
 
 	const handleDownVote = () => {
 		const qVote = question.viewer_vote;
-		// downVote in case of null or true.
+		// downVote(=2) in case of null or true.
 		const vote: Vote = qVote === null || qVote === true ? 2 : 0;
 		dispatch(handleVoteQuestion({ question, vote }));
 	};
@@ -124,9 +135,9 @@ const QuestionView: FC<QuestionViewProps> = ({ question, currentUser }) => {
 		>
 			<Flex mr="-4" mb="4">
 				<UserAvatar
-					name={question.user}
-					imgSrc="" //update later
-					title="" //update later
+					name={currentUser?.full_name as string}
+					imgSrc={currentUser?.avatar || ""}
+					title={currentUser?.job || ""}
 				/>
 				<Spacer />
 				<Menu placement="bottom-end">
@@ -230,6 +241,7 @@ const QuestionView: FC<QuestionViewProps> = ({ question, currentUser }) => {
 								key={answer.id}
 								answer={answer}
 								currentUser={currentUser}
+								scrollToAns={Number(answerId) === answer.id}
 							/>
 						))}
 					{question.answers_count > 0 &&

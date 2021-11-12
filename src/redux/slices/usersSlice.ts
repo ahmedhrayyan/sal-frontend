@@ -2,8 +2,7 @@ import {
 	createAsyncThunk,
 	createEntityAdapter,
 	createSlice,
-	isFulfilled,
-	createSelector
+	isFulfilled
 } from "@reduxjs/toolkit";
 import { RootState } from "..";
 import usersApi from "../../apis/users";
@@ -23,7 +22,7 @@ const usersAdapter = createEntityAdapter<User>({
 });
 
 const slice = createSlice({
-	name: "questions",
+	name: "users",
 	initialState: usersAdapter.getInitialState({
 		status: "idle" as LoadingStatus,
 	}),
@@ -47,7 +46,8 @@ const slice = createSlice({
 					handleUpdateProfile
 				),
 				(state, { payload }) => {
-					usersAdapter.upsertMany(state, payload.entities.users);
+					if (payload.entities.users)
+						usersAdapter.upsertMany(state, payload.entities.users);
 				}
 			);
 	},
@@ -55,8 +55,4 @@ const slice = createSlice({
 
 export default slice.reducer;
 
-export const selectUser = createSelector(
-	(state: RootState) => state.users,
-	(_: any, uId: number) => uId,
-	(users, uId) => users.entities[uId] as User
-)
+export const selectUser = (state: RootState, uId: number) => state.users.entities[uId] as User

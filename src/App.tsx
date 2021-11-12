@@ -32,7 +32,7 @@ function App() {
 		<div className="app">
 			<Header profile={profile as Profile} />
 			<Route path="/" exact>
-				<Home />
+				<Home/>
 			</Route>
 			<Route path="/questions/:qId">
 				<Question />
