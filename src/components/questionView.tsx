@@ -41,6 +41,7 @@ import {
 } from "../redux/slices/answerSlice";
 import DeleteAlert from "./deleteAlert";
 import EditForm from "./addForm";
+import { selectUser } from "../redux/slices/usersSlice";
 
 interface QuestionViewProps {
 	question: Question;
@@ -75,6 +76,9 @@ const QuestionView: FC<QuestionViewProps> = ({
 		selectNextAPage(state, question.id)
 	);
 	const isTheCurrentUser = question.user === currentUser?.username;
+	const qUser = useShallowEqSelector((state) =>
+		selectUser(state, question.user)
+	);
 
 	useEffect(() => {
 		if (qPage) handleShowAnswers();
@@ -135,9 +139,9 @@ const QuestionView: FC<QuestionViewProps> = ({
 		>
 			<Flex mr="-4" mb="4">
 				<UserAvatar
-					name={currentUser?.full_name as string}
-					imgSrc={currentUser?.avatar || ""}
-					title={currentUser?.job || ""}
+					name={qUser?.full_name as string}
+					imgSrc={qUser?.avatar || ""}
+					title={qUser?.job || ""}
 				/>
 				<Spacer />
 				<Menu placement="bottom-end">
