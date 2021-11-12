@@ -6,6 +6,7 @@ import {
 } from "@reduxjs/toolkit";
 import { RootState } from "..";
 import usersApi from "../../apis/users";
+import { handleLoadAnswers, handleShowAnswer } from "./answerSlice";
 import { handleShowProfile, handleUpdateProfile } from "./profileSlice";
 import {
 	handleLoadQuestions,
@@ -43,7 +44,9 @@ const slice = createSlice({
 					handleLoadQuestions,
 					handleShowQuestion,
 					handleShowProfile,
-					handleUpdateProfile
+					handleUpdateProfile,
+					handleShowAnswer,
+					handleLoadAnswers
 				),
 				(state, { payload }) => {
 					if (payload.entities.users)
@@ -55,4 +58,4 @@ const slice = createSlice({
 
 export default slice.reducer;
 
-export const selectUser = (state: RootState, uId: number) => state.users.entities[uId] as User
+export const selectUser = (state: RootState, username: string) => state.users.entities[username] as User

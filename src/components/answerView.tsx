@@ -52,7 +52,7 @@ const AnswerView: FC<AnswerViewProps> = ({
 	} = useAddFormState(answer.content);
 	const ref = useRef<HTMLDivElement>(null);
 	const [isDAlert, setIsDAlert] = useState(false); // delete alert
-	const user = useShallowEqSelector((state) => selectUser(state, answer.user));
+	const aUser = useShallowEqSelector((state) => selectUser(state, answer.user));
 	const dispatch = useDispatch();
 	const respButton = useBreakpointValue([15, 20]);
 	const isTheCurrentUser = answer.user === currentUser?.username;
@@ -106,8 +106,8 @@ const AnswerView: FC<AnswerViewProps> = ({
 	return (
 		<HStack my="4" alignItems="start">
 			<Avatar
-				name={user.full_name}
-				src={user.avatar || ""}
+				name={aUser?.full_name as string}
+				src={aUser?.avatar || ""}
 				alt="User Avatar"
 				boxSize={[8, 9]}
 			/>
@@ -115,8 +115,8 @@ const AnswerView: FC<AnswerViewProps> = ({
 				<Box ref={ref} bg="gray.50" p="3" rounded="xl">
 					<Flex mr="-3" mb="1">
 						<Stack spacing={0} fontSize=".85em">
-							<Text fontWeight={600}>{user.full_name}</Text>
-							<Text color="gray.500">{user.job}</Text>
+							<Text fontWeight={600}>{aUser?.full_name}</Text>
+							<Text color="gray.500">{aUser?.job}</Text>
 						</Stack>
 						<Spacer />
 						<Menu placement="bottom-end">
