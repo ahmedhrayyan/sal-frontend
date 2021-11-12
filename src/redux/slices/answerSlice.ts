@@ -75,6 +75,10 @@ const slice = createSlice({
         (state, { payload }) => {
           state.status = "succeeded";
           aAdapter.upsertMany(state, payload.entities.answers);
+          // resort the array to push the new A to the first
+          let tmp = state.ids[state.ids.length - 1];
+          state.ids.pop();
+          state.ids.unshift(tmp);
         }
       )
       .addMatcher(
