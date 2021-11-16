@@ -5,16 +5,23 @@ import {
 	isFulfilled,
 	isPending,
 	isRejected,
-	createSelector
+	createSelector,
 } from "@reduxjs/toolkit";
 import { RootState } from "..";
 import qApi from "../../apis/questions";
 import { changeVote } from "../../utils/redux";
-import { handleLoadAnswers, handleAddAnswer, handleDeleteAnswer } from "./answerSlice";
+import {
+	handleLoadAnswers,
+	handleAddAnswer,
+	handleDeleteAnswer,
+} from "./answerSlice";
 
 export const handleLoadQuestions = createAsyncThunk("q/all", qApi.fetchPage, {
 	condition: ({ page, search }, { getState }) =>
-		!(getState().questions.fetchedPages.includes(page) && getState().questions.search === search),
+		!(
+			getState().questions.fetchedPages.includes(page) &&
+			getState().questions.search === search
+		),
 });
 
 export const handleLoadUserQuestions = createAsyncThunk(
@@ -44,7 +51,9 @@ export const handleVoteQuestion = createAsyncThunk(
 export const handleAddQuestion = createAsyncThunk("q/add", qApi.store);
 export const handleUpdateQuestion = createAsyncThunk("q/update", qApi.update);
 
-const qAdapter = createEntityAdapter<Question>();
+const qAdapter = createEntityAdapter<Question>({
+	sortComparer: (a, b) => b.upvotes - b.downvotes - (a.upvotes - a.downvotes),
+});
 
 const slice = createSlice({
 	name: "q",
@@ -57,9 +66,9 @@ const slice = createSlice({
 	reducers: {
 		questionAdded: qAdapter.upsertOne,
 		questionRemoved: qAdapter.removeOne,
-		clearSearchPages: state => {
+		clearSearchPages: (state) => {
 			state.fetchedPages = [];
-		}
+		},
 	},
 	extraReducers: (builder) => {
 		builder
@@ -125,10 +134,7 @@ const slice = createSlice({
 				if (question) question.answers_count -= 1;
 			})
 			.addMatcher(
-				isFulfilled(
-					handleShowQuestion,
-					handleUpdateQuestion
-				),
+				isFulfilled(handleShowQuestion, handleUpdateQuestion),
 				(state, { payload }) => {
 					state.status = "succeeded";
 					qAdapter.upsertMany(state, payload.entities.questions);
@@ -169,17 +175,19 @@ export const { clearSearchPages } = slice.actions;
 export default slice.reducer;
 
 export const selectQuestions = (state: RootState) => {
-	return state.questions
+	return state.questions;
 };
-export const selectQStatus = (state: RootState) => state.questions.status as LoadingStatus;
-export const selectQSearch = (state: RootState) => state.questions.search as string;
+export const selectQStatus = (state: RootState) =>
+	state.questions.status as LoadingStatus;
+export const selectQSearch = (state: RootState) =>
+	state.questions.search as string;
 export const selectQuestion = (state: RootState, qId: number) => {
 	return state.questions.entities[qId] as Question;
 };
 
 export const selectNextQPage = createSelector(
 	(state: RootState) => state.questions.fetchedPages,
-	pages => {
-		return (pages.length === 0 ? 1 : pages[pages.length - 1] + 1);
+	(pages) => {
+		return pages.length === 0 ? 1 : pages[pages.length - 1] + 1;
 	}
-)
+);
