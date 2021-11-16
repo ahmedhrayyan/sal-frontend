@@ -22,7 +22,7 @@ import UserAvatar from "./userAvatar";
 import AnswerView from "./answerView";
 import AnswerForm from "./answerForm";
 import { useState } from "react";
-import { formatKNumbers, formatTimeAgo } from "../utils/helpers";
+import { formatKNumbers } from "../utils/helpers";
 import {
 	useAddFormState,
 	useAppDispatch,
@@ -42,6 +42,7 @@ import {
 import DeleteAlert from "./deleteAlert";
 import EditForm from "./addForm";
 import { selectUser } from "../redux/slices/usersSlice";
+import { timeSince } from "../utils/date";
 
 interface QuestionViewProps {
 	question: Question;
@@ -231,7 +232,7 @@ const QuestionView: FC<QuestionViewProps> = ({
 				</Button>
 				<Spacer />
 				<Text as="span" color="gray.500" fontSize={respSize}>
-					{formatTimeAgo(new Date(question.created_at))}
+					{timeSince(question.created_at)} ago
 				</Text>
 			</HStack>
 

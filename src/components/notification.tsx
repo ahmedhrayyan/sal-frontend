@@ -1,9 +1,9 @@
 import { FC } from "react";
 import { LinkBox, LinkOverlay, Text, Circle } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
-import { formatTimeAgo } from "../utils/helpers";
 import { useAppDispatch } from "../utils/hooks";
 import { handleMarkNotificationRead } from "../redux/slices/notificationsSlice";
+import { timeSince } from "../utils/date";
 
 type Props = { data: APINotification };
 const Notification: FC<Props> = ({ data }) => {
@@ -33,7 +33,7 @@ const Notification: FC<Props> = ({ data }) => {
 				</LinkOverlay>
 			</Text>
 			<Text fontSize="sm" color={data.is_read ? "gray.500" : "blue.500"}>
-				<time>{formatTimeAgo(new Date(data.created_at))}</time>
+				<time>{timeSince(data.created_at)} ago</time>
 			</Text>
 			<Circle
 				d={data.is_read ? "none" : "initial"}
