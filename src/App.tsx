@@ -1,28 +1,45 @@
-import React from "react";
-import logo from "./logo.svg";
-import "./App.css";
-import { Button } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/layout";
+import { useEffect } from "react";
+import { Route } from "react-router";
+import Header from "./components/header";
+import LoadingLogo from "./components/loadingLogo";
+import { handleShowProfile, selectProfile } from "./redux/slices/profileSlice";
+import { useAppDispatch, useShallowEqSelector } from "./utils/hooks";
+import { handleLoadNotifications } from "./redux/slices/notificationsSlice";
+import Home from "./pages/Home";
+import Question from "./pages/Question";
+import Notifications from "./pages/Notifications";
 
 function App() {
+	const dispatch = useAppDispatch();
+	const profile = useShallowEqSelector(selectProfile);
+
+	// mount logic
+	useEffect(() => {
+		dispatch(handleShowProfile());
+		dispatch(handleLoadNotifications(1));
+	}, []); // eslint-disable-line
+
+	if (!profile) {
+		return (
+			<Flex w="100vw" h="100vh" align="center" justify="center">
+				<LoadingLogo />
+			</Flex>
+		);
+	}
+
 	return (
-		<div className="App">
-			<header className="App-header">
-				<img src={logo} className="App-logo" alt="logo" />
-				<p>
-					Edit <code>src/App.tsx</code> and save to reload.
-				</p>
-				<Button
-					colorScheme="cyan"
-					as="a"
-					className="App-link"
-					href="https://reactjs.org"
-					target="_blank"
-					rel="noopener noreferrer"
-					mt="2"
-				>
-					Learn React
-				</Button>
-			</header>
+		<div className="app">
+			<Header profile={profile as Profile} />
+			<Route path="/" exact>
+				<Home/>
+			</Route>
+			<Route path="/questions/:qId">
+				<Question />
+			</Route>
+			<Route path="/notifications">
+				<Notifications />
+			</Route>
 		</div>
 	);
 }
