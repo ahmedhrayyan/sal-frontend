@@ -30,7 +30,9 @@ export const handleMarkNotificationRead = createAsyncThunk(
 	}
 );
 
-const notificationAdapter = createEntityAdapter<APINotification>();
+const notificationAdapter = createEntityAdapter<APINotification>({
+	sortComparer: (a, b) => Date.parse(b.created_at) - Date.parse(a.created_at),
+});
 
 const slice = createSlice({
 	name: "questions",
