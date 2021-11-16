@@ -26,9 +26,10 @@ import { useShallowEqSelector, useAddFormState } from "../utils/hooks";
 import { selectUser } from "../redux/slices/usersSlice";
 import { BiUpvote, BiDownvote } from "react-icons/bi";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { formatKNumbers, formatTimeAgo } from "../utils/helpers";
+import { formatKNumbers } from "../utils/helpers";
 import EditForm from "./addForm";
 import DeleteAlert from "./deleteAlert";
+import { timeSince } from "../utils/date";
 
 interface AnswerViewProps {
 	answer: any;
@@ -191,7 +192,7 @@ const AnswerView: FC<AnswerViewProps> = ({
 						</Button>
 					</ButtonGroup>
 					<Text as="span" color="gray.500" fontSize={respSize}>
-						{formatTimeAgo(new Date(answer.created_at))}
+						{timeSince(answer.created_at)} ago
 					</Text>
 				</HStack>
 			</Box>
